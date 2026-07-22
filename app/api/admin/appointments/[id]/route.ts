@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { appointmentSchema } from "@/lib/validation/appointment";
+import { appointmentSchema } from "@/lib/validations/appointment";
 import { updateAppointment } from "@/lib/appointment";
 
 type Props = {
@@ -9,10 +9,7 @@ type Props = {
   }>;
 };
 
-export async function PATCH(
-  request: Request,
-  { params }: Props
-) {
+export async function PATCH(request: Request, { params }: Props) {
   console.log("PATCH route meghívva");
 
   try {
@@ -21,7 +18,7 @@ export async function PATCH(
     if (!session || session.user.role !== "ADMIN") {
       return NextResponse.json(
         { error: "Nincs jogosultság." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -39,7 +36,7 @@ export async function PATCH(
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -59,7 +56,7 @@ export async function PATCH(
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -69,7 +66,7 @@ export async function PATCH(
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

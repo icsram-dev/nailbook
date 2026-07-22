@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { appointmentSchema } from "@/lib/validation/appointment";
+import { appointmentSchema } from "@/lib/validations/appointment";
 import { updateAppointment } from "@/lib/appointment";
 
 type Props = {
@@ -9,17 +9,14 @@ type Props = {
   }>;
 };
 
-export async function PATCH(
-  request: Request,
-  { params }: Props
-) {
+export async function PATCH(request: Request, { params }: Props) {
   try {
     const session = await auth();
 
     if (!session || session.user.role !== "ADMIN") {
       return NextResponse.json(
         { error: "Nincs jogosultság." },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -37,7 +34,7 @@ export async function PATCH(
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -48,26 +45,26 @@ export async function PATCH(
 
     return NextResponse.json(appointment);
   } catch (error) {
-  console.error(error);
+    console.error(error);
 
-  if (error instanceof Error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        {
+          error: error.message,
+        },
+        {
+          status: 400,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
-        error: error.message,
+        error: "Ismeretlen hiba történt.",
       },
       {
-        status: 400,
-      }
+        status: 500,
+      },
     );
   }
-
-  return NextResponse.json(
-    {
-      error: "Ismeretlen hiba történt.",
-    },
-    {
-      status: 500,
-    }
-  );
-}
 }

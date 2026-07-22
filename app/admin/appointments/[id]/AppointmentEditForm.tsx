@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   appointmentSchema,
   AppointmentFormValues,
-} from "@/lib/validation/appointment";
+} from "@/lib/validations/appointment";
 
 type Props = {
   appointment: {
@@ -34,10 +34,7 @@ type Props = {
   }[];
 };
 
-export default function AppointmentEditForm({
-  appointment,
-  services,
-}: Props) {
+export default function AppointmentEditForm({ appointment, services }: Props) {
   const router = useRouter();
 
   const {
@@ -50,12 +47,8 @@ export default function AppointmentEditForm({
     defaultValues: {
       customerId: appointment.customer.id,
       serviceId: appointment.service.id,
-      date: appointment.startTime
-        .toISOString()
-        .slice(0, 10),
-      time: appointment.startTime
-        .toTimeString()
-        .slice(0, 5),
+      date: appointment.startTime.toISOString().slice(0, 10),
+      time: appointment.startTime.toTimeString().slice(0, 5),
       note: appointment.note ?? "",
     },
   });
@@ -75,7 +68,7 @@ export default function AppointmentEditForm({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        }
+        },
       );
 
       const result = await response.json();
@@ -100,9 +93,7 @@ export default function AppointmentEditForm({
     >
       <div className="space-y-6">
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Vendég
-          </label>
+          <label className="mb-2 block text-sm font-medium">Vendég</label>
 
           <div className="rounded-xl border bg-gray-50 p-4">
             <p className="font-semibold text-gray-900">
@@ -122,19 +113,14 @@ export default function AppointmentEditForm({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Szolgáltatás
-          </label>
+          <label className="mb-2 block text-sm font-medium">Szolgáltatás</label>
 
           <select
             {...register("serviceId")}
             className="w-full rounded-xl border p-3"
           >
             {services.map((service) => (
-              <option
-                key={service.id}
-                value={service.id}
-              >
+              <option key={service.id} value={service.id}>
                 {service.name}
               </option>
             ))}
@@ -148,9 +134,7 @@ export default function AppointmentEditForm({
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Dátum
-          </label>
+          <label className="mb-2 block text-sm font-medium">Dátum</label>
 
           <input
             type="date"
@@ -159,16 +143,12 @@ export default function AppointmentEditForm({
           />
 
           {errors.date && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.date.message}
-            </p>
+            <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>
           )}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Időpont
-          </label>
+          <label className="mb-2 block text-sm font-medium">Időpont</label>
 
           <input
             type="time"
@@ -177,16 +157,12 @@ export default function AppointmentEditForm({
           />
 
           {errors.time && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.time.message}
-            </p>
+            <p className="mt-1 text-sm text-red-500">{errors.time.message}</p>
           )}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Megjegyzés
-          </label>
+          <label className="mb-2 block text-sm font-medium">Megjegyzés</label>
 
           <textarea
             {...register("note")}
