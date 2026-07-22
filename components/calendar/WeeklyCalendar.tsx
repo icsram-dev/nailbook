@@ -14,11 +14,16 @@ type AppointmentWithRelations =
 type WeeklyCalendarProps = {
   currentWeek: Date;
   appointments: AppointmentWithRelations[];
+
+  onAppointmentClick: (
+    appointment: AppointmentWithRelations
+  ) => void;
 };
 
 export function WeeklyCalendar({
   currentWeek,
   appointments,
+  onAppointmentClick,
 }: WeeklyCalendarProps) {
   return (
     <Calendar>
@@ -32,9 +37,10 @@ export function WeeklyCalendar({
         <TimeColumn />
 
         <CalendarGrid
-  appointments={appointments}
-  currentWeek={currentWeek}
-/>
+          appointments={appointments}
+          currentWeek={currentWeek}
+          onAppointmentClick={onAppointmentClick}
+        />
       </div>
     </Calendar>
   );

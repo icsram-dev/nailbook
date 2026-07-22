@@ -9,14 +9,17 @@ import {
 
 import { Button } from "@/components/ui/Button";
 
-type AppointmentWithRelations = Appointment & {
-  customer: User;
-  service: Service;
-};
+type AppointmentWithRelations =
+  Appointment & {
+    customer: User;
+    service: Service;
+  };
 
 type AppointmentTableProps = {
   appointments: AppointmentWithRelations[];
-  onEdit: (appointment: Appointment) => void;
+  onEdit: (
+    appointment: AppointmentWithRelations
+  ) => void;
   onDelete: (id: string) => void;
 };
 
@@ -71,15 +74,22 @@ export function AppointmentTable({
               </td>
 
               <td className="p-4">
-                {appointment.startTime.toLocaleString("hu-HU")}
+                {appointment.startTime.toLocaleString(
+                  "hu-HU"
+                )}
               </td>
 
               <td className="p-4">
-                {appointment.endTime.toLocaleString("hu-HU")}
+                {appointment.endTime.toLocaleString(
+                  "hu-HU"
+                )}
               </td>
 
               <td className="p-4">
-                {appointment.price.toLocaleString("hu-HU")} Ft
+                {appointment.price.toLocaleString(
+                  "hu-HU"
+                )}{" "}
+                Ft
               </td>
 
               <td className="p-4">

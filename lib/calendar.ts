@@ -2,6 +2,7 @@ import {
   addDays,
   endOfWeek,
   format,
+  isSameDay,
   startOfWeek,
 } from "date-fns";
 import { hu } from "date-fns/locale";
@@ -10,20 +11,21 @@ import { hu } from "date-fns/locale";
  * Naptár beállítások
  */
 export const START_HOUR = 8;
-export const END_HOUR = 20;
+export const END_HOUR = 17;
 
 export const SLOT_MINUTES = 30;
 export const SLOT_HEIGHT = 40;
 
 /**
- * Perc az első idősávhoz képest
+ * Távolság pixelben az első idősáv tetejétől.
  */
 export function getMinutesFromStart(date: Date) {
-  return (
+  const minutes =
     date.getHours() * 60 +
     date.getMinutes() -
-    START_HOUR * 60
-  );
+    START_HOUR * 60;
+
+  return (minutes / SLOT_MINUTES) * SLOT_HEIGHT;
 }
 
 /**
@@ -31,7 +33,7 @@ export function getMinutesFromStart(date: Date) {
  */
 export function getSlotIndex(date: Date) {
   return Math.floor(
-    getMinutesFromStart(date) / SLOT_MINUTES
+    getMinutesFromStart(date) / SLOT_HEIGHT
   );
 }
 
@@ -55,8 +57,9 @@ export function getWeekDays(date: Date) {
     weekStartsOn: 1,
   });
 
-  return Array.from({ length: 5 }, (_, index) =>
-    addDays(monday, index)
+  return Array.from(
+    { length: 5 },
+    (_, index) => addDays(monday, index)
   );
 }
 
@@ -80,7 +83,6 @@ export function formatDate(date: Date) {
 
 /**
  * Hét intervalluma
- * pl. 2026.07.20 – 2026.07.26
  */
 export function formatWeekRange(date: Date) {
   const start = startOfWeek(date, {
@@ -91,14 +93,31 @@ export function formatWeekRange(date: Date) {
     weekStartsOn: 1,
   });
 
-  return `${format(start, "yyyy.MM.dd")} – ${format(
+  return `${format(
+    start,
+    "yyyy.MM.dd"
+  )} – ${format(
     end,
     "yyyy.MM.dd"
   )}`;
 }
 
 /**
- * Összes 30 perces idősáv
+ * Egy adott nap foglalásai.
+ */
+export function getAppointmentsForDay<
+  T extends { startTime: Date }
+>(
+  appointments: T[],
+  day: Date
+) {
+  return appointments.filter((appointment) =>
+    isSameDay(appointment.startTime, day)
+  );
+}
+
+/**
+ * Összes 30 perces idősáv.
  */
 export function getTimeSlots() {
   const slotCount =

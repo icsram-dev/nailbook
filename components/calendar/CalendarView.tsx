@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 import { addWeeks } from "date-fns";
+import {
+  Appointment,
+  Service,
+  User,
+} from "@prisma/client";
 
 import { WeekNavigator } from "./WeekNavigator";
 import { WeeklyCalendar } from "./WeeklyCalendar";
-
-import { Appointment, Service, User } from "@prisma/client";
 
 type AppointmentWithRelations =
   Appointment & {
@@ -16,13 +19,27 @@ type AppointmentWithRelations =
 
 type Props = {
   appointments: AppointmentWithRelations[];
+  customers: User[];
+  services: Service[];
 };
 
 export function CalendarView({
   appointments,
+  customers,
+  services,
 }: Props) {
   const [currentWeek, setCurrentWeek] =
     useState(new Date());
+
+  const [
+    selectedAppointment,
+    setSelectedAppointment,
+  ] = useState<AppointmentWithRelations | null>(
+    null
+  );
+
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
 
   return (
     <>
@@ -42,6 +59,10 @@ export function CalendarView({
       <WeeklyCalendar
         currentWeek={currentWeek}
         appointments={appointments}
+        onAppointmentClick={(appointment) => {
+          setSelectedAppointment(appointment);
+          setIsModalOpen(true);
+        }}
       />
     </>
   );

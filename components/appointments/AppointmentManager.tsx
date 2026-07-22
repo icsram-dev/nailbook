@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
 import {
   Appointment,
   Service,
@@ -15,10 +14,11 @@ import { Button } from "@/components/ui/Button";
 import { AppointmentModal } from "./AppointmentModal";
 import { AppointmentTable } from "./AppointmentTable";
 
-type AppointmentWithRelations = Appointment & {
-  customer: User;
-  service: Service;
-};
+type AppointmentWithRelations =
+  Appointment & {
+    customer: User;
+    service: Service;
+  };
 
 type AppointmentManagerProps = {
   appointments: AppointmentWithRelations[];
@@ -34,8 +34,14 @@ export function AppointmentManager({
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<Appointment | null>(null);
+
+  const [
+    selectedAppointment,
+    setSelectedAppointment,
+  ] =
+    useState<AppointmentWithRelations | null>(
+      null
+    );
 
   async function saveAppointment(
     data: AppointmentData
@@ -49,7 +55,9 @@ export function AppointmentManager({
           ? `/api/appointments/${selectedAppointment.id}`
           : "/api/appointments",
         {
-          method: isEditing ? "PATCH" : "POST",
+          method: isEditing
+            ? "PATCH"
+            : "POST",
           headers: {
             "Content-Type":
               "application/json",
@@ -119,7 +127,7 @@ export function AppointmentManager({
   }
 
   function editAppointment(
-    appointment: Appointment
+    appointment: AppointmentWithRelations
   ) {
     setSelectedAppointment(appointment);
     setOpen(true);

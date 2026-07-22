@@ -9,13 +9,18 @@ type AppointmentWithRelations =
 
 type AppointmentCardProps = {
   appointment: AppointmentWithRelations;
+  onClick: () => void;
 };
 
 export function AppointmentCard({
   appointment,
+  onClick,
 }: AppointmentCardProps) {
   return (
-    <div className="absolute left-1 right-1 rounded-lg bg-pink-500 p-2 text-white shadow">
+    <div
+      onClick={onClick}
+      className="h-full cursor-pointer overflow-hidden rounded-lg bg-pink-500 p-2 text-white shadow transition hover:bg-pink-600"
+    >
       <p className="truncate text-sm font-semibold">
         {appointment.service.name}
       </p>
@@ -25,7 +30,7 @@ export function AppointmentCard({
       </p>
 
       <p className="mt-1 text-xs opacity-90">
-        {format(appointment.startTime, "HH:mm")} -{" "}
+        {format(appointment.startTime, "HH:mm")} –{" "}
         {format(appointment.endTime, "HH:mm")}
       </p>
     </div>

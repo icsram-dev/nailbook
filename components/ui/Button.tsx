@@ -3,10 +3,11 @@ import { ButtonHTMLAttributes } from "react";
 type ButtonVariant = "primary" | "secondary" | "danger";
 type ButtonSize = "sm" | "md" | "lg";
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-};
+type ButtonProps =
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    variant?: ButtonVariant;
+    size?: ButtonSize;
+  };
 
 const variants: Record<ButtonVariant, string> = {
   primary:
