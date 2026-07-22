@@ -1,13 +1,18 @@
 import { z } from "zod";
 
 export const appointmentSchema = z.object({
-  customerId: z.string().min(1, "Válassz vendéget."),
-  serviceId: z.string().min(1, "Válassz szolgáltatást."),
-  date: z.string().min(1, "Adj meg dátumot."),
-  time: z.string().min(1, "Adj meg időpontot."),
-  note: z.string().optional(),
+  customerId: z
+    .string()
+    .min(1, "A vendég kiválasztása kötelező."),
+
+  serviceId: z
+    .string()
+    .min(1, "A szolgáltatás kiválasztása kötelező."),
+
+  startTime: z.coerce.date(),
+
+  note: z.string().trim().optional(),
 });
 
-export type AppointmentFormValues = z.infer<
-  typeof appointmentSchema
->;
+export type AppointmentInput = z.input<typeof appointmentSchema>;
+export type AppointmentData = z.output<typeof appointmentSchema>;

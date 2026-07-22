@@ -1,5 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+
+import { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/prisma";
+import { appointmentSchema } from "@/lib/validations/appointment";
 
 type RouteContext = {
   params: Promise<{
@@ -8,24 +12,74 @@ type RouteContext = {
 };
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: RouteContext
 ) {
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  const body = await request.json();
+    const body = await request.json();
 
-  const appointment = await prisma.appointment.update({
-    where: {
-      id,
-    },
-    data: {
-      status: body.status,
-    },
-  });
+    const data = appointmentSchema.parse(body);
 
-  return NextResponse.json({
-    success: true,
-    appointment,
-  });
+    const appointment = await prisma.appointment.update({
+      where: { id },
+      data,
+      include: {
+        customer: true,
+        service: true,
+      },
+    });
+
+    return NextResponse.json(appointment);
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return NextResponse.json(
+          { message: "A foglalás nem található." },
+          { status: 404 }
+        );
+      }
+    }
+
+    return NextResponse.json(
+      { message: "Nem sikerült frissíteni a foglalást." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteContext
+) {
+  try {
+    const { id } = await params;
+
+    await prisma.appointment.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({
+      message: "A foglalás sikeresen törölve.",
+    });
+  } catch (error) {
+    console.error(error);
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2025") {
+        return NextResponse.json(
+          { message: "A foglalás nem található." },
+          { status: 404 }
+        );
+      }
+    }
+
+    return NextResponse.json(
+      { message: "Nem sikerült törölni a foglalást." },
+      { status: 500 }
+    );
+  }
 }

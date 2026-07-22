@@ -1,111 +1,109 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/auth";
+import { appointmentSchema } from "@/lib/validations/appointment";
 
-export async function POST(request: Request) {
-  const body = await request.json();
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
 
-  const { serviceId, date, time } = body;
+    const data = appointmentSchema.parse(body);
 
-  if (!serviceId || !date || !time) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Hiányzó adatok.",
+    const customer = await prisma.user.findUnique({
+      where: {
+        id: data.customerId,
       },
-      { status: 400 }
-    );
-  }
+    });
 
-const session = await auth();
-
-if (!session?.user) {
-  return NextResponse.json(
-    {
-      success: false,
-      message: "A foglaláshoz be kell jelentkezned.",
-    },
-    { status: 401 }
-  );
-}
-
-const customerId = session.user.id;
-
-  const service = await prisma.service.findUnique({
-    where: {
-      id: serviceId,
-    },
-  });
-
-  if (!service) {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "A szolgáltatás nem található.",
-      },
-      { status: 404 }
-    );
-  }
-
-  const startTime = new Date(`${date}T${time}:00`);
-
-  const endTime = new Date(startTime);
-  endTime.setMinutes(endTime.getMinutes() + service.duration);
-
-const existingAppointment = await prisma.appointment.findFirst({
-  where: {
-    status: {
-      in: ["PENDING", "CONFIRMED"],
-    },
-    startTime: {
-      lt: endTime,
-    },
-    endTime: {
-      gt: startTime,
-    },
-  },
-});
-
-const workDayEnd = new Date(`${date}T17:00:00`);
-
-if (endTime > workDayEnd) {
-  return NextResponse.json(
-    {
-      success: false,
-      message: "A szolgáltatás nem fér bele a munkaidőbe.",
-    },
-    {
-      status: 400,
+    if (!customer) {
+      return NextResponse.json(
+        { message: "A vendég nem található." },
+        { status: 404 }
+      );
     }
-  );
-}
 
-  if (existingAppointment) {
+    const service = await prisma.service.findUnique({
+      where: {
+        id: data.serviceId,
+      },
+    });
+
+    if (!service) {
+      return NextResponse.json(
+        { message: "A szolgáltatás nem található." },
+        { status: 404 }
+      );
+    }
+
+    const endTime = new Date(
+      data.startTime.getTime() +
+        service.duration * 60 * 1000
+    );
+
+    const conflict =
+      await prisma.appointment.findFirst({
+        where: {
+          status: {
+            not: "CANCELLED",
+          },
+
+          startTime: {
+            lt: endTime,
+          },
+
+          endTime: {
+            gt: data.startTime,
+          },
+        },
+      });
+
+    if (conflict) {
+      return NextResponse.json(
+        {
+          message:
+            "Erre az időpontra már van foglalás.",
+        },
+        { status: 409 }
+      );
+    }
+
+    const appointment =
+      await prisma.appointment.create({
+        data: {
+          customerId: data.customerId,
+          serviceId: data.serviceId,
+          startTime: data.startTime,
+          endTime,
+          price: service.price,
+          note: data.note,
+        },
+        include: {
+          customer: true,
+          service: true,
+        },
+      });
+
+    return NextResponse.json(appointment, {
+      status: 201,
+    });
+  } catch (error: any) {
+    console.error(error);
+
+    if (error.name === "ZodError") {
+      return NextResponse.json(
+        {
+          message: "Érvénytelen adatok.",
+          errors: error.flatten(),
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       {
-        success: false,
-        message: "Ez az időpont már foglalt.",
+        message:
+          "Nem sikerült létrehozni a foglalást.",
       },
-      { status: 409 }
+      { status: 500 }
     );
   }
-
-  // Foglalás létrehozása
-  const appointment = await prisma.appointment.create({
-    data: {
-  customerId,
-  serviceId: service.id,
-  startTime,
-  endTime,
-  price: service.price,
-},
-  });
-
-  return NextResponse.json(
-    {
-      success: true,
-      appointment,
-    },
-    { status: 201 }
-  );
 }

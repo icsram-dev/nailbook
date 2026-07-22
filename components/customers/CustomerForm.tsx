@@ -5,31 +5,30 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  vacationSchema,
-  type VacationInput,
-  type VacationData,
-} from "@/lib/validations/vacation";
+  customerSchema,
+  type CustomerInput,
+  type CustomerData,
+} from "@/lib/validations/customer";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { Textarea } from "@/components/ui/Textarea";
 
-type VacationFormProps = {
-  onSubmit: (data: VacationData) => Promise<void>;
-  defaultValues?: VacationInput;
+type CustomerFormProps = {
+  onSubmit: (data: CustomerData) => Promise<void>;
+  defaultValues?: CustomerInput;
 };
 
-export function VacationForm({
+export function CustomerForm({
   onSubmit,
   defaultValues,
-}: VacationFormProps) {
+}: CustomerFormProps) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<VacationInput, unknown, VacationData>({
-    resolver: zodResolver(vacationSchema),
+  } = useForm<CustomerInput, unknown, CustomerData>({
+    resolver: zodResolver(customerSchema),
     defaultValues,
   });
 
@@ -46,47 +45,47 @@ export function VacationForm({
     >
       <div>
         <label className="mb-1 block text-sm font-medium">
-          Kezdő dátum
+          Név
         </label>
 
-        <Input
-          type="date"
-          {...register("startDate")}
-        />
+        <Input {...register("name")} />
 
-        {errors.startDate && (
+        {errors.name && (
           <p className="mt-1 text-sm text-red-600">
-            {errors.startDate.message}
+            {errors.name.message}
           </p>
         )}
       </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium">
-          Befejező dátum
+          E-mail
         </label>
 
         <Input
-          type="date"
-          {...register("endDate")}
+          type="email"
+          {...register("email")}
         />
 
-        {errors.endDate && (
+        {errors.email && (
           <p className="mt-1 text-sm text-red-600">
-            {errors.endDate.message}
+            {errors.email.message}
           </p>
         )}
       </div>
 
       <div>
         <label className="mb-1 block text-sm font-medium">
-          Megjegyzés
+          Telefonszám
         </label>
 
-        <Textarea
-          rows={3}
-          {...register("reason")}
-        />
+        <Input {...register("phone")} />
+
+        {errors.phone && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.phone.message}
+          </p>
+        )}
       </div>
 
       <Button

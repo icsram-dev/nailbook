@@ -4,10 +4,14 @@ import { Button } from "@/components/ui/Button";
 
 type VacationTableProps = {
   vacations: Vacation[];
+  onDelete: (id: string) => Promise<void>;
+  onEdit: (vacation: Vacation) => void;
 };
 
 export function VacationTable({
   vacations,
+  onDelete,
+  onEdit,
 }: VacationTableProps) {
   return (
     <Card className="overflow-hidden">
@@ -50,16 +54,16 @@ export function VacationTable({
                 </td>
 
                 <td className="px-4 py-3 text-right space-x-2">
-                 <Button
+<Button
   variant="secondary"
-  size="sm"
+  onClick={() => onEdit(vacation)}
 >
   Szerkesztés
 </Button>
 
 <Button
   variant="danger"
-  size="sm"
+  onClick={() => onDelete(vacation.id)}
 >
   Törlés
 </Button>

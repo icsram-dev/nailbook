@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
-import { vacationSchema } from "@/lib/validations/vacation";
+import { serviceSchema } from "@/lib/validations/service";
 
 type RouteContext = {
   params: Promise<{
@@ -19,7 +19,7 @@ export async function PATCH(
 
     const body = await request.json();
 
-    const result = vacationSchema.safeParse(body);
+    const result = serviceSchema.safeParse(body);
 
     if (!result.success) {
       return NextResponse.json(
@@ -32,14 +32,14 @@ export async function PATCH(
       );
     }
 
-    const vacation = await prisma.vacation.update({
+    const service = await prisma.service.update({
       where: {
         id,
       },
       data: result.data,
     });
 
-    return NextResponse.json(vacation);
+    return NextResponse.json(service);
   } catch (error) {
     console.error(error);
 
@@ -49,7 +49,7 @@ export async function PATCH(
     ) {
       return NextResponse.json(
         {
-          message: "A szabadság nem található.",
+          message: "A szolgáltatás nem található.",
         },
         {
           status: 404,
@@ -59,7 +59,7 @@ export async function PATCH(
 
     return NextResponse.json(
       {
-        message: "Nem sikerült módosítani a szabadságot.",
+        message: "Nem sikerült módosítani a szolgáltatást.",
       },
       {
         status: 500,
@@ -75,7 +75,7 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await prisma.vacation.delete({
+    await prisma.service.delete({
       where: {
         id,
       },
@@ -93,7 +93,7 @@ export async function DELETE(
     ) {
       return NextResponse.json(
         {
-          message: "A szabadság nem található.",
+          message: "A szolgáltatás nem található.",
         },
         {
           status: 404,
@@ -103,7 +103,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        message: "Nem sikerült törölni a szabadságot.",
+        message: "Nem sikerült törölni a szolgáltatást.",
       },
       {
         status: 500,

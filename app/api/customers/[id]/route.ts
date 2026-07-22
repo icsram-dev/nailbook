@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
-import { vacationSchema } from "@/lib/validations/vacation";
+import { customerSchema } from "@/lib/validations/customer";
 
 type RouteContext = {
   params: Promise<{
@@ -11,45 +11,41 @@ type RouteContext = {
 };
 
 export async function PATCH(
-  request: Request,
+  request: NextRequest,
   { params }: RouteContext
 ) {
   try {
     const { id } = await params;
-
     const body = await request.json();
 
-    const result = vacationSchema.safeParse(body);
+    const result = customerSchema.safeParse(body);
 
     if (!result.success) {
       return NextResponse.json(
         {
-          errors: result.error.flatten().fieldErrors,
+          message: "Érvénytelen adatok.",
+          errors: result.error.flatten(),
         },
-        {
-          status: 400,
-        }
+        { status: 400 }
       );
     }
 
-    const vacation = await prisma.vacation.update({
+    const customer = await prisma.user.update({
       where: {
         id,
       },
       data: result.data,
     });
 
-    return NextResponse.json(vacation);
+    return NextResponse.json(customer);
   } catch (error) {
-    console.error(error);
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return NextResponse.json(
         {
-          message: "A szabadság nem található.",
+          message: "A vendég nem található.",
         },
         {
           status: 404,
@@ -57,9 +53,11 @@ export async function PATCH(
       );
     }
 
+    console.error(error);
+
     return NextResponse.json(
       {
-        message: "Nem sikerült módosítani a szabadságot.",
+        message: "Szerverhiba.",
       },
       {
         status: 500,
@@ -69,31 +67,29 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: RouteContext
 ) {
   try {
     const { id } = await params;
 
-    await prisma.vacation.delete({
+    await prisma.user.delete({
       where: {
         id,
       },
     });
 
-    return NextResponse.json({
-      success: true,
+    return new NextResponse(null, {
+      status: 204,
     });
   } catch (error) {
-    console.error(error);
-
     if (
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
       return NextResponse.json(
         {
-          message: "A szabadság nem található.",
+          message: "A vendég nem található.",
         },
         {
           status: 404,
@@ -101,9 +97,11 @@ export async function DELETE(
       );
     }
 
+    console.error(error);
+
     return NextResponse.json(
       {
-        message: "Nem sikerült törölni a szabadságot.",
+        message: "Szerverhiba.",
       },
       {
         status: 500,

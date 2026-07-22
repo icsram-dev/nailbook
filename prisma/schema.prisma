@@ -104,3 +104,4 @@ model Vacation {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
