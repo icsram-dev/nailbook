@@ -1,4 +1,8 @@
-import { Appointment, Service, User } from "@prisma/client";
+import {
+  Appointment,
+  Service,
+  User,
+} from "@prisma/client";
 
 import { Calendar } from "./Calendar";
 import { CalendarGrid } from "./CalendarGrid";
@@ -15,6 +19,9 @@ type WeeklyCalendarProps = {
   currentWeek: Date;
   appointments: AppointmentWithRelations[];
 
+  startHour?: number;
+  endHour?: number;
+
   onAppointmentClick: (
     appointment: AppointmentWithRelations
   ) => void;
@@ -23,6 +30,8 @@ type WeeklyCalendarProps = {
 export function WeeklyCalendar({
   currentWeek,
   appointments,
+  startHour = 8,
+  endHour = 17,
   onAppointmentClick,
 }: WeeklyCalendarProps) {
   return (
@@ -30,16 +39,25 @@ export function WeeklyCalendar({
       <div className="flex">
         <div className="w-20 border-r bg-gray-50" />
 
-        <CalendarHeader currentWeek={currentWeek} />
+        <CalendarHeader
+          currentWeek={currentWeek}
+        />
       </div>
 
       <div className="flex">
-        <TimeColumn />
+        <TimeColumn
+          startHour={startHour}
+          endHour={endHour}
+        />
 
         <CalendarGrid
           appointments={appointments}
           currentWeek={currentWeek}
-          onAppointmentClick={onAppointmentClick}
+          startHour={startHour}
+          endHour={endHour}
+          onAppointmentClick={
+            onAppointmentClick
+          }
         />
       </div>
     </Calendar>

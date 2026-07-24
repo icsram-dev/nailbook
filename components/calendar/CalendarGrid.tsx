@@ -23,6 +23,10 @@ type AppointmentWithRelations =
 type CalendarGridProps = {
   appointments: AppointmentWithRelations[];
   currentWeek: Date;
+
+  startHour?: number;
+  endHour?: number;
+
   onAppointmentClick: (
     appointment: AppointmentWithRelations
   ) => void;
@@ -31,18 +35,25 @@ type CalendarGridProps = {
 export function CalendarGrid({
   appointments,
   currentWeek,
+  startHour = 8,
+  endHour = 17,
   onAppointmentClick,
 }: CalendarGridProps) {
-  const slots = getTimeSlots();
+  const slots = getTimeSlots(
+    startHour,
+    endHour
+  );
+
   const days = getWeekDays(currentWeek);
 
   return (
     <div className="grid flex-1 grid-cols-5">
       {days.map((day) => {
-        const dayAppointments = getAppointmentsForDay(
-          appointments,
-          day
-        );
+        const dayAppointments =
+          getAppointmentsForDay(
+            appointments,
+            day
+          );
 
         return (
           <div
@@ -56,34 +67,42 @@ export function CalendarGrid({
               />
             ))}
 
-            {dayAppointments.map((appointment) => {
-              const duration =
-                (appointment.endTime.getTime() -
-                  appointment.startTime.getTime()) /
-                60000;
+            {dayAppointments.map(
+              (appointment) => {
+                const duration =
+                  (appointment.endTime.getTime() -
+                    appointment.startTime.getTime()) /
+                  60000;
 
-              return (
-                <div
-                  key={appointment.id}
-                  className="absolute left-0 right-0 px-1"
-                  style={{
-                    top: getMinutesFromStart(
-                      appointment.startTime
-                    ),
-                    height: getAppointmentHeight(
-                      duration
-                    ),
-                  }}
-                >
-                  <AppointmentCard
-                    appointment={appointment}
-                    onClick={() =>
-                      onAppointmentClick(appointment)
-                    }
-                  />
-                </div>
-              );
-            })}
+                return (
+                  <div
+                    key={appointment.id}
+                    className="absolute left-0 right-0 px-1"
+                    style={{
+                      top: getMinutesFromStart(
+                        appointment.startTime,
+                        startHour
+                      ),
+                      height:
+                        getAppointmentHeight(
+                          duration
+                        ),
+                    }}
+                  >
+                    <AppointmentCard
+                      appointment={
+                        appointment
+                      }
+                      onClick={() =>
+                        onAppointmentClick(
+                          appointment
+                        )
+                      }
+                    />
+                  </div>
+                );
+              }
+            )}
           </div>
         );
       })}

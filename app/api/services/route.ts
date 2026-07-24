@@ -11,7 +11,9 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json(services);
+    return NextResponse.json({
+      services,
+    });
   } catch (error) {
     console.error(error);
 

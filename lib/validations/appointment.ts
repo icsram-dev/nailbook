@@ -1,10 +1,6 @@
 import { z } from "zod";
 
 export const appointmentSchema = z.object({
-  customerId: z
-    .string()
-    .min(1, "A vendég kiválasztása kötelező."),
-
   serviceId: z
     .string()
     .min(1, "A szolgáltatás kiválasztása kötelező."),

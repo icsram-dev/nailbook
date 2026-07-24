@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   serviceId: string;
 };
 
-export default function AvailableSlots({ serviceId }: Props) {
+export default function AvailableSlots({
+  serviceId,
+}: Props) {
   const [date, setDate] = useState("");
   const [slots, setSlots] = useState<string[]>([]);
-  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] =
+    useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -33,11 +36,16 @@ export default function AvailableSlots({ serviceId }: Props) {
         if (response.ok) {
           setSlots(data.slots);
         } else {
-          alert(data.message || "Nem sikerült betölteni az időpontokat.");
+          alert(
+            data.message ??
+              "Nem sikerült betölteni az időpontokat."
+          );
         }
       } catch (error) {
         console.error(error);
-        alert("Hiba történt az időpontok betöltése közben.");
+        alert(
+          "Hiba történt az időpontok betöltése közben."
+        );
       } finally {
         setLoading(false);
       }
@@ -49,18 +57,25 @@ export default function AvailableSlots({ serviceId }: Props) {
   async function bookAppointment() {
     if (!selectedSlot || !date) return;
 
+    const startTime = new Date(
+      `${date}T${selectedSlot}:00`
+    );
+
     try {
-      const response = await fetch("/api/appointments", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          serviceId,
-          date,
-          time: selectedSlot,
-        }),
-      });
+      const response = await fetch(
+        "/api/appointments",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            serviceId,
+            startTime: startTime.toISOString(),
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -69,19 +84,21 @@ export default function AvailableSlots({ serviceId }: Props) {
 
         setSelectedSlot(null);
 
-        // Frissítjük a szabad időpontokat,
-        // hogy az új foglalás eltűnjön a listából
         const slotsResponse = await fetch(
           `/api/availability?date=${date}&serviceId=${serviceId}`
         );
 
-        const slotsData = await slotsResponse.json();
+        const slotsData =
+          await slotsResponse.json();
 
         if (slotsResponse.ok) {
           setSlots(slotsData.slots);
         }
       } else {
-        alert(data.message || "Hiba történt.");
+        alert(
+          data.message ??
+            "Hiba történt a foglalás során."
+        );
       }
     } catch (error) {
       console.error(error);
@@ -103,7 +120,9 @@ export default function AvailableSlots({ serviceId }: Props) {
         <input
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) =>
+            setDate(e.target.value)
+          }
           className="w-full rounded-lg border border-gray-300 px-4 py-3"
         />
       </div>
@@ -118,11 +137,14 @@ export default function AvailableSlots({ serviceId }: Props) {
         <p>Szabad időpontok betöltése...</p>
       )}
 
-      {!loading && date && slots.length === 0 && (
-        <p className="text-gray-500">
-          Erre a napra nincs szabad időpont.
-        </p>
-      )}
+      {!loading &&
+        date &&
+        slots.length === 0 && (
+          <p className="text-gray-500">
+            Erre a napra nincs szabad
+            időpont.
+          </p>
+        )}
 
       {!loading && slots.length > 0 && (
         <>
@@ -131,7 +153,9 @@ export default function AvailableSlots({ serviceId }: Props) {
               <button
                 key={slot}
                 type="button"
-                onClick={() => setSelectedSlot(slot)}
+                onClick={() =>
+                  setSelectedSlot(slot)
+                }
                 className={`rounded-lg border px-4 py-3 transition ${
                   selectedSlot === slot
                     ? "border-pink-500 bg-pink-500 text-white"

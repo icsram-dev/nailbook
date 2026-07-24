@@ -7,43 +7,43 @@ async function main() {
       weekday: 1,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: false,
+      isOpen: true,
     },
     {
       weekday: 2,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: false,
+      isOpen: true,
     },
     {
       weekday: 3,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: false,
+      isOpen: true,
     },
     {
       weekday: 4,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: false,
+      isOpen: true,
     },
     {
       weekday: 5,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: false,
+      isOpen: true,
     },
     {
       weekday: 6,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: true,
+      isOpen: false,
     },
     {
       weekday: 7,
       opensAt: "08:00",
       closesAt: "17:00",
-      isClosed: true,
+      isOpen: false,
     },
   ];
 
@@ -52,12 +52,16 @@ async function main() {
       where: {
         weekday: openingHour.weekday,
       },
-      update: openingHour,
+      update: {
+        opensAt: openingHour.opensAt,
+        closesAt: openingHour.closesAt,
+        isOpen: openingHour.isOpen,
+      },
       create: openingHour,
     });
   }
 
-  console.log("✅ Nyitvatartás létrehozva.");
+  console.log("✅ Alapértelmezett nyitvatartás létrehozva.");
 }
 
 main()

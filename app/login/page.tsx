@@ -12,7 +12,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
   const params = useSearchParams();
@@ -20,14 +20,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const registered =
-    params.get("registered") === "true";
+  const registered = params.get("registered") === "true";
 
   async function handleSubmit(
     e: React.FormEvent<HTMLFormElement>
@@ -46,7 +44,7 @@ export default function LoginPage() {
     setLoading(false);
 
     if (result?.error) {
-      setError("Hibás email vagy jelszó.");
+      setError("Hibás e-mail vagy jelszó.");
       return;
     }
 
@@ -56,7 +54,6 @@ export default function LoginPage() {
   return (
     <main className="mx-auto max-w-md px-6 py-12">
       <div className="rounded-2xl border bg-white p-8 shadow-sm">
-
         <h1 className="mb-2 text-center text-3xl font-bold">
           Bejelentkezés
         </h1>
@@ -95,7 +92,7 @@ export default function LoginPage() {
               onChange={(e) =>
                 setEmail(e.target.value)
               }
-              className="w-full rounded-lg border py-3 pl-11 pr-4 focus:border-pink-500 outline-none"
+              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
             />
           </div>
 
@@ -107,17 +104,13 @@ export default function LoginPage() {
 
             <input
               required
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showPassword ? "text" : "password"}
               placeholder="Jelszó"
               value={password}
               onChange={(e) =>
                 setPassword(e.target.value)
               }
-              className="w-full rounded-lg border py-3 pl-11 pr-12 focus:border-pink-500 outline-none"
+              className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
             />
 
             <button
@@ -125,7 +118,7 @@ export default function LoginPage() {
               onClick={() =>
                 setShowPassword(!showPassword)
               }
-              className="absolute right-4 top-1/2 -translate-y-1/2"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
               {showPassword ? (
                 <EyeOff size={18} />
@@ -133,6 +126,15 @@ export default function LoginPage() {
                 <Eye size={18} />
               )}
             </button>
+          </div>
+
+          <div className="flex justify-end">
+            <Link
+              href="/forgot-password"
+              className="text-sm font-medium text-pink-600 hover:text-pink-700 hover:underline"
+            >
+              Elfelejtetted a jelszavad?
+            </Link>
           </div>
 
           <Button
@@ -163,7 +165,6 @@ export default function LoginPage() {
             Regisztráció
           </Link>
         </p>
-
       </div>
     </main>
   );

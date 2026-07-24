@@ -1,26 +1,29 @@
-const slots = Array.from(
-  { length: 24 },
-  (_, i) => i
-);
+import { getTimeSlots } from "@/lib/calendar";
 
-export function TimeColumn() {
+type TimeColumnProps = {
+  startHour?: number;
+  endHour?: number;
+};
+
+export function TimeColumn({
+  startHour,
+  endHour,
+}: TimeColumnProps) {
+  const slots = getTimeSlots(
+    startHour,
+    endHour
+  );
+
   return (
     <div className="w-20 border-r bg-gray-50">
-      {slots.map((slot) => {
-        const totalMinutes = slot * 30;
-        const hour = 8 + Math.floor(totalMinutes / 60);
-        const minute = totalMinutes % 60;
-
-        return (
-          <div
-            key={slot}
-            className="h-10 border-b px-2 text-xs text-gray-500"
-          >
-            {hour.toString().padStart(2, "0")}:
-            {minute.toString().padStart(2, "0")}
-          </div>
-        );
-      })}
+      {slots.map((slot) => (
+        <div
+          key={slot.index}
+          className="h-10 border-b px-2 text-xs text-gray-500"
+        >
+          {slot.label}
+        </div>
+      ))}
     </div>
   );
 }

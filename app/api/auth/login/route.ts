@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { loginSchema } from "@/lib/validations/auth";
+import { loginSchema } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         success: false,
         errors: result.error.flatten().fieldErrors,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -34,15 +34,12 @@ export async function POST(request: Request) {
         success: false,
         message: "Hibás e-mail cím vagy jelszó.",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
   // Jelszó ellenőrzése
-  const passwordMatch = await bcrypt.compare(
-    password,
-    user.passwordHash
-  );
+  const passwordMatch = await bcrypt.compare(password, user.passwordHash);
 
   if (!passwordMatch) {
     return NextResponse.json(
@@ -50,7 +47,7 @@ export async function POST(request: Request) {
         success: false,
         message: "Hibás e-mail cím vagy jelszó.",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -66,6 +63,6 @@ export async function POST(request: Request) {
         role: user.role,
       },
     },
-    { status: 200 }
+    { status: 200 },
   );
 }

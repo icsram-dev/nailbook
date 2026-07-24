@@ -1,0 +1,41 @@
+import { auth } from "./auth";
+import { NextResponse } from "next/server";
+
+export default auth((req) => {
+  const isLoggedIn = !!req.auth;
+
+  const { pathname } = req.nextUrl;
+
+  const authRoutes = ["/login", "/register", "/forgot-password"];
+
+  const protectedRoutes = [
+    "/dashboard",
+    "/appointments",
+    "/profile",
+    "/statistics",
+  ];
+
+  // Ha be van jelentkezve és login/register oldalra megy
+  if (isLoggedIn && authRoutes.includes(pathname)) {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
+  }
+
+  // Ha nincs bejelentkezve és védett oldalra megy
+  if (!isLoggedIn && protectedRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  return NextResponse.next();
+});
+
+export const config = {
+  matcher: [
+    "/dashboard/:path*",
+    "/appointments/:path*",
+    "/profile/:path*",
+    "/statistics/:path*",
+    "/login",
+    "/register",
+    "/forgot-password",
+  ],
+};

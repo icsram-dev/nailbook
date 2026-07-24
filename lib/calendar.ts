@@ -8,7 +8,8 @@ import {
 import { hu } from "date-fns/locale";
 
 /**
- * Naptár beállítások
+ * Átmeneti alapértékek.
+ * Később az adatbázisból érkező nyitvatartás fogja felülírni.
  */
 export const START_HOUR = 8;
 export const END_HOUR = 17;
@@ -19,11 +20,14 @@ export const SLOT_HEIGHT = 40;
 /**
  * Távolság pixelben az első idősáv tetejétől.
  */
-export function getMinutesFromStart(date: Date) {
+export function getMinutesFromStart(
+  date: Date,
+  startHour = START_HOUR
+) {
   const minutes =
     date.getHours() * 60 +
     date.getMinutes() -
-    START_HOUR * 60;
+    startHour * 60;
 
   return (minutes / SLOT_MINUTES) * SLOT_HEIGHT;
 }
@@ -31,9 +35,13 @@ export function getMinutesFromStart(date: Date) {
 /**
  * Melyik 30 perces slotba esik az időpont?
  */
-export function getSlotIndex(date: Date) {
+export function getSlotIndex(
+  date: Date,
+  startHour = START_HOUR
+) {
   return Math.floor(
-    getMinutesFromStart(date) / SLOT_HEIGHT
+    getMinutesFromStart(date, startHour) /
+      SLOT_HEIGHT
   );
 }
 
@@ -64,7 +72,7 @@ export function getWeekDays(date: Date) {
 }
 
 /**
- * Nap neve (pl. H, K, Sze)
+ * Nap neve.
  */
 export function formatDay(date: Date) {
   return format(date, "EEE", {
@@ -73,7 +81,7 @@ export function formatDay(date: Date) {
 }
 
 /**
- * Dátum (pl. 22.07)
+ * Dátum.
  */
 export function formatDate(date: Date) {
   return format(date, "dd.MM", {
@@ -82,7 +90,7 @@ export function formatDate(date: Date) {
 }
 
 /**
- * Hét intervalluma
+ * Hét intervalluma.
  */
 export function formatWeekRange(date: Date) {
   const start = startOfWeek(date, {
@@ -117,18 +125,21 @@ export function getAppointmentsForDay<
 }
 
 /**
- * Összes 30 perces idősáv.
+ * Összes idősáv.
  */
-export function getTimeSlots() {
+export function getTimeSlots(
+  startHour = START_HOUR,
+  endHour = END_HOUR
+) {
   const slotCount =
-    ((END_HOUR - START_HOUR) * 60) /
+    ((endHour - startHour) * 60) /
     SLOT_MINUTES;
 
   return Array.from(
     { length: slotCount },
     (_, index) => {
       const totalMinutes =
-        START_HOUR * 60 +
+        startHour * 60 +
         index * SLOT_MINUTES;
 
       const hour = Math.floor(

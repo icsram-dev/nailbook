@@ -13,7 +13,7 @@ export async function POST(request: Request) {
       password,
     } = body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !phone || !password) {
       return NextResponse.json(
         {
           success: false,
@@ -25,13 +25,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingEmail = await prisma.user.findUnique({
       where: {
         email,
       },
     });
 
-    if (existingUser) {
+    if (existingEmail) {
       return NextResponse.json(
         {
           success: false,
@@ -43,14 +43,32 @@ export async function POST(request: Request) {
       );
     }
 
+    const existingPhone = await prisma.user.findUnique({
+      where: {
+        phone,
+      },
+    });
+
+    if (existingPhone) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Ez a telefonszám már használatban van.",
+        },
+        {
+          status: 409,
+        }
+      );
+    }
+
     const passwordHash = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
       data: {
-        name,
-        email,
-        phone,
-        passwordHash,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        phone: phone.replace(/\s+/g, " ").trim(),
+        password: passwordHash,
       },
     });
 
@@ -61,6 +79,7 @@ export async function POST(request: Request) {
           id: user.id,
           name: user.name,
           email: user.email,
+          phone: user.phone,
         },
       },
       {

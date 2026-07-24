@@ -14,29 +14,33 @@ enum Role {
 enum AppointmentStatus {
   PENDING
   CONFIRMED
-  CANCELLED
+  IN_PROGRESS
   COMPLETED
+  CANCELLED
   NO_SHOW
 }
 
 model User {
   id String @id @default(cuid())
 
-  name  String
+  name String
+
   email String @unique
-  phone String?
+  phone String @unique
 
-  passwordHash String?
+  password String
 
-  emailVerified Boolean @default(false)
-  isActive      Boolean @default(true)
+  image String?
+
+  birthday DateTime?
 
   role Role @default(CUSTOMER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  appointments Appointment[]
+  appointments        Appointment[]
+  passwordResetTokens PasswordResetToken[]
 }
 
 model Service {
@@ -45,11 +49,13 @@ model Service {
   name        String
   description String?
 
-  duration Int // percben
+  duration Int // perc
 
   price Int // Ft
 
   active Boolean @default(true)
+
+  sortOrder Int @default(0)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -70,13 +76,16 @@ model Appointment {
 
   status AppointmentStatus @default(PENDING)
 
-  note String?
+  customerNote String?
+  internalNote String?
+
+  createdByAdmin Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  customer User @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  service Service @relation(fields: [serviceId], references: [id])
+  customer User    @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service  Service @relation(fields: [serviceId], references: [id])
 
   @@index([customerId])
   @@index([serviceId])
@@ -85,23 +94,43 @@ model Appointment {
 }
 
 model OpeningHour {
-  id        String @id @default(cuid())
-  weekday   Int    @unique
-  opensAt   String
-  closesAt  String
-  isClosed  Boolean @default(false)
+  id String @id @default(cuid())
+
+  weekday Int @unique
+
+  isOpen Boolean @default(true)
+
+  opensAt  String
+  closesAt String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Vacation {
-  id          String   @id @default(cuid())
-  startDate   DateTime
-  endDate     DateTime
-  reason      String?
+  id String @id @default(cuid())
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  startDate DateTime
+  endDate   DateTime
+
+  reason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
+model PasswordResetToken {
+  id String @id @default(cuid())
+
+  token String @unique
+
+  expiresAt DateTime
+
+  createdAt DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
