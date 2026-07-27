@@ -6,18 +6,27 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import huLocale from "@fullcalendar/core/locales/hu";
-import type { DateSelectArg, EventInput } from "@fullcalendar/core";
+import type { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
 
 import { Card } from "@/components/ui/Card";
 import { AppointmentModal } from "./AppointmentModal";
 
 export function Calendar() {
-  const [events, setEvents] = useState<EventInput[]>([]);
+  const [events, setEvents] =useState<EventInput[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedAppointmentId, setSelectedAppointmentId] =
+    useState<string | null>(null);
 
   function handleSelect(selectInfo: DateSelectArg) {
+    setSelectedAppointmentId(null);
     setSelectedDate(selectInfo.startStr);
+    setOpen(true);
+  }
+
+  function handleEventClick(clickInfo: EventClickArg) {
+    setSelectedAppointmentId(clickInfo.event.id);
+    setSelectedDate(clickInfo.event.startStr);
     setOpen(true);
   }
 
@@ -43,7 +52,14 @@ export function Calendar() {
   function handleAppointmentCreated() {
     setOpen(false);
     setSelectedDate(null);
+    setSelectedAppointmentId(null);
     loadAppointments();
+  }
+
+  function handleClose() {
+    setOpen(false);
+    setSelectedDate(null);
+    setSelectedAppointmentId(null);
   }
 
   return (
@@ -62,6 +78,7 @@ export function Calendar() {
           editable={false}
           selectable
           select={handleSelect}
+          eventClick={handleEventClick}
           weekends
           allDaySlot={false}
           slotMinTime="08:00:00"
@@ -86,10 +103,8 @@ export function Calendar() {
       <AppointmentModal
         open={open}
         selectedDate={selectedDate}
-        onClose={() => {
-          setOpen(false);
-          setSelectedDate(null);
-        }}
+        appointmentId={selectedAppointmentId}
+        onClose={handleClose}
         onSuccess={handleAppointmentCreated}
       />
     </>

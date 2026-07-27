@@ -1,5 +1,17 @@
 import { prisma } from "@/lib/prisma";
 
+export async function getAppointments() {
+  return prisma.appointment.findMany({
+    include: {
+      customer: true,
+      service: true,
+    },
+    orderBy: {
+      startTime: "desc",
+    },
+  });
+}
+
 type UpdateAppointmentInput = {
   appointmentId: string;
   customerId: string;
@@ -17,6 +29,7 @@ export async function updateAppointment({
   time,
   note,
 }: UpdateAppointmentInput) {
+  // Szolgáltatás lekérése
   const service = await prisma.service.findUnique({
     where: {
       id: serviceId,
@@ -27,36 +40,34 @@ export async function updateAppointment({
     throw new Error("A szolgáltatás nem található.");
   }
 
+  // Időpontok kiszámítása
   const startTime = new Date(`${date}T${time}:00`);
 
   const endTime = new Date(startTime);
+  endTime.setMinutes(endTime.getMinutes() + service.duration);
 
-  endTime.setMinutes(
-    endTime.getMinutes() + service.duration
-  );
-
+  // Ütközés vizsgálata
   const conflict = await prisma.appointment.findFirst({
-  where: {
-    id: {
-      not: appointmentId,
+    where: {
+      id: {
+        not: appointmentId,
+      },
+
+      startTime: {
+        lt: endTime,
+      },
+
+      endTime: {
+        gt: startTime,
+      },
     },
+  });
 
-    startTime: {
-      lt: endTime,
-    },
+  if (conflict) {
+    throw new Error("Ebben az időpontban már van foglalás.");
+  }
 
-    endTime: {
-      gt: startTime,
-    },
-  },
-});
-
-if (conflict) {
-  throw new Error(
-    "Ebben az időpontban már van foglalás."
-  );
-}
-
+  // Foglalás frissítése
   return prisma.appointment.update({
     where: {
       id: appointmentId,
@@ -65,13 +76,15 @@ if (conflict) {
     data: {
       customerId,
       serviceId,
-
       startTime,
       endTime,
-
       price: service.price,
+      note: note?.trim() || null,
+    },
 
-      note,
+    include: {
+      customer: true,
+      service: true,
     },
   });
 }

@@ -2,7 +2,7 @@
 
 import { Service } from "@prisma/client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type ServiceTableProps = {
   services: Service[];
@@ -54,9 +54,7 @@ export function ServiceTable({
           {services.map((service) => (
             <tr key={service.id}>
               <td className="px-4 py-3">
-                <div className="font-medium">
-                  {service.name}
-                </div>
+                <div className="font-medium">{service.name}</div>
 
                 {service.description && (
                   <div className="text-sm text-gray-500">
@@ -77,7 +75,7 @@ export function ServiceTable({
                 {service.active ? "✅" : "❌"}
               </td>
 
-              <td className="px-4 py-3 text-right space-x-2">
+              <td className="space-x-2 px-4 py-3 text-right">
                 <Button
                   variant="secondary"
                   onClick={() => onEdit(service)}
@@ -86,8 +84,10 @@ export function ServiceTable({
                 </Button>
 
                 <Button
-                  variant="danger"
-                  onClick={() => onDelete(service.id)}
+                  variant="destructive"
+                  onClick={async () => {
+                    await onDelete(service.id);
+                  }}
                 >
                   Törlés
                 </Button>

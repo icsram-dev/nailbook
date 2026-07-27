@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 type Service = {
   id: string;
@@ -15,6 +17,20 @@ export default function BookingPage() {
   const [services, setServices] = useState<Service[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Admin átirányítása
+  useEffect(() => {
+    if (
+      status === "authenticated" &&
+      session?.user?.role === "ADMIN"
+    ) {
+      router.replace("/admin");
+    }
+  }, [status, session, router]);
+
+  // Szolgáltatások betöltése
   useEffect(() => {
     async function loadServices() {
       try {
@@ -31,6 +47,14 @@ export default function BookingPage() {
 
     loadServices();
   }, []);
+
+  // Amíg átirányítjuk az admint, ne rendereljünk semmit
+  if (
+    status === "authenticated" &&
+    session?.user?.role === "ADMIN"
+  ) {
+    return null;
+  }
 
   return (
     <main className="mx-auto max-w-4xl p-8">
@@ -72,9 +96,9 @@ export default function BookingPage() {
               <Link
                 href={`/booking/${service.id}`}
                 className="mt-6 block rounded-lg bg-pink-500 px-4 py-3 text-center text-white transition hover:bg-pink-600"
-                >
-              Kiválasztom
-            </Link>
+              >
+                Kiválasztom
+              </Link>
             </div>
           ))}
         </div>

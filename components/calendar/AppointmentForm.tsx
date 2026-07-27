@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type AppointmentFormProps = {
   selectedDate: string | null;
+  appointmentId: string | null;
   onSuccess: () => void;
   onCancel: () => void;
 };
@@ -23,16 +24,25 @@ type Service = {
 
 export function AppointmentForm({
   selectedDate,
+  appointmentId,
   onSuccess,
   onCancel,
 }: AppointmentFormProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [startTime, setStartTime] = useState(selectedDate);
 
   const [customerId, setCustomerId] = useState("");
   const [serviceId, setServiceId] = useState("");
+  const [status, setStatus] = useState("CONFIRMED");
 
   const [loading, setLoading] = useState(false);
+
+  const isEditMode = !!appointmentId;
+
+  useEffect(() => {
+    setStartTime(selectedDate);
+  }, [selectedDate]);
 
   useEffect(() => {
     async function loadData() {
@@ -55,14 +65,37 @@ export function AppointmentForm({
     loadData();
   }, []);
 
-  const selectedService = services.find(
-    (service) => service.id === serviceId
-  );
+  useEffect(() => {
+    if (!appointmentId) return;
+
+    async function loadAppointment() {
+      try {
+        const res = await fetch(`/api/appointments/${appointmentId}`);
+
+        if (!res.ok) {
+          throw new Error("Nem sikerült betölteni a foglalást.");
+        }
+
+        const appointment = await res.json();
+
+        setCustomerId(appointment.customerId);
+        setServiceId(appointment.serviceId);
+        setStartTime(appointment.startTime);
+        setStatus(appointment.status);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    loadAppointment();
+  }, [appointmentId]);
+
+  const selectedService = services.find((service) => service.id === serviceId);
 
   const endDate = (() => {
-    if (!selectedDate || !selectedService) return null;
+    if (!startTime || !selectedService) return null;
 
-    const date = new Date(selectedDate);
+    const date = new Date(startTime);
     date.setMinutes(date.getMinutes() + selectedService.duration);
 
     return date;
@@ -71,23 +104,30 @@ export function AppointmentForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!selectedDate || !customerId || !serviceId) {
+    if (!startTime || !customerId || !serviceId) {
       alert("Minden mező kitöltése kötelező!");
       return;
     }
 
+    const url = isEditMode
+      ? `/api/appointments/${appointmentId}`
+      : "/api/appointments";
+
+    const method = isEditMode ? "PUT" : "POST";
+
     try {
       setLoading(true);
 
-      const res = await fetch("/api/appointments", {
-        method: "POST",
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           customerId,
           serviceId,
-          startTime: selectedDate,
+          startTime,
+          status,
         }),
       });
 
@@ -111,14 +151,14 @@ export function AppointmentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
-      {selectedDate && (
+      {startTime && (
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Kezdési idő
           </label>
 
           <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-            {new Date(selectedDate).toLocaleString("hu-HU")}
+            {new Date(startTime).toLocaleString("hu-HU")}
           </div>
         </div>
       )}
@@ -160,6 +200,22 @@ export function AppointmentForm({
               {service.name}
             </option>
           ))}
+        </select>
+      </div>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          Státusz
+        </label>
+
+        <select
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          className="w-full rounded-xl border border-gray-300 p-3"
+        >
+          <option value="CONFIRMED">Megerősítve</option>
+          <option value="COMPLETED">Teljesítve</option>
+          <option value="CANCELLED">Lemondva</option>
+          <option value="NO_SHOW">Nem jelent meg</option>
         </select>
       </div>
 
@@ -211,7 +267,7 @@ export function AppointmentForm({
         </Button>
 
         <Button type="submit" disabled={loading}>
-          {loading ? "Mentés..." : "Mentés"}
+          {loading ? "Mentés..." : isEditMode ? "Módosítás" : "Mentés"}
         </Button>
       </div>
     </form>

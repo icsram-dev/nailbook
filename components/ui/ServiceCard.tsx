@@ -1,4 +1,7 @@
-import { Button } from "./Button";
+"use client";
+
+import { useSession } from "next-auth/react";
+import { Button } from "./button";
 
 type ServiceCardProps = {
   title: string;
@@ -11,27 +14,25 @@ export default function ServiceCard({
   duration,
   price,
 }: ServiceCardProps) {
+  const { data: session } = useSession();
+
+  const isAdmin = session?.user?.role === "ADMIN";
+
   return (
     <div className="rounded-2xl bg-white p-6 shadow-lg transition hover:-translate-y-1 hover:shadow-xl">
       <div className="mb-4 text-4xl">💅</div>
 
-      <h3 className="text-xl font-semibold text-gray-900">
-        {title}
-      </h3>
+      <h3 className="text-xl font-semibold text-gray-900">{title}</h3>
 
-      <p className="mt-2 text-gray-500">
-        {duration}
-      </p>
+      <p className="mt-2 text-gray-500">{duration}</p>
 
-      <p className="mt-4 text-2xl font-bold text-pink-600">
-        {price}
-      </p>
+      <p className="mt-4 text-2xl font-bold text-pink-600">{price}</p>
 
-      <div className="mt-6">
-        <Button>
-          Időpontot foglalok
-        </Button>
-      </div>
+      {!isAdmin && (
+        <div className="mt-6">
+          <Button>Időpontot foglalok</Button>
+        </div>
+      )}
     </div>
   );
 }

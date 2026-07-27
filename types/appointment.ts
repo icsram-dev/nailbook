@@ -1,6 +1,9 @@
-import { Appointment, Service, User } from "@prisma/client";
-
-export type AppointmentWithRelations = Appointment & {
-  customer: User;
-  service: Service;
+export type AppointmentTableItem = {
+  id: string;
+  customerName: string;
+  serviceName: string;
+  startTime: Date;
+  endTime: Date;
+  price: number;
+  status: string;
 };

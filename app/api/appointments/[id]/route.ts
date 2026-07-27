@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-
-import { Prisma } from "@prisma/client";
-
 import { prisma } from "@/lib/prisma";
-import { appointmentSchema } from "@/lib/validations/appointment";
 
 type RouteContext = {
   params: Promise<{
@@ -11,7 +7,36 @@ type RouteContext = {
   }>;
 };
 
-export async function PATCH(
+export async function GET(
+  request: NextRequest,
+  { params }: RouteContext
+) {
+  try {
+    const { id } = await params;
+
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!appointment) {
+      return NextResponse.json(
+        { error: "A foglalás nem található." },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json(appointment);
+  } catch {
+    return NextResponse.json(
+      { error: "Hiba történt." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
   request: NextRequest,
   { params }: RouteContext
 ) {
@@ -20,108 +45,81 @@ export async function PATCH(
 
     const body = await request.json();
 
-    const data = appointmentSchema.parse(body);
+    const {
+  customerId,
+  serviceId,
+  startTime,
+  status,
+} = body;
+
+    if (!customerId || !serviceId || !startTime) {
+      return NextResponse.json(
+        { error: "Hiányzó adatok." },
+        { status: 400 }
+      );
+    }
 
     const service = await prisma.service.findUnique({
       where: {
-        id: data.serviceId,
+        id: serviceId,
       },
     });
 
     if (!service) {
       return NextResponse.json(
-        {
-          message: "A szolgáltatás nem található.",
-        },
-        {
-          status: 404,
-        }
+        { error: "A szolgáltatás nem található." },
+        { status: 404 }
       );
     }
 
-    const endTime = new Date(
-      data.startTime.getTime() +
-        service.duration * 60 * 1000
-    );
+    const start = new Date(startTime);
 
-    const conflict =
-      await prisma.appointment.findFirst({
-        where: {
-          id: {
-            not: id,
-          },
-          status: {
-            not: "CANCELLED",
-          },
-          startTime: {
-            lt: endTime,
-          },
-          endTime: {
-            gt: data.startTime,
-          },
+    const end = new Date(start);
+    end.setMinutes(end.getMinutes() + service.duration);
+
+    const overlapping = await prisma.appointment.findFirst({
+      where: {
+        id: {
+          not: id,
         },
-      });
+        status: {
+          notIn: ["CANCELLED", "NO_SHOW"],
+        },
+        startTime: {
+          lt: end,
+        },
+        endTime: {
+          gt: start,
+        },
+      },
+    });
 
-    if (conflict) {
+    if (overlapping) {
       return NextResponse.json(
-        {
-          message:
-            "Erre az időpontra már van foglalás.",
-        },
-        {
-          status: 409,
-        }
+        { error: "Ebben az időpontban már van foglalás." },
+        { status: 409 }
       );
     }
 
-    const appointment =
-      await prisma.appointment.update({
-        where: {
-          id,
-        },
-        data: {
-          customerId: data.customerId,
-          serviceId: data.serviceId,
-          startTime: data.startTime,
-          endTime,
-          price: service.price,
-          note: data.note,
-        },
-        include: {
-          customer: true,
-          service: true,
-        },
-      });
+    const appointment = await prisma.appointment.update({
+  where: {
+    id,
+  },
+  data: {
+    customerId,
+    serviceId,
+    startTime: start,
+    endTime: end,
+    price: service.price,
+    status: status ?? "CONFIRMED",
+  },
+});
 
     return NextResponse.json(appointment);
-  } catch (error) {
-    console.error(error);
-
-    if (
-      error instanceof
-      Prisma.PrismaClientKnownRequestError
-    ) {
-      if (error.code === "P2025") {
-        return NextResponse.json(
-          {
-            message:
-              "A foglalás nem található.",
-          },
-          {
-            status: 404,
-          }
-        );
-      }
-    }
-
+  } catch {
     return NextResponse.json(
-      {
-        message:
-          "Nem sikerült frissíteni a foglalást.",
-      },
-      {
-        status: 500,
-      }
+      { error: "Hiba történt." },
+      { status: 500 }
     );
   }
 }

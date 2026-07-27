@@ -10,7 +10,6 @@ export default function AuthMenu() {
   if (status === "loading") {
     return (
       <div className="text-sm text-gray-500">
-        Betöltés...
       </div>
     );
   }

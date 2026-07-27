@@ -1,8 +1,15 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
+import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 import Container from "@/components/ui/Container";
 
 export default function Hero() {
+  const { data: session } = useSession();
+
+  const isAdmin = session?.user?.role === "ADMIN";
+
   return (
     <section className="bg-pink-50 py-24">
       <Container>
@@ -23,11 +30,13 @@ export default function Hero() {
               kényelmes online időpontfoglalást.
             </p>
 
-            <div className="mt-10">
-              <Link href="/booking">
-                <Button>Időpontot foglalok</Button>
-              </Link>
-            </div>
+            {!isAdmin && (
+              <div className="mt-10">
+                <Link href="/booking">
+                  <Button>Időpontot foglalok</Button>
+                </Link>
+              </div>
+            )}
           </div>
 
           <div className="flex justify-center">

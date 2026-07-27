@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type CustomerTableProps = {
   customers: User[];
@@ -27,36 +27,22 @@ export function CustomerTable({
 
         <tbody>
           {customers.map((customer) => (
-            <tr
-              key={customer.id}
-              className="border-t"
-            >
-              <td className="px-4 py-3">
-                {customer.name}
-              </td>
+            <tr key={customer.id} className="border-t">
+              <td className="px-4 py-3">{customer.name}</td>
 
-              <td className="px-4 py-3">
-                {customer.email}
-              </td>
+              <td className="px-4 py-3">{customer.email}</td>
 
-              <td className="px-4 py-3">
-                {customer.phone ?? "-"}
-              </td>
+              <td className="px-4 py-3">{customer.phone ?? "-"}</td>
 
               <td className="px-4 py-3">
                 <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    onClick={() => onEdit(customer)}
-                  >
+                  <Button variant="secondary" onClick={() => onEdit(customer)}>
                     Szerkesztés
                   </Button>
 
                   <Button
                     variant="danger"
-                    onClick={() =>
-                      onDelete(customer.id)
-                    }
+                    onClick={() => onDelete(customer.id)}
                   >
                     Törlés
                   </Button>
@@ -67,10 +53,7 @@ export function CustomerTable({
 
           {customers.length === 0 && (
             <tr>
-              <td
-                colSpan={4}
-                className="py-6 text-center text-gray-500"
-              >
+              <td colSpan={4} className="py-6 text-center text-gray-500">
                 Még nincs vendég.
               </td>
             </tr>

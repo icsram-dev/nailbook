@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export default function ResetPasswordPage() {
   const router = useRouter();
@@ -14,22 +14,17 @@ export default function ResetPasswordPage() {
   const token = params.get("token");
 
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [showConfirmPassword, setShowConfirmPassword] =
-    useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setError("");
@@ -41,9 +36,7 @@ export default function ResetPasswordPage() {
     }
 
     if (password.length < 8) {
-      setError(
-        "A jelszónak legalább 8 karakter hosszúnak kell lennie."
-      );
+      setError("A jelszónak legalább 8 karakter hosszúnak kell lennie.");
       return;
     }
 
@@ -55,20 +48,16 @@ export default function ResetPasswordPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-  "/api/password-reset/reset-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            token,
-            password,
-          }),
-        }
-      );
+      const response = await fetch("/api/password-reset/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token,
+          password,
+        }),
+      });
 
       const data = await response.json();
 
@@ -94,9 +83,7 @@ export default function ResetPasswordPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-md items-center justify-center px-6">
       <div className="w-full rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">
-          Új jelszó
-        </h1>
+        <h1 className="mb-2 text-center text-3xl font-bold">Új jelszó</h1>
 
         <p className="mb-8 text-center text-gray-500">
           Add meg az új jelszavad.
@@ -114,85 +101,47 @@ export default function ResetPasswordPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
             <input
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showPassword ? "text" : "password"}
               placeholder="Új jelszó"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border py-3 px-4 pr-12 outline-none focus:border-pink-500"
             />
 
             <button
               type="button"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2"
             >
-              {showPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
           <div className="relative">
             <input
-              type={
-                showConfirmPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Új jelszó újra"
               value={confirmPassword}
-              onChange={(e) =>
-                setConfirmPassword(
-                  e.target.value
-                )
-              }
+              onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full rounded-lg border py-3 px-4 pr-12 outline-none focus:border-pink-500"
             />
 
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(
-                  !showConfirmPassword
-                )
-              }
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2"
             >
-              {showConfirmPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2
-                  size={18}
-                  className="animate-spin"
-                />
+                <Loader2 size={18} className="animate-spin" />
                 Mentés...
               </span>
             ) : (
@@ -202,10 +151,7 @@ export default function ResetPasswordPage() {
         </form>
 
         <p className="mt-8 text-center text-sm text-gray-500">
-          <Link
-            href="/login"
-            className="text-pink-600 hover:underline"
-          >
+          <Link href="/login" className="text-pink-600 hover:underline">
             Vissza a bejelentkezéshez
           </Link>
         </p>

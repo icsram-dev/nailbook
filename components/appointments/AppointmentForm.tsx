@@ -3,11 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Appointment,
-  Service,
-  User,
-} from "@prisma/client";
+import { Appointment, Service, User } from "@prisma/client";
 
 import {
   appointmentSchema,
@@ -15,7 +11,7 @@ import {
   type AppointmentData,
 } from "@/lib/validations/appointment";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 
@@ -23,9 +19,7 @@ type AppointmentFormProps = {
   appointment?: Appointment | null;
   customers: User[];
   services: Service[];
-  onSubmit: (
-    data: AppointmentData
-  ) => void | Promise<void>;
+  onSubmit: (data: AppointmentData) => void | Promise<void>;
 };
 
 export function AppointmentForm({
@@ -38,15 +32,8 @@ export function AppointmentForm({
     register,
     handleSubmit,
     reset,
-    formState: {
-      errors,
-      isSubmitting,
-    },
-  } = useForm<
-    AppointmentInput,
-    unknown,
-    AppointmentData
-  >({
+    formState: { errors, isSubmitting },
+  } = useForm<AppointmentInput, unknown, AppointmentData>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
       customerId: "",
@@ -75,28 +62,18 @@ export function AppointmentForm({
   }, [appointment, reset]);
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Vendég
-        </label>
+        <label className="mb-1 block text-sm font-medium">Vendég</label>
 
         <select
           {...register("customerId")}
           className="w-full rounded-md border p-2"
         >
-          <option value="">
-            Válassz vendéget...
-          </option>
+          <option value="">Válassz vendéget...</option>
 
           {customers.map((customer) => (
-            <option
-              key={customer.id}
-              value={customer.id}
-            >
+            <option key={customer.id} value={customer.id}>
               {customer.name}
             </option>
           ))}
@@ -110,23 +87,16 @@ export function AppointmentForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Szolgáltatás
-        </label>
+        <label className="mb-1 block text-sm font-medium">Szolgáltatás</label>
 
         <select
           {...register("serviceId")}
           className="w-full rounded-md border p-2"
         >
-          <option value="">
-            Válassz szolgáltatást...
-          </option>
+          <option value="">Válassz szolgáltatást...</option>
 
           {services.map((service) => (
-            <option
-              key={service.id}
-              value={service.id}
-            >
+            <option key={service.id} value={service.id}>
               {service.name}
             </option>
           ))}
@@ -140,9 +110,7 @@ export function AppointmentForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Kezdés
-        </label>
+        <label className="mb-1 block text-sm font-medium">Kezdés</label>
 
         <Input
           type="datetime-local"
@@ -159,23 +127,13 @@ export function AppointmentForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Megjegyzés
-        </label>
+        <label className="mb-1 block text-sm font-medium">Megjegyzés</label>
 
-        <Textarea
-          rows={4}
-          {...register("note")}
-        />
+        <Textarea rows={4} {...register("note")} />
       </div>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {appointment
-          ? "Mentés"
-          : "Foglalás létrehozása"}
+      <Button type="submit" disabled={isSubmitting}>
+        {appointment ? "Mentés" : "Foglalás létrehozása"}
       </Button>
     </form>
   );

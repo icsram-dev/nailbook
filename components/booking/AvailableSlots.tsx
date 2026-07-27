@@ -1,19 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   serviceId: string;
 };
 
-export default function AvailableSlots({
-  serviceId,
-}: Props) {
+export default function AvailableSlots({ serviceId }: Props) {
   const [date, setDate] = useState("");
   const [slots, setSlots] = useState<string[]>([]);
-  const [selectedSlot, setSelectedSlot] =
-    useState<string | null>(null);
+  const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -28,7 +25,7 @@ export default function AvailableSlots({
 
       try {
         const response = await fetch(
-          `/api/availability?date=${date}&serviceId=${serviceId}`
+          `/api/availability?date=${date}&serviceId=${serviceId}`,
         );
 
         const data = await response.json();
@@ -36,16 +33,11 @@ export default function AvailableSlots({
         if (response.ok) {
           setSlots(data.slots);
         } else {
-          alert(
-            data.message ??
-              "Nem sikerült betölteni az időpontokat."
-          );
+          alert(data.message ?? "Nem sikerült betölteni az időpontokat.");
         }
       } catch (error) {
         console.error(error);
-        alert(
-          "Hiba történt az időpontok betöltése közben."
-        );
+        alert("Hiba történt az időpontok betöltése közben.");
       } finally {
         setLoading(false);
       }
@@ -57,25 +49,19 @@ export default function AvailableSlots({
   async function bookAppointment() {
     if (!selectedSlot || !date) return;
 
-    const startTime = new Date(
-      `${date}T${selectedSlot}:00`
-    );
+    const startTime = new Date(`${date}T${selectedSlot}:00`);
 
     try {
-      const response = await fetch(
-        "/api/appointments",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            serviceId,
-            startTime: startTime.toISOString(),
-          }),
-        }
-      );
+      const response = await fetch("/api/booking", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          serviceId,
+          startTime: startTime.toISOString(),
+        }),
+      });
 
       const data = await response.json();
 
@@ -85,20 +71,16 @@ export default function AvailableSlots({
         setSelectedSlot(null);
 
         const slotsResponse = await fetch(
-          `/api/availability?date=${date}&serviceId=${serviceId}`
+          `/api/availability?date=${date}&serviceId=${serviceId}`,
         );
 
-        const slotsData =
-          await slotsResponse.json();
+        const slotsData = await slotsResponse.json();
 
         if (slotsResponse.ok) {
           setSlots(slotsData.slots);
         }
       } else {
-        alert(
-          data.message ??
-            "Hiba történt a foglalás során."
-        );
+        alert(data.message ?? "Hiba történt a foglalás során.");
       }
     } catch (error) {
       console.error(error);
@@ -108,43 +90,26 @@ export default function AvailableSlots({
 
   return (
     <div className="mt-8">
-      <h2 className="mb-4 text-xl font-semibold">
-        Időpont kiválasztása
-      </h2>
+      <h2 className="mb-4 text-xl font-semibold">Időpont kiválasztása</h2>
 
       <div className="mb-6">
-        <label className="mb-2 block text-sm font-medium">
-          Dátum
-        </label>
+        <label className="mb-2 block text-sm font-medium">Dátum</label>
 
         <input
           type="date"
           value={date}
-          onChange={(e) =>
-            setDate(e.target.value)
-          }
+          onChange={(e) => setDate(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-4 py-3"
         />
       </div>
 
-      {!date && (
-        <p className="text-gray-500">
-          Először válassz egy dátumot.
-        </p>
-      )}
+      {!date && <p className="text-gray-500">Először válassz egy dátumot.</p>}
 
-      {loading && (
-        <p>Szabad időpontok betöltése...</p>
-      )}
+      {loading && <p>Szabad időpontok betöltése...</p>}
 
-      {!loading &&
-        date &&
-        slots.length === 0 && (
-          <p className="text-gray-500">
-            Erre a napra nincs szabad
-            időpont.
-          </p>
-        )}
+      {!loading && date && slots.length === 0 && (
+        <p className="text-gray-500">Erre a napra nincs szabad időpont.</p>
+      )}
 
       {!loading && slots.length > 0 && (
         <>
@@ -153,9 +118,7 @@ export default function AvailableSlots({
               <button
                 key={slot}
                 type="button"
-                onClick={() =>
-                  setSelectedSlot(slot)
-                }
+                onClick={() => setSelectedSlot(slot)}
                 className={`rounded-lg border px-4 py-3 transition ${
                   selectedSlot === slot
                     ? "border-pink-500 bg-pink-500 text-white"
@@ -175,10 +138,7 @@ export default function AvailableSlots({
                 🕒 {selectedSlot}
               </p>
 
-              <Button
-                type="button"
-                onClick={bookAppointment}
-              >
+              <Button type="button" onClick={bookAppointment}>
                 Foglalás megerősítése
               </Button>
             </div>

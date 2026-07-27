@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import AuthSessionProvider from "@/components/providers/SessionProvider";
-import "./globals.css";
-import { Toaster } from "sonner";
-
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
+import { Toaster } from "sonner";
 import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
+
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,13 +37,14 @@ export default function RootLayout({
         <AuthSessionProvider>
           <Navbar />
 
-          {children}
+          <main>{children}</main>
 
           <Footer />
 
           <Toaster
-            richColors
             position="top-right"
+            richColors
+            closeButton
           />
         </AuthSessionProvider>
       </body>

@@ -7,7 +7,7 @@ import { Vacation } from "@prisma/client";
 
 import type { VacationData } from "@/lib/validations/vacation";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { VacationTable } from "./VacationTable";
 import { VacationModal } from "./VacationModal";
 
@@ -15,12 +15,11 @@ type VacationManagerProps = {
   vacations: Vacation[];
 };
 
-export function VacationManager({
-  vacations,
-}: VacationManagerProps) {
+export function VacationManager({ vacations }: VacationManagerProps) {
   const [open, setOpen] = useState(false);
-  const [selectedVacation, setSelectedVacation] =
-    useState<Vacation | null>(null);
+  const [selectedVacation, setSelectedVacation] = useState<Vacation | null>(
+    null,
+  );
 
   const router = useRouter();
 
@@ -29,16 +28,14 @@ export function VacationManager({
 
     try {
       const response = await fetch(
-        isEditing
-          ? `/api/vacations/${selectedVacation.id}`
-          : "/api/vacations",
+        isEditing ? `/api/vacations/${selectedVacation.id}` : "/api/vacations",
         {
           method: isEditing ? "PATCH" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       const result = await response.json();
@@ -48,7 +45,7 @@ export function VacationManager({
           result.message ??
             `Nem sikerült ${
               isEditing ? "frissíteni" : "létrehozni"
-            } a szabadságot.`
+            } a szabadságot.`,
         );
         return;
       }
@@ -65,7 +62,7 @@ export function VacationManager({
 
   async function deleteVacation(id: string) {
     const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szabadságot?"
+      "Biztosan törölni szeretnéd ezt a szabadságot?",
     );
 
     if (!confirmed) {
@@ -107,13 +104,9 @@ export function VacationManager({
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Szabadságok
-        </h1>
+        <h1 className="text-2xl font-bold">Szabadságok</h1>
 
-        <Button onClick={createVacation}>
-          + Új szabadság
-        </Button>
+        <Button onClick={createVacation}>+ Új szabadság</Button>
       </div>
 
       <VacationTable

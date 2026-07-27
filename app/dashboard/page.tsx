@@ -6,7 +6,7 @@ import {
   Clock,
 } from "lucide-react";
 
-import { StatCard } from "@/components/dashboard/StatCard";
+import { StatCard } from "@/components/dashboard/StatsCard";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 

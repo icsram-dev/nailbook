@@ -4,15 +4,9 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
-} from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const params = useSearchParams();
@@ -27,9 +21,7 @@ export default function LoginPage() {
 
   const registered = params.get("registered") === "true";
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setLoading(true);
@@ -54,9 +46,7 @@ export default function LoginPage() {
   return (
     <main className="mx-auto max-w-md px-6 py-12">
       <div className="rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">
-          Bejelentkezés
-        </h1>
+        <h1 className="mb-2 text-center text-3xl font-bold">Bejelentkezés</h1>
 
         <p className="mb-8 text-center text-gray-500">
           Üdv újra a NailBookban!
@@ -74,10 +64,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
             <Mail
               size={18}
@@ -89,9 +76,7 @@ export default function LoginPage() {
               required
               placeholder="pelda@email.hu"
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
             />
           </div>
@@ -107,24 +92,16 @@ export default function LoginPage() {
               type={showPassword ? "text" : "password"}
               placeholder="Jelszó"
               value={password}
-              onChange={(e) =>
-                setPassword(e.target.value)
-              }
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
             />
 
             <button
               type="button"
-              onClick={() =>
-                setShowPassword(!showPassword)
-              }
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
             >
-              {showPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
@@ -137,17 +114,10 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2
-                  className="animate-spin"
-                  size={18}
-                />
+                <Loader2 className="animate-spin" size={18} />
                 Bejelentkezés...
               </span>
             ) : (

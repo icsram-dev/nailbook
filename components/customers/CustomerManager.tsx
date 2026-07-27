@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 
 import type { CustomerData } from "@/lib/validations/customer";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { CustomerModal } from "./CustomerModal";
 import { CustomerTable } from "./CustomerTable";
 
@@ -14,30 +14,25 @@ type CustomerManagerProps = {
   customers: User[];
 };
 
-export function CustomerManager({
-  customers,
-}: CustomerManagerProps) {
+export function CustomerManager({ customers }: CustomerManagerProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [selectedCustomer, setSelectedCustomer] =
-    useState<User | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<User | null>(null);
 
   const isEditing = selectedCustomer !== null;
 
   async function saveCustomer(data: CustomerData) {
     try {
       const response = await fetch(
-        isEditing
-          ? `/api/customers/${selectedCustomer.id}`
-          : "/api/customers",
+        isEditing ? `/api/customers/${selectedCustomer.id}` : "/api/customers",
         {
           method: isEditing ? "PATCH" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       const result = await response.json();
@@ -46,10 +41,8 @@ export function CustomerManager({
         alert(
           result.message ??
             `Nem sikerült ${
-              isEditing
-                ? "frissíteni"
-                : "létrehozni"
-            } a vendéget.`
+              isEditing ? "frissíteni" : "létrehozni"
+            } a vendéget.`,
         );
         return;
       }
@@ -63,21 +56,14 @@ export function CustomerManager({
   }
 
   async function deleteCustomer(id: string) {
-    if (
-      !window.confirm(
-        "Biztosan törölni szeretnéd ezt a vendéget?"
-      )
-    ) {
+    if (!window.confirm("Biztosan törölni szeretnéd ezt a vendéget?")) {
       return;
     }
 
     try {
-      const response = await fetch(
-        `/api/customers/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`/api/customers/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         alert("Nem sikerült törölni a vendéget.");
@@ -109,13 +95,9 @@ export function CustomerManager({
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Vendégek
-        </h1>
+        <h1 className="text-2xl font-bold">Vendégek</h1>
 
-        <Button onClick={createCustomer}>
-          + Új vendég
-        </Button>
+        <Button onClick={createCustomer}>+ Új vendég</Button>
       </div>
 
       <CustomerTable

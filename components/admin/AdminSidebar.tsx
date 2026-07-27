@@ -12,11 +12,6 @@ const menu = [
     icon: "📅",
   },
   {
-    href: "/admin/appointments",
-    label: "Foglalások",
-    icon: "📋",
-  },
-  {
     href: "/admin/customers",
     label: "Vendégek",
     icon: "👥",
@@ -25,6 +20,21 @@ const menu = [
     href: "/admin/services",
     label: "Szolgáltatások",
     icon: "💅",
+  },
+  {
+    href: "/admin/opening-hours",
+    label: "Nyitvatartás",
+    icon: "🕒",
+  },
+  {
+    href: "/admin/vacations",
+    label: "Szabadságok",
+    icon: "🌴",
+  },
+  {
+    href: "/admin/statistics",
+    label: "Statisztikák",
+    icon: "📈",
   },
   {
     href: "/admin/settings",

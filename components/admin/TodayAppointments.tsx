@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { formatTime } from "@/lib/date";
+import AppointmentStatusBadge from "./AppointmentStatusBadge";
 
 export default async function TodayAppointments() {
   const today = new Date();
@@ -47,33 +48,49 @@ export default async function TodayAppointments() {
           Ma nincs foglalás.
         </p>
       ) : (
-        <div className="space-y-4">
-          {appointments.map((appointment) => (
-            <div
-              key={appointment.id}
-              className="flex items-center justify-between rounded-xl border p-4 transition hover:bg-gray-50"
-            >
-              <div>
-                <h3 className="font-semibold">
-                  {appointment.customer.name}
-                </h3>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b text-left text-sm text-gray-500">
+                <th className="pb-3">Idő</th>
+                <th className="pb-3">Vendég</th>
+                <th className="pb-3">Szolgáltatás</th>
+                <th className="pb-3">Ár</th>
+                <th className="pb-3">Státusz</th>
+              </tr>
+            </thead>
 
-                <p className="text-sm text-gray-500">
-                  {appointment.service.name}
-                </p>
-              </div>
+            <tbody>
+              {appointments.map((appointment) => (
+                <tr
+                  key={appointment.id}
+                  className="border-b last:border-0 hover:bg-gray-50"
+                >
+                  <td className="py-4 font-medium">
+                    {formatTime(appointment.startTime)}
+                  </td>
 
-              <div className="text-right">
-                <p className="font-semibold">
-                  {formatTime(appointment.startTime)}
-                </p>
+                  <td className="py-4">
+                    {appointment.customer.name}
+                  </td>
 
-                <p className="text-sm text-gray-500">
-                  {appointment.price.toLocaleString("hu-HU")} Ft
-                </p>
-              </div>
-            </div>
-          ))}
+                  <td className="py-4">
+                    {appointment.service.name}
+                  </td>
+
+                  <td className="py-4">
+                    {appointment.price.toLocaleString("hu-HU")} Ft
+                  </td>
+
+                  <td className="py-4">
+                    <AppointmentStatusBadge
+                      status={appointment.status}
+                    />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

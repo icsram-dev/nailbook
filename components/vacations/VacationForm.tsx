@@ -10,7 +10,7 @@ import {
   type VacationData,
 } from "@/lib/validations/vacation";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 
@@ -19,10 +19,7 @@ type VacationFormProps = {
   defaultValues?: VacationInput;
 };
 
-export function VacationForm({
-  onSubmit,
-  defaultValues,
-}: VacationFormProps) {
+export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
   const {
     register,
     handleSubmit,
@@ -40,19 +37,11 @@ export function VacationForm({
   }, [defaultValues, reset]);
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Kezdő dátum
-        </label>
+        <label className="mb-1 block text-sm font-medium">Kezdő dátum</label>
 
-        <Input
-          type="date"
-          {...register("startDate")}
-        />
+        <Input type="date" {...register("startDate")} />
 
         {errors.startDate && (
           <p className="mt-1 text-sm text-red-600">
@@ -62,37 +51,22 @@ export function VacationForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Befejező dátum
-        </label>
+        <label className="mb-1 block text-sm font-medium">Befejező dátum</label>
 
-        <Input
-          type="date"
-          {...register("endDate")}
-        />
+        <Input type="date" {...register("endDate")} />
 
         {errors.endDate && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.endDate.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Megjegyzés
-        </label>
+        <label className="mb-1 block text-sm font-medium">Megjegyzés</label>
 
-        <Textarea
-          rows={3}
-          {...register("reason")}
-        />
+        <Textarea rows={3} {...register("reason")} />
       </div>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Mentés..." : "Mentés"}
       </Button>
     </form>

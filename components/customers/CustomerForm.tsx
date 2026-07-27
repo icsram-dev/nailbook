@@ -10,7 +10,7 @@ import {
   type CustomerData,
 } from "@/lib/validations/customer";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/Input";
 
 type CustomerFormProps = {
@@ -18,10 +18,7 @@ type CustomerFormProps = {
   defaultValues?: CustomerInput;
 };
 
-export function CustomerForm({
-  onSubmit,
-  defaultValues,
-}: CustomerFormProps) {
+export function CustomerForm({ onSubmit, defaultValues }: CustomerFormProps) {
   const {
     register,
     handleSubmit,
@@ -39,59 +36,38 @@ export function CustomerForm({
   }, [defaultValues, reset]);
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Név
-        </label>
+        <label className="mb-1 block text-sm font-medium">Név</label>
 
         <Input {...register("name")} />
 
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.name.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          E-mail
-        </label>
+        <label className="mb-1 block text-sm font-medium">E-mail</label>
 
-        <Input
-          type="email"
-          {...register("email")}
-        />
+        <Input type="email" {...register("email")} />
 
         {errors.email && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.email.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Telefonszám
-        </label>
+        <label className="mb-1 block text-sm font-medium">Telefonszám</label>
 
         <Input {...register("phone")} />
 
         {errors.phone && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.phone.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
         )}
       </div>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Mentés..." : "Mentés"}
       </Button>
     </form>

@@ -1,15 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
 import { Service } from "@prisma/client";
 
 import type { ServiceData } from "@/lib/validations/service";
 
-import { Button } from "@/components/ui/Button";
-import { ServiceTable } from "./ServiceTable";
+import {
+  createServiceAction,
+  updateServiceAction,
+  deleteServiceAction,
+} from "@/app/admin/services/actions";
+
+import { Button } from "@/components/ui/button";
+
 import { ServiceModal } from "./ServiceModal";
+import { ServiceTable } from "./ServiceTable";
 
 type ServiceManagerProps = {
   services: Service[];
@@ -19,70 +26,46 @@ export function ServiceManager({
   services,
 }: ServiceManagerProps) {
   const [open, setOpen] = useState(false);
-
   const [selectedService, setSelectedService] =
     useState<Service | null>(null);
+
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
 
   async function saveService(data: ServiceData) {
-    const isEditing = selectedService !== null;
-
-    try {
-      const response = await fetch(
-        isEditing
-          ? `/api/services/${selectedService.id}`
-          : "/api/services",
-        {
-          method: isEditing ? "PATCH" : "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+    startTransition(async () => {
+      try {
+        if (selectedService) {
+          await updateServiceAction(selectedService.id, data);
+        } else {
+          await createServiceAction(data);
         }
-      );
 
-      const result = await response.json();
-
-      if (!response.ok) {
-        alert(
-          result.message ??
-            `Nem sikerült ${
-              isEditing
-                ? "frissíteni"
-                : "létrehozni"
-            } a szolgáltatást.`
-        );
-        return;
+        closeModal();
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+        alert("Hiba történt a mentés során.");
       }
-
-      closeModal();
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      alert("Váratlan hiba történt.");
-    }
+    });
   }
 
-  async function deleteService(id: string) {
-    const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szolgáltatást?"
-    );
+async function deleteService(id: string) {
+  const confirmed = window.confirm(
+    "Biztosan törölni szeretnéd ezt a szolgáltatást?",
+  );
 
-    if (!confirmed) {
-      return;
-    }
+  if (!confirmed) {
+    return;
+  }
 
+  startTransition(async () => {
     try {
-      const response = await fetch(
-        `/api/services/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const result = await deleteServiceAction(id);
 
-      if (!response.ok) {
-        alert("Nem sikerült törölni.");
+      if (!result.success) {
+        alert(result.message);
         return;
       }
 
@@ -91,7 +74,8 @@ export function ServiceManager({
       console.error(error);
       alert("Váratlan hiba történt.");
     }
-  }
+  });
+}
 
   function createService() {
     setSelectedService(null);
@@ -115,7 +99,10 @@ export function ServiceManager({
           Szolgáltatások
         </h1>
 
-        <Button onClick={createService}>
+        <Button
+          onClick={createService}
+          disabled={isPending}
+        >
           + Új szolgáltatás
         </Button>
       </div>

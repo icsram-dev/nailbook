@@ -1,6 +1,6 @@
 import { Vacation } from "@prisma/client";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 type VacationTableProps = {
   vacations: Vacation[];
@@ -28,19 +28,13 @@ export function VacationTable({
         <tbody>
           {vacations.length === 0 ? (
             <tr>
-              <td
-                colSpan={4}
-                className="py-8 text-center text-neutral-500"
-              >
+              <td colSpan={4} className="py-8 text-center text-neutral-500">
                 Még nincs rögzített szabadság.
               </td>
             </tr>
           ) : (
             vacations.map((vacation) => (
-              <tr
-                key={vacation.id}
-                className="border-t"
-              >
+              <tr key={vacation.id} className="border-t">
                 <td className="px-4 py-3">
                   {vacation.startDate.toLocaleDateString("hu-HU")}
                 </td>
@@ -49,24 +43,19 @@ export function VacationTable({
                   {vacation.endDate.toLocaleDateString("hu-HU")}
                 </td>
 
-                <td className="px-4 py-3">
-                  {vacation.reason || "-"}
-                </td>
+                <td className="px-4 py-3">{vacation.reason || "-"}</td>
 
                 <td className="px-4 py-3 text-right space-x-2">
-<Button
-  variant="secondary"
-  onClick={() => onEdit(vacation)}
->
-  Szerkesztés
-</Button>
+                  <Button variant="secondary" onClick={() => onEdit(vacation)}>
+                    Szerkesztés
+                  </Button>
 
-<Button
-  variant="danger"
-  onClick={() => onDelete(vacation.id)}
->
-  Törlés
-</Button>
+                  <Button
+                    variant="danger"
+                    onClick={() => onDelete(vacation.id)}
+                  >
+                    Törlés
+                  </Button>
                 </td>
               </tr>
             ))

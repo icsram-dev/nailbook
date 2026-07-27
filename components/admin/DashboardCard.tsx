@@ -1,4 +1,6 @@
 import { ReactNode } from "react";
+import { Card } from "@/components/ui/Card";
+import clsx from "clsx";
 
 type DashboardCardProps = {
   title: string;
@@ -14,24 +16,27 @@ export default function DashboardCard({
   color = "bg-pink-100 text-pink-600",
 }: DashboardCardProps) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <div className="flex items-center justify-between">
+    <Card className="transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+      <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm font-medium text-gray-500">
             {title}
           </p>
 
-          <h2 className="mt-3 text-4xl font-bold">
+          <h2 className="mt-2 text-3xl font-bold text-gray-900">
             {value}
           </h2>
         </div>
 
         <div
-          className={`flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}
+          className={clsx(
+            "flex h-14 w-14 items-center justify-center rounded-2xl",
+            color
+          )}
         >
           {icon}
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

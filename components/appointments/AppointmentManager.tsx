@@ -2,23 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  Appointment,
-  Service,
-  User,
-} from "@prisma/client";
+import { Appointment, Service, User } from "@prisma/client";
 
 import type { AppointmentData } from "@/lib/validations/appointment";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 import { AppointmentModal } from "./AppointmentModal";
 import { AppointmentTable } from "./AppointmentTable";
 
-type AppointmentWithRelations =
-  Appointment & {
-    customer: User;
-    service: Service;
-  };
+type AppointmentWithRelations = Appointment & {
+  customer: User;
+  service: Service;
+};
 
 type AppointmentManagerProps = {
   appointments: AppointmentWithRelations[];
@@ -35,19 +30,11 @@ export function AppointmentManager({
 
   const [open, setOpen] = useState(false);
 
-  const [
-    selectedAppointment,
-    setSelectedAppointment,
-  ] =
-    useState<AppointmentWithRelations | null>(
-      null
-    );
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<AppointmentWithRelations | null>(null);
 
-  async function saveAppointment(
-    data: AppointmentData
-  ) {
-    const isEditing =
-      selectedAppointment !== null;
+  async function saveAppointment(data: AppointmentData) {
+    const isEditing = selectedAppointment !== null;
 
     try {
       const response = await fetch(
@@ -55,15 +42,12 @@ export function AppointmentManager({
           ? `/api/appointments/${selectedAppointment.id}`
           : "/api/appointments",
         {
-          method: isEditing
-            ? "PATCH"
-            : "POST",
+          method: isEditing ? "PATCH" : "POST",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        }
+        },
       );
 
       const result = await response.json();
@@ -72,10 +56,8 @@ export function AppointmentManager({
         alert(
           result.message ??
             `Nem sikerült ${
-              isEditing
-                ? "frissíteni"
-                : "létrehozni"
-            } a foglalást.`
+              isEditing ? "frissíteni" : "létrehozni"
+            } a foglalást.`,
         );
         return;
       }
@@ -88,29 +70,18 @@ export function AppointmentManager({
     }
   }
 
-  async function deleteAppointment(
-    id: string
-  ) {
-    if (
-      !window.confirm(
-        "Biztosan törölni szeretnéd ezt a foglalást?"
-      )
-    ) {
+  async function deleteAppointment(id: string) {
+    if (!window.confirm("Biztosan törölni szeretnéd ezt a foglalást?")) {
       return;
     }
 
     try {
-      const response = await fetch(
-        `/api/appointments/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`/api/appointments/${id}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
-        alert(
-          "Nem sikerült törölni a foglalást."
-        );
+        alert("Nem sikerült törölni a foglalást.");
         return;
       }
 
@@ -126,9 +97,7 @@ export function AppointmentManager({
     setOpen(true);
   }
 
-  function editAppointment(
-    appointment: AppointmentWithRelations
-  ) {
+  function editAppointment(appointment: AppointmentWithRelations) {
     setSelectedAppointment(appointment);
     setOpen(true);
   }
@@ -141,15 +110,9 @@ export function AppointmentManager({
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Foglalások
-        </h1>
+        <h1 className="text-2xl font-bold">Foglalások</h1>
 
-        <Button
-          onClick={createAppointment}
-        >
-          + Új foglalás
-        </Button>
+        <Button onClick={createAppointment}>+ Új foglalás</Button>
       </div>
 
       <AppointmentTable

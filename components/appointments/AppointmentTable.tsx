@@ -1,25 +1,17 @@
 "use client";
 
-import {
-  Appointment,
-  AppointmentStatus,
-  Service,
-  User,
-} from "@prisma/client";
+import { Appointment, AppointmentStatus, Service, User } from "@prisma/client";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
-type AppointmentWithRelations =
-  Appointment & {
-    customer: User;
-    service: Service;
-  };
+type AppointmentWithRelations = Appointment & {
+  customer: User;
+  service: Service;
+};
 
 type AppointmentTableProps = {
   appointments: AppointmentWithRelations[];
-  onEdit: (
-    appointment: AppointmentWithRelations
-  ) => void;
+  onEdit: (appointment: AppointmentWithRelations) => void;
   onDelete: (id: string) => void;
 };
 
@@ -61,56 +53,32 @@ export function AppointmentTable({
 
         <tbody>
           {appointments.map((appointment) => (
-            <tr
-              key={appointment.id}
-              className="border-b last:border-0"
-            >
+            <tr key={appointment.id} className="border-b last:border-0">
+              <td className="p-4">{appointment.customer.name}</td>
+
+              <td className="p-4">{appointment.service.name}</td>
+
               <td className="p-4">
-                {appointment.customer.name}
+                {appointment.startTime.toLocaleString("hu-HU")}
               </td>
 
               <td className="p-4">
-                {appointment.service.name}
+                {appointment.endTime.toLocaleString("hu-HU")}
               </td>
 
               <td className="p-4">
-                {appointment.startTime.toLocaleString(
-                  "hu-HU"
-                )}
+                {appointment.price.toLocaleString("hu-HU")} Ft
               </td>
 
-              <td className="p-4">
-                {appointment.endTime.toLocaleString(
-                  "hu-HU"
-                )}
-              </td>
-
-              <td className="p-4">
-                {appointment.price.toLocaleString(
-                  "hu-HU"
-                )}{" "}
-                Ft
-              </td>
-
-              <td className="p-4">
-                {statusLabels[appointment.status]}
-              </td>
+              <td className="p-4">{statusLabels[appointment.status]}</td>
 
               <td className="p-4">
                 <div className="flex justify-end gap-2">
-                  <Button
-                    onClick={() =>
-                      onEdit(appointment)
-                    }
-                  >
+                  <Button onClick={() => onEdit(appointment)}>
                     Szerkesztés
                   </Button>
 
-                  <Button
-                    onClick={() =>
-                      onDelete(appointment.id)
-                    }
-                  >
+                  <Button onClick={() => onDelete(appointment.id)}>
                     Törlés
                   </Button>
                 </div>

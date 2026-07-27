@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import CancelBookingButton from "@/components/my-bookings/CancelBookingButton";
 import {
   getAppointmentStatusClasses,
   getAppointmentStatusLabel,
@@ -11,6 +12,10 @@ export default async function MyBookingsPage() {
 
   if (!session?.user) {
     redirect("/login");
+  }
+
+  if (session.user.role === "ADMIN") {
+    redirect("/admin");
   }
 
   const appointments = await prisma.appointment.findMany({
@@ -48,7 +53,7 @@ export default async function MyBookingsPage() {
               key={appointment.id}
               className="rounded-2xl border bg-white p-6 shadow-sm transition hover:shadow-md"
             >
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+              <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold">
                     {appointment.service.name}
@@ -66,15 +71,21 @@ export default async function MyBookingsPage() {
                   </p>
                 </div>
 
-                <span
-                  className={`inline-flex rounded-full px-4 py-2 text-sm font-medium ${getAppointmentStatusClasses(
-                    appointment.status
-                  )}`}
-                >
-                  {getAppointmentStatusLabel(
-                    appointment.status
-                  )}
-                </span>
+                <div className="flex flex-col items-start gap-4 md:items-end">
+                  <span
+                    className={`inline-flex rounded-full px-4 py-2 text-sm font-medium ${getAppointmentStatusClasses(
+                      appointment.status
+                    )}`}
+                  >
+                    {getAppointmentStatusLabel(
+                      appointment.status
+                    )}
+                  </span>
+
+                  {["PENDING", "CONFIRMED"].includes(appointment.status) && (
+  <CancelBookingButton appointmentId={appointment.id} />
+)}
+                </div>
               </div>
 
               <div className="mt-6 grid gap-6 sm:grid-cols-3">

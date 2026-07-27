@@ -3,7 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -11,9 +11,7 @@ export default function ForgotPasswordPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function handleSubmit(
-    e: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setLoading(true);
@@ -21,18 +19,15 @@ export default function ForgotPasswordPage() {
     setError("");
 
     try {
-      const response = await fetch(
-        "/api/password-reset/forgot-password",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-          }),
-        }
-      );
+      const response = await fetch("/api/password-reset/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+        }),
+      });
 
       const data = await response.json();
 
@@ -75,43 +70,27 @@ export default function ForgotPasswordPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              E-mail cím
-            </label>
+            <label className="mb-2 block text-sm font-medium">E-mail cím</label>
 
             <input
               type="email"
               required
               value={email}
-              onChange={(e) =>
-                setEmail(e.target.value)
-              }
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full rounded-lg border px-4 py-3 outline-none focus:border-pink-500"
               placeholder="pelda@email.hu"
             />
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
-            {loading
-              ? "Küldés..."
-              : "Jelszó-visszaállító e-mail küldése"}
+          <Button type="submit" disabled={loading} className="w-full">
+            {loading ? "Küldés..." : "Jelszó-visszaállító e-mail küldése"}
           </Button>
         </form>
 
         <div className="mt-8 text-center">
-          <Link
-            href="/login"
-            className="text-pink-600 hover:underline"
-          >
+          <Link href="/login" className="text-pink-600 hover:underline">
             ← Vissza a bejelentkezéshez
           </Link>
         </div>

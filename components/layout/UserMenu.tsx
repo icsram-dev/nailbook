@@ -46,15 +46,17 @@ export default function UserMenu() {
           </MenuItem>
         )}
 
-        <MenuItem>
-          <Link
-            href="/my-bookings"
-            className="flex items-center gap-3 rounded-lg px-3 py-2 transition data-[focus]:bg-pink-50"
-          >
-            <CalendarDays size={18} />
-            <span>Foglalásaim</span>
-          </Link>
-        </MenuItem>
+        {!isAdmin && (
+          <MenuItem>
+            <Link
+              href="/my-bookings"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 transition data-[focus]:bg-pink-50"
+            >
+              <CalendarDays size={18} />
+              <span>Foglalásaim</span>
+            </Link>
+          </MenuItem>
+        )}
 
         <MenuItem>
           <Link
