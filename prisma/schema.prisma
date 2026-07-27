@@ -20,6 +20,16 @@ enum AppointmentStatus {
   NO_SHOW
 }
 
+enum WeekDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
 model User {
   id String @id @default(cuid())
 
@@ -93,15 +103,17 @@ model Appointment {
   @@index([status])
 }
 
-model OpeningHour {
+model OpeningHours {
   id String @id @default(cuid())
 
-  weekday Int @unique
+  day WeekDay @unique
 
-  isOpen Boolean @default(true)
+  isOpen Boolean @default(false)
 
-  opensAt  String
-  closesAt String
+  opensAt String?
+  closesAt String?
+
+  slotDuration Int @default(30)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
