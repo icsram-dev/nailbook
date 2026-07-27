@@ -103,7 +103,7 @@ model Appointment {
   @@index([status])
 }
 
-model OpeningHours {
+model OpeningHour {
   id String @id @default(cuid())
 
   day WeekDay @unique
@@ -117,6 +117,8 @@ model OpeningHours {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@map("OpeningHours")
 }
 
 model Vacation {
