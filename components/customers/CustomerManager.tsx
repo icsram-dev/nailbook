@@ -6,7 +6,7 @@ import { User } from "@prisma/client";
 
 import type { CustomerData } from "@/lib/validations/customer";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { CustomerModal } from "./CustomerModal";
 import { CustomerTable } from "./CustomerTable";
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateOpeningHours } from "@/lib/opening-hours";
-import { updateOpeningHoursSchema } from "@/lib/validations/opening-hours";
+import { updateOpeningHoursSchema } from "@/lib/validations/opening-hour";
 
 export async function PATCH(req: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 }

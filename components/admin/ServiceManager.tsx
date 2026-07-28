@@ -13,7 +13,7 @@ import {
   deleteServiceAction,
 } from "@/app/admin/services/actions";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 import { ServiceModal } from "./ServiceModal";
 import { ServiceTable } from "./ServiceTable";
@@ -22,12 +22,9 @@ type ServiceManagerProps = {
   services: Service[];
 };
 
-export function ServiceManager({
-  services,
-}: ServiceManagerProps) {
+export function ServiceManager({ services }: ServiceManagerProps) {
   const [open, setOpen] = useState(false);
-  const [selectedService, setSelectedService] =
-    useState<Service | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const [isPending, startTransition] = useTransition();
 
@@ -51,31 +48,31 @@ export function ServiceManager({
     });
   }
 
-async function deleteService(id: string) {
-  const confirmed = window.confirm(
-    "Biztosan törölni szeretnéd ezt a szolgáltatást?",
-  );
+  async function deleteService(id: string) {
+    const confirmed = window.confirm(
+      "Biztosan törölni szeretnéd ezt a szolgáltatást?",
+    );
 
-  if (!confirmed) {
-    return;
-  }
-
-  startTransition(async () => {
-    try {
-      const result = await deleteServiceAction(id);
-
-      if (!result.success) {
-        alert(result.message);
-        return;
-      }
-
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-      alert("Váratlan hiba történt.");
+    if (!confirmed) {
+      return;
     }
-  });
-}
+
+    startTransition(async () => {
+      try {
+        const result = await deleteServiceAction(id);
+
+        if (!result.success) {
+          alert(result.message);
+          return;
+        }
+
+        router.refresh();
+      } catch (error) {
+        console.error(error);
+        alert("Váratlan hiba történt.");
+      }
+    });
+  }
 
   function createService() {
     setSelectedService(null);
@@ -95,14 +92,9 @@ async function deleteService(id: string) {
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Szolgáltatások
-        </h1>
+        <h1 className="text-2xl font-bold">Szolgáltatások</h1>
 
-        <Button
-          onClick={createService}
-          disabled={isPending}
-        >
+        <Button onClick={createService} disabled={isPending}>
           + Új szolgáltatás
         </Button>
       </div>

@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,9 +21,7 @@ type Props = {
   appointmentId: string;
 };
 
-export default function CancelBookingButton({
-  appointmentId,
-}: Props) {
+export default function CancelBookingButton({ appointmentId }: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -31,12 +29,9 @@ export default function CancelBookingButton({
     try {
       setLoading(true);
 
-      const res = await fetch(
-        `/api/my-bookings/${appointmentId}/cancel`,
-        {
-          method: "PATCH",
-        }
-      );
+      const res = await fetch(`/api/my-bookings/${appointmentId}/cancel`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) {
         throw new Error();
@@ -56,11 +51,7 @@ export default function CancelBookingButton({
     <AlertDialog>
       <AlertDialogTrigger
         render={
-          <Button
-            variant="destructive"
-            size="sm"
-            disabled={loading}
-          >
+          <Button variant="destructive" size="sm" disabled={loading}>
             Lemondás
           </Button>
         }
@@ -68,9 +59,7 @@ export default function CancelBookingButton({
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Biztosan le szeretnéd mondani?
-          </AlertDialogTitle>
+          <AlertDialogTitle>Biztosan le szeretnéd mondani?</AlertDialogTitle>
 
           <AlertDialogDescription>
             Ez a művelet nem vonható vissza.
@@ -78,14 +67,9 @@ export default function CancelBookingButton({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            Mégse
-          </AlertDialogCancel>
+          <AlertDialogCancel>Mégse</AlertDialogCancel>
 
-          <AlertDialogAction
-            onClick={handleCancel}
-            disabled={loading}
-          >
+          <AlertDialogAction onClick={handleCancel} disabled={loading}>
             {loading ? "Lemondás..." : "Igen, lemondom"}
           </AlertDialogAction>
         </AlertDialogFooter>

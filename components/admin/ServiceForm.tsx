@@ -10,7 +10,7 @@ import {
   type ServiceData,
 } from "@/lib/validations/service";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 
@@ -31,16 +31,16 @@ export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
   });
 
   useEffect(() => {
-  reset(
-    defaultValues ?? {
-      name: "",
-      description: "",
-      duration: 30,
-      price: 0,
-      active: true,
-    },
-  );
-}, [defaultValues, reset]);
+    reset(
+      defaultValues ?? {
+        name: "",
+        description: "",
+        duration: 30,
+        price: 0,
+        active: true,
+      },
+    );
+  }, [defaultValues, reset]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">

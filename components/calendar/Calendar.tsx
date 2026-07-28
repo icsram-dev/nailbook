@@ -1,22 +1,48 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import huLocale from "@fullcalendar/core/locales/hu";
-import type { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
+import type {
+  DateSelectArg,
+  EventClickArg,
+  EventInput,
+} from "@fullcalendar/core";
 
 import { Card } from "@/components/ui/Card";
 import { AppointmentModal } from "./AppointmentModal";
 
 export function Calendar() {
-  const [events, setEvents] =useState<EventInput[]>([]);
+  const [events, setEvents] = useState<EventInput[]>([]);
   const [open, setOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedAppointmentId, setSelectedAppointmentId] =
     useState<string | null>(null);
+
+  const loadAppointments = useCallback(async () => {
+    try {
+      const res = await fetch("/api/appointments");
+
+      if (!res.ok) {
+        throw new Error("Nem sikerült betölteni a foglalásokat.");
+      }
+
+      const data = await res.json();
+
+      setEvents(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    void (async () => {
+      await loadAppointments();
+    })();
+  }, [loadAppointments]);
 
   function handleSelect(selectInfo: DateSelectArg) {
     setSelectedAppointmentId(null);
@@ -30,30 +56,12 @@ export function Calendar() {
     setOpen(true);
   }
 
-  async function loadAppointments() {
-    try {
-      const res = await fetch("/api/appointments");
-
-      if (!res.ok) {
-        throw new Error("Nem sikerült betölteni a foglalásokat.");
-      }
-
-      const data = await res.json();
-      setEvents(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    loadAppointments();
-  }, []);
-
   function handleAppointmentCreated() {
     setOpen(false);
     setSelectedDate(null);
     setSelectedAppointmentId(null);
-    loadAppointments();
+
+    void loadAppointments();
   }
 
   function handleClose() {

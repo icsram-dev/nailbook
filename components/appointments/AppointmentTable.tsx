@@ -2,7 +2,7 @@
 
 import { Appointment, AppointmentStatus, Service, User } from "@prisma/client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type AppointmentWithRelations = Appointment & {
   customer: User;

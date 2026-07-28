@@ -1,149 +1,132 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { WeekDay } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
-type OpeningHour = {
-  id: string;
-  weekday: number;
-  opensAt: string;
-  closesAt: string;
-  isClosed: boolean;
-};
+import { updateOpeningHoursAction } from "@/app/admin/opening-hours/actions";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { OpeningHour } from "@/types/opening-hour";
 
-type Props = {
+interface OpeningHoursFormProps {
   openingHours: OpeningHour[];
-};
+}
 
-const days = [
-  "Hétfő",
-  "Kedd",
-  "Szerda",
-  "Csütörtök",
-  "Péntek",
-  "Szombat",
-  "Vasárnap",
-];
+const dayLabels: Record<WeekDay, string> = {
+  MONDAY: "Hétfő",
+  TUESDAY: "Kedd",
+  WEDNESDAY: "Szerda",
+  THURSDAY: "Csütörtök",
+  FRIDAY: "Péntek",
+  SATURDAY: "Szombat",
+  SUNDAY: "Vasárnap",
+};
 
 export default function OpeningHoursForm({
   openingHours,
-}: Props) {
-  const [hours, setHours] = useState(openingHours);
-  const [isSaving, setIsSaving] = useState(false);
-
+}: OpeningHoursFormProps) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
-  function updateHour(
+  const [rows, setRows] = useState(
+    openingHours.map((item) => ({
+      day: item.day,
+      isOpen: item.isOpen,
+      opensAt: item.opensAt,
+      closesAt: item.closesAt,
+    })),
+  );
+
+  function updateRow(
     index: number,
-    field: keyof OpeningHour,
-    value: string | boolean
+    field: "isOpen" | "opensAt" | "closesAt",
+    value: boolean | string | null,
   ) {
-    const updated = [...hours];
-
-    updated[index] = {
-      ...updated[index],
-      [field]: value,
-    };
-
-    setHours(updated);
+    setRows((prev) =>
+      prev.map((row, i) =>
+        i === index
+          ? {
+              ...row,
+              [field]: value,
+            }
+          : row,
+      ),
+    );
   }
 
-  async function handleSubmit() {
-    try {
-      setIsSaving(true);
+  function handleSubmit() {
+    startTransition(async () => {
+      const result = await updateOpeningHoursAction(rows);
 
-      const response = await fetch("/api/admin/opening-hours", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(hours),
-      });
-
-      if (!response.ok) {
-        throw new Error("Sikertelen mentés.");
+      if (result.success) {
+        router.refresh();
+        alert(result.message);
+      } else {
+        alert(result.message);
       }
-
-      router.refresh();
-
-      alert("Nyitvatartás sikeresen mentve!");
-    } catch (error) {
-      console.error(error);
-      alert("Hiba történt a mentés során.");
-    } finally {
-      setIsSaving(false);
-    }
+    });
   }
 
   return (
-    <div className="rounded-2xl border bg-white shadow-sm">
-      <table className="w-full">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="p-4 text-left">Nap</th>
-            <th className="p-4 text-center">Nyitás</th>
-            <th className="p-4 text-center">Zárás</th>
-            <th className="p-4 text-center">Zárva</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {hours.map((day, index) => (
-            <tr
-              key={day.id}
-              className="border-t"
-            >
-              <td className="p-4 font-medium">
-                {days[day.weekday - 1]}
-              </td>
-
-              <td className="p-4 text-center">
-                <input
-                  type="time"
-                  value={day.opensAt}
-                  disabled={day.isClosed}
-                  onChange={(e) =>
-                    updateHour(index, "opensAt", e.target.value)
-                  }
-                  className="rounded-lg border p-2"
-                />
-              </td>
-
-              <td className="p-4 text-center">
-                <input
-                  type="time"
-                  value={day.closesAt}
-                  disabled={day.isClosed}
-                  onChange={(e) =>
-                    updateHour(index, "closesAt", e.target.value)
-                  }
-                  className="rounded-lg border p-2"
-                />
-              </td>
-
-              <td className="p-4 text-center">
-                <input
-                  type="checkbox"
-                  checked={day.isClosed}
-                  onChange={(e) =>
-                    updateHour(index, "isClosed", e.target.checked)
-                  }
-                />
-              </td>
+    <div className="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b">
+              <th className="py-3 text-left">Nap</th>
+              <th className="py-3 text-left">Nyitás</th>
+              <th className="py-3 text-left">Zárás</th>
+              <th className="py-3 text-center">Nyitva</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
 
-      <div className="border-t p-6">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={isSaving}
-          className="rounded-xl bg-pink-600 px-6 py-3 text-white transition hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {isSaving ? "Mentés..." : "Mentés"}
-        </button>
+          <tbody>
+            {rows.map((row, index) => (
+              <tr key={row.day} className="border-b last:border-none">
+                <td className="py-3 font-medium">{dayLabels[row.day]}</td>
+
+                <td className="py-3 pr-4">
+                  <Input
+                    type="time"
+                    value={row.opensAt ?? ""}
+                    disabled={!row.isOpen}
+                    onChange={(e) =>
+                      updateRow(index, "opensAt", e.target.value || null)
+                    }
+                  />
+                </td>
+
+                <td className="py-3 pr-4">
+                  <Input
+                    type="time"
+                    value={row.closesAt ?? ""}
+                    disabled={!row.isOpen}
+                    onChange={(e) =>
+                      updateRow(index, "closesAt", e.target.value || null)
+                    }
+                  />
+                </td>
+
+                <td className="py-3 text-center">
+                  <input
+                    type="checkbox"
+                    checked={row.isOpen}
+                    onChange={(e) =>
+                      updateRow(index, "isOpen", e.target.checked)
+                    }
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex justify-end">
+        <Button onClick={handleSubmit} disabled={isPending}>
+          {isPending ? "Mentés..." : "Mentés"}
+        </Button>
       </div>
     </div>
   );

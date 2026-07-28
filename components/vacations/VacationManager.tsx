@@ -7,7 +7,7 @@ import { Vacation } from "@prisma/client";
 
 import type { VacationData } from "@/lib/validations/vacation";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { VacationTable } from "./VacationTable";
 import { VacationModal } from "./VacationModal";
 

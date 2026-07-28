@@ -1,12 +1,16 @@
 import { prisma } from "@/lib/prisma";
+import {
+  AppointmentStatus,
+} from "@prisma/client";
+
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import AppointmentStatusBadge from "@/components/admin/AppointmentStatusBadge";
 import AppointmentFilters from "@/components/admin/AppointmentFilters";
+import AppointmentStatusBadge from "@/components/admin/AppointmentStatusBadge";
+
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
+
 import Link from "next/link";
-
-
 
 type Props = {
   searchParams: Promise<{
@@ -15,36 +19,37 @@ type Props = {
   }>;
 };
 
-
 export default async function AppointmentsPage({
   searchParams,
 }: Props) {
   const { search, status } = await searchParams;
+
   const appointments = await prisma.appointment.findMany({
-  where: {
-    ...(search && {
-      customer: {
-        name: {
-          contains: search,
-          mode: "insensitive",
+    where: {
+      ...(search && {
+        customer: {
+          name: {
+            contains: search,
+            mode: "insensitive",
+          },
         },
-      },
-    }),
+      }),
 
-    ...(status && {
-      status: status as any,
-    }),
-  },
+      ...(status && {
+        status: status as AppointmentStatus,
+      }),
+    },
 
-  include: {
-    customer: true,
-    service: true,
-  },
+    include: {
+      customer: true,
+      service: true,
+    },
 
-  orderBy: {
-    startTime: "desc",
-  },
-});
+    orderBy: {
+      startTime: "desc",
+    },
+  });
+
   return (
     <>
       <AdminPageHeader
@@ -69,10 +74,10 @@ export default async function AppointmentsPage({
 
           <tbody>
             {appointments.map((appointment) => (
-             <tr
-  key={appointment.id}
-  className="border-b last:border-0 transition hover:bg-pink-50"
->
+              <tr
+                key={appointment.id}
+                className="border-b transition hover:bg-pink-50 last:border-0"
+              >
                 <td className="px-6 py-4">
                   {format(
                     appointment.startTime,
@@ -91,13 +96,13 @@ export default async function AppointmentsPage({
                 </td>
 
                 <td className="px-6 py-4 font-medium">
-  <Link
-    href={`/admin/appointments/${appointment.id}`}
-    className="text-pink-600 hover:underline"
-  >
-    {appointment.customer.name}
-  </Link>
-</td>
+                  <Link
+                    href={`/admin/appointments/${appointment.id}`}
+                    className="text-pink-600 hover:underline"
+                  >
+                    {appointment.customer.name}
+                  </Link>
+                </td>
 
                 <td className="px-6 py-4">
                   {appointment.service.name}

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { openingHoursSchema } from "@/lib/validations/opening-hours";
+import { openingHoursSchema } from "@/lib/validations/opening-hour";
 
 export async function PATCH(request: Request) {
   try {
@@ -20,8 +20,8 @@ export async function PATCH(request: Request) {
             opensAt: day.opensAt,
             closesAt: day.closesAt,
           },
-        })
-      )
+        }),
+      ),
     );
 
     return NextResponse.json({
@@ -37,7 +37,7 @@ export async function PATCH(request: Request) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

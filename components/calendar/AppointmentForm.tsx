@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type AppointmentFormProps = {
   selectedDate: string | null;
@@ -30,7 +30,7 @@ export function AppointmentForm({
 }: AppointmentFormProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-  const [startTime, setStartTime] = useState(selectedDate);
+  const [loadedStartTime, setLoadedStartTime] = useState<string | null>(null);
 
   const [customerId, setCustomerId] = useState("");
   const [serviceId, setServiceId] = useState("");
@@ -40,9 +40,8 @@ export function AppointmentForm({
 
   const isEditMode = !!appointmentId;
 
-  useEffect(() => {
-    setStartTime(selectedDate);
-  }, [selectedDate]);
+  const startTime =
+    appointmentId && loadedStartTime ? loadedStartTime : selectedDate;
 
   useEffect(() => {
     async function loadData() {
@@ -66,7 +65,9 @@ export function AppointmentForm({
   }, []);
 
   useEffect(() => {
-    if (!appointmentId) return;
+    if (!appointmentId) {
+      return;
+    }
 
     async function loadAppointment() {
       try {
@@ -80,14 +81,14 @@ export function AppointmentForm({
 
         setCustomerId(appointment.customerId);
         setServiceId(appointment.serviceId);
-        setStartTime(appointment.startTime);
+        setLoadedStartTime(appointment.startTime);
         setStatus(appointment.status);
       } catch (error) {
         console.error(error);
       }
     }
 
-    loadAppointment();
+    void loadAppointment();
   }, [appointmentId]);
 
   const selectedService = services.find((service) => service.id === serviceId);

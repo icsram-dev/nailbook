@@ -6,7 +6,7 @@ import { Appointment, Service, User } from "@prisma/client";
 
 import type { AppointmentData } from "@/lib/validations/appointment";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { AppointmentModal } from "./AppointmentModal";
 import { AppointmentTable } from "./AppointmentTable";
 

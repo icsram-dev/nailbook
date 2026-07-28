@@ -25,43 +25,28 @@ type Props = {
 
 export function CalendarView({
   appointments,
-  customers,
-  services,
 }: Props) {
   const [currentWeek, setCurrentWeek] =
     useState(new Date());
-
-  const [
-    selectedAppointment,
-    setSelectedAppointment,
-  ] = useState<AppointmentWithRelations | null>(
-    null
-  );
-
-  const [isModalOpen, setIsModalOpen] =
-    useState(false);
 
   return (
     <>
       <WeekNavigator
         currentWeek={currentWeek}
         onPrevious={() =>
-          setCurrentWeek(addWeeks(currentWeek, -1))
+          setCurrentWeek((prev) => addWeeks(prev, -1))
         }
         onNext={() =>
-          setCurrentWeek(addWeeks(currentWeek, 1))
+          setCurrentWeek((prev) => addWeeks(prev, 1))
         }
-        onToday={() =>
-          setCurrentWeek(new Date())
-        }
+        onToday={() => setCurrentWeek(new Date())}
       />
 
       <WeeklyCalendar
         currentWeek={currentWeek}
         appointments={appointments}
-        onAppointmentClick={(appointment) => {
-          setSelectedAppointment(appointment);
-          setIsModalOpen(true);
+        onAppointmentClick={() => {
+          // TODO: Foglalás részleteinek megnyitása
         }}
       />
     </>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 
 export default function Hero() {

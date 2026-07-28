@@ -10,7 +10,7 @@ import {
   type CustomerData,
 } from "@/lib/validations/customer";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 
 type CustomerFormProps = {

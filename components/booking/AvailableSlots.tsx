@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type Props = {
   serviceId: string;
@@ -15,10 +15,10 @@ export default function AvailableSlots({ serviceId }: Props) {
 
   useEffect(() => {
     if (!date) {
-      setSlots([]);
-      setSelectedSlot(null);
       return;
     }
+
+    let cancelled = false;
 
     async function loadSlots() {
       setLoading(true);
@@ -30,20 +30,34 @@ export default function AvailableSlots({ serviceId }: Props) {
 
         const data = await response.json();
 
+        if (cancelled) return;
+
         if (response.ok) {
           setSlots(data.slots);
+          setSelectedSlot(null);
         } else {
+          setSlots([]);
           alert(data.message ?? "Nem sikerült betölteni az időpontokat.");
         }
       } catch (error) {
         console.error(error);
-        alert("Hiba történt az időpontok betöltése közben.");
+
+        if (!cancelled) {
+          setSlots([]);
+          alert("Hiba történt az időpontok betöltése közben.");
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     }
 
     loadSlots();
+
+    return () => {
+      cancelled = true;
+    };
   }, [date, serviceId]);
 
   async function bookAppointment() {
@@ -98,7 +112,16 @@ export default function AvailableSlots({ serviceId }: Props) {
         <input
           type="date"
           value={date}
-          onChange={(e) => setDate(e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+
+            setDate(value);
+
+            if (!value) {
+              setSlots([]);
+              setSelectedSlot(null);
+            }
+          }}
           className="w-full rounded-lg border border-gray-300 px-4 py-3"
         />
       </div>

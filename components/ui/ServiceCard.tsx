@@ -1,7 +1,7 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import { Button } from "./button";
+import { Button } from "./Button";
 
 type ServiceCardProps = {
   title: string;

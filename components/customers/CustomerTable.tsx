@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 type CustomerTableProps = {
   customers: User[];
