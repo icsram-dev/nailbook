@@ -1,53 +1,48 @@
-import { prisma } from "@/lib/prisma";
-
-export async function getCustomers() {
-  const customers = await prisma.user.findMany({
+export async function getCustomerById(id: string) {
+  const customer = await prisma.user.findUnique({
     where: {
+      id,
       role: "CUSTOMER",
     },
-
-    select: {
-      id: true,
-      name: true,
-      email: true,
-      phone: true,
-
-      _count: {
-        select: {
-          appointments: true,
-        },
-      },
-
+    include: {
       appointments: {
-        select: {
-          price: true,
-          startTime: true,
+        include: {
+          service: {
+            select: {
+              name: true,
+              duration: true,
+            },
+          },
         },
         orderBy: {
           startTime: "desc",
         },
       },
     },
-
-    orderBy: {
-      name: "asc",
-    },
   });
 
-  return customers.map((customer) => ({
+  if (!customer) {
+    return null;
+  }
+
+  const totalSpent = customer.appointments.reduce(
+    (sum, appointment) => sum + appointment.price,
+    0
+  );
+
+  return {
     id: customer.id,
     name: customer.name,
     email: customer.email,
     phone: customer.phone,
 
-    appointmentCount: customer._count.appointments,
+    appointmentCount: customer.appointments.length,
 
-    totalSpent: customer.appointments.reduce(
-      (sum, appointment) => sum + appointment.price,
-      0
-    ),
+    totalSpent,
 
     lastAppointment:
       customer.appointments[0]?.startTime ?? null,
-  }));
+
+    appointments: customer.appointments,
+  };
 }
