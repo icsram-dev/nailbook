@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { appointmentSchema } from "@/schemas/appointment";
+import { updateAppointment } from "@/lib/appointments/service";
 
 type RouteContext = {
   params: Promise<{
@@ -45,77 +47,53 @@ export async function PUT(
 
     const body = await request.json();
 
-    const {
-  customerId,
-  serviceId,
-  startTime,
-  status,
-} = body;
+    const result = appointmentSchema.safeParse(body);
 
-    if (!customerId || !serviceId || !startTime) {
+    if (!result.success) {
       return NextResponse.json(
-        { error: "Hiányzó adatok." },
+        {
+          error: "Érvénytelen adatok.",
+          details: result.error.flatten(),
+        },
         { status: 400 }
       );
     }
 
-    const service = await prisma.service.findUnique({
-      where: {
-        id: serviceId,
-      },
+    const appointment = await updateAppointment({
+      appointmentId: id,
+      ...result.data,
     });
-
-    if (!service) {
-      return NextResponse.json(
-        { error: "A szolgáltatás nem található." },
-        { status: 404 }
-      );
-    }
-
-    const start = new Date(startTime);
-
-    const end = new Date(start);
-    end.setMinutes(end.getMinutes() + service.duration);
-
-    const overlapping = await prisma.appointment.findFirst({
-      where: {
-        id: {
-          not: id,
-        },
-        status: {
-          notIn: ["CANCELLED", "NO_SHOW"],
-        },
-        startTime: {
-          lt: end,
-        },
-        endTime: {
-          gt: start,
-        },
-      },
-    });
-
-    if (overlapping) {
-      return NextResponse.json(
-        { error: "Ebben az időpontban már van foglalás." },
-        { status: 409 }
-      );
-    }
-
-    const appointment = await prisma.appointment.update({
-  where: {
-    id,
-  },
-  data: {
-    customerId,
-    serviceId,
-    startTime: start,
-    endTime: end,
-    price: service.price,
-    status: status ?? "CONFIRMED",
-  },
-});
 
     return NextResponse.json(appointment);
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : "Ismeretlen hiba történt.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: RouteContext
+) {
+  try {
+    const { id } = await params;
+
+    await prisma.appointment.delete({
+      where: {
+        id,
+      },
+    });
+
+    return NextResponse.json({
+      success: true,
+    });
   } catch {
     return NextResponse.json(
       { error: "Hiba történt." },

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 import {
   User,
@@ -20,10 +22,11 @@ type Props = {
 export default function ProfileForm({
   user,
 }: Props) {
+  const router = useRouter();
+  const { update } = useSession();
+
   const [loading, setLoading] = useState(false);
-
   const [success, setSuccess] = useState("");
-
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
@@ -59,6 +62,12 @@ export default function ProfileForm({
         setError(data.message);
         return;
       }
+
+      // Session frissítése
+      await update();
+
+      // Server Components frissítése
+      router.refresh();
 
       setSuccess("A profil sikeresen frissítve.");
     } catch {
@@ -138,6 +147,7 @@ export default function ProfileForm({
       </div>
 
       <button
+        type="submit"
         disabled={loading}
         className="flex w-full items-center justify-center gap-2 rounded-xl bg-pink-500 px-5 py-3 font-medium text-white transition hover:bg-pink-600 disabled:opacity-70"
       >

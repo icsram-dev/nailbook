@@ -1,7 +1,8 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+
+import { prisma } from "@/lib/prisma";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -44,6 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           id: user.id,
           name: user.name,
           email: user.email,
+          phone: user.phone,
           role: user.role,
         };
       },
@@ -62,7 +64,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name;
+        token.email = user.email;
+        token.phone = user.phone;
         token.role = user.role;
+      }
+
+      if (token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: {
+            id: token.id as string,
+          },
+        });
+
+        if (dbUser) {
+          token.name = dbUser.name;
+          token.email = dbUser.email;
+          token.phone = dbUser.phone;
+          token.role = dbUser.role;
+        }
       }
 
       return token;
@@ -71,6 +91,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.phone = token.phone as string;
         session.user.role = token.role as string;
       }
 

@@ -1,10 +1,18 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
 import AuthSessionProvider from "@/components/providers/SessionProvider";
+import QueryProvider from "@/components/providers/QueryProvider";
+
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+
 import { Toaster } from "sonner";
-import { APP_NAME, APP_DESCRIPTION } from "@/lib/constants";
+
+import {
+  APP_DESCRIPTION,
+  APP_NAME,
+} from "@/lib/constants";
 
 import "./globals.css";
 
@@ -35,17 +43,19 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-white text-gray-900 antialiased">
         <AuthSessionProvider>
-          <Navbar />
+          <QueryProvider>
+            <Navbar />
 
-          <main>{children}</main>
+            <main>{children}</main>
 
-          <Footer />
+            <Footer />
 
-          <Toaster
-            position="top-right"
-            richColors
-            closeButton
-          />
+            <Toaster
+              position="top-right"
+              richColors
+              closeButton
+            />
+          </QueryProvider>
         </AuthSessionProvider>
       </body>
     </html>

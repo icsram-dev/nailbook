@@ -1,0 +1,64 @@
+import AppointmentHistory from "./AppointmentHistory";
+import CustomerStats from "./CustomerStats";
+
+type Appointment = {
+  id: string;
+  startTime: Date;
+  price: number;
+  status: string;
+  service: {
+    name: string;
+    duration: number;
+  };
+};
+
+type Customer = {
+  id: string;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  appointmentCount: number;
+  totalSpent: number;
+  lastAppointment: Date | null;
+  appointments: Appointment[];
+};
+
+type Props = {
+  customer: Customer;
+};
+
+export default function CustomerProfile({
+  customer,
+}: Props) {
+  return (
+    <div className="mt-8 space-y-6">
+      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+        <h2 className="text-xl font-semibold">
+          {customer.name}
+        </h2>
+
+        <div className="mt-4 space-y-2 text-sm text-gray-600">
+          <p>
+            <span className="font-medium text-gray-900">
+              Telefon:
+            </span>{" "}
+            {customer.phone ?? "-"}
+          </p>
+
+          <p>
+            <span className="font-medium text-gray-900">
+              E-mail:
+            </span>{" "}
+            {customer.email ?? "-"}
+          </p>
+        </div>
+      </div>
+
+      <CustomerStats customer={customer} />
+
+      <AppointmentHistory
+        appointments={customer.appointments}
+      />
+    </div>
+  );
+}

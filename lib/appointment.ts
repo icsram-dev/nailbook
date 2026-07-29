@@ -1,56 +1,33 @@
 import { prisma } from "@/lib/prisma";
 
-export async function getAppointments() {
-  return prisma.appointment.findMany({
-    include: {
-      customer: true,
-      service: true,
-    },
-    orderBy: {
-      startTime: "desc",
-    },
-  });
+export function calculateEndTime(
+  startTime: Date,
+  duration: number
+) {
+  const endTime = new Date(startTime);
+
+  endTime.setMinutes(
+    endTime.getMinutes() + duration
+  );
+
+  return endTime;
 }
 
-type UpdateAppointmentInput = {
-  appointmentId: string;
-  customerId: string;
-  serviceId: string;
-  date: string;
-  time: string;
-  note?: string;
-};
-
-export async function updateAppointment({
-  appointmentId,
-  customerId,
-  serviceId,
-  date,
-  time,
-  note,
-}: UpdateAppointmentInput) {
-  // Szolgáltatás lekérése
-  const service = await prisma.service.findUnique({
+export async function findOverlappingAppointment(
+  startTime: Date,
+  endTime: Date,
+  excludeAppointmentId?: string
+) {
+  return prisma.appointment.findFirst({
     where: {
-      id: serviceId,
-    },
-  });
+      ...(excludeAppointmentId && {
+        id: {
+          not: excludeAppointmentId,
+        },
+      }),
 
-  if (!service) {
-    throw new Error("A szolgáltatás nem található.");
-  }
-
-  // Időpontok kiszámítása
-  const startTime = new Date(`${date}T${time}:00`);
-
-  const endTime = new Date(startTime);
-  endTime.setMinutes(endTime.getMinutes() + service.duration);
-
-  // Ütközés vizsgálata
-  const conflict = await prisma.appointment.findFirst({
-    where: {
-      id: {
-        not: appointmentId,
+      status: {
+        notIn: ["CANCELLED", "NO_SHOW"],
       },
 
       startTime: {
@@ -60,31 +37,6 @@ export async function updateAppointment({
       endTime: {
         gt: startTime,
       },
-    },
-  });
-
-  if (conflict) {
-    throw new Error("Ebben az időpontban már van foglalás.");
-  }
-
-  // Foglalás frissítése
-  return prisma.appointment.update({
-    where: {
-      id: appointmentId,
-    },
-
-    data: {
-      customerId,
-      serviceId,
-      startTime,
-      endTime,
-      price: service.price,
-      note: note?.trim() || null,
-    },
-
-    include: {
-      customer: true,
-      service: true,
     },
   });
 }

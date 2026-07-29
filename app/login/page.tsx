@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
 
   const registered = params.get("registered") === "true";
+  const callbackUrl = params.get("callbackUrl") ?? "/";
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -28,10 +29,11 @@ export default function LoginPage() {
     setError("");
 
     const result = await signIn("credentials", {
-      email,
-      password,
-      redirect: false,
-    });
+  email,
+  password,
+  redirect: false,
+  callbackUrl,
+});
 
     setLoading(false);
 
@@ -40,7 +42,7 @@ export default function LoginPage() {
       return;
     }
 
-    window.location.href = "/";
+    window.location.href = result?.url ?? callbackUrl;
   }
 
   return (
