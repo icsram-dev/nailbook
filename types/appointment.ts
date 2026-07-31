@@ -1,9 +1,19 @@
-export type AppointmentTableItem = {
+import {
+  AppointmentStatus,
+  Service,
+} from "@prisma/client";
+
+export type AppointmentWithService = {
   id: string;
-  customerName: string;
-  serviceName: string;
-  startTime: Date;
-  endTime: Date;
+  startTime: string;
+  endTime: string;
   price: number;
-  status: string;
+  status: AppointmentStatus;
+  customerNote: string | null;
+  createdAt: string;
+  updatedAt: string;
+  service: Pick<
+    Service,
+    "id" | "name" | "description" | "duration" | "price"
+  >;
 };

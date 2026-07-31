@@ -1,3 +1,5 @@
+import { endOfDay, startOfDay } from "date-fns";
+
 import { prisma } from "@/lib/prisma";
 
 interface CheckVacationParams {
@@ -12,10 +14,10 @@ export async function checkVacation({
   const vacation = await prisma.vacation.findFirst({
     where: {
       startDate: {
-        lte: endTime,
+        lte: endOfDay(endTime),
       },
       endDate: {
-        gte: startTime,
+        gte: startOfDay(startTime),
       },
     },
     select: {

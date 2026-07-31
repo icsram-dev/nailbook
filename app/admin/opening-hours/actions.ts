@@ -2,34 +2,45 @@
 
 import { revalidatePath } from "next/cache";
 
-import { openingHourSchema } from "@/lib/validations/opening-hour";
-import { updateOpeningHours } from "@/lib/opening-hours";
+import { prisma } from "@/lib/prisma";
+import { WeekDay } from "@prisma/client";
 
-export async function updateOpeningHoursAction(
-  formData: unknown[],
+export async function getOpeningHours() {
+  return prisma.openingHour.findMany({
+    orderBy: {
+      day: "asc",
+    },
+  });
+}
+
+type UpdateOpeningHourInput = {
+  day: WeekDay;
+  isOpen: boolean;
+  opensAt: string | null;
+  closesAt: string | null;
+};
+
+export async function updateOpeningHours(
+  openingHours: UpdateOpeningHourInput[]
 ) {
-  try {
-    const validatedData = formData.map((item) =>
-      openingHourSchema.parse(item),
-    );
+  await prisma.$transaction(
+    openingHours.map((openingHour) =>
+      prisma.openingHour.update({
+        where: {
+          day: openingHour.day,
+        },
+        data: {
+          isOpen: openingHour.isOpen,
+          opensAt: openingHour.isOpen
+            ? openingHour.opensAt
+            : null,
+          closesAt: openingHour.isOpen
+            ? openingHour.closesAt
+            : null,
+        },
+      })
+    )
+  );
 
-    await updateOpeningHours(validatedData);
-
-    revalidatePath("/admin/opening-hours");
-
-    return {
-      success: true,
-      message: "A nyitvatartás sikeresen frissítve.",
-    };
-  } catch (error) {
-    console.error(error);
-
-    return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "Ismeretlen hiba történt.",
-    };
-  }
+  revalidatePath("/admin/opening-hours");
 }

@@ -25,3 +25,6 @@ export const appointmentSchema = z.object({
 });
 
 export type AppointmentFormValues = z.infer<typeof appointmentSchema>;
+
+/* ➕ Add hozzá ezt is */
+export type AppointmentData = AppointmentFormValues;

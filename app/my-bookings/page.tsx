@@ -19,16 +19,19 @@ export default async function MyBookingsPage() {
   }
 
   const appointments = await prisma.appointment.findMany({
-    where: {
-      customerId: session.user.id,
+  where: {
+    customerId: session.user.id,
+    status: {
+      in: ["PENDING", "CONFIRMED"],
     },
-    include: {
-      service: true,
-    },
-    orderBy: {
-      startTime: "desc",
-    },
-  });
+  },
+  include: {
+    service: true,
+  },
+  orderBy: {
+    startTime: "desc",
+  },
+});
 
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">

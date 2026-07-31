@@ -1,0 +1,9 @@
+export const BOOKING_CONFIG = {
+  NEXT_DAY_BOOKING_DEADLINE: 17,
+
+  CUSTOMER_MONTH_LIMIT: 1,
+
+  WORKING_DAYS: [1, 2, 3, 4, 5] as const,
+
+  SLOT_INTERVAL_MINUTES: 30,
+} as const;

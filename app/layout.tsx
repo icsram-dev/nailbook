@@ -3,11 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import AuthSessionProvider from "@/components/providers/SessionProvider";
 import QueryProvider from "@/components/providers/QueryProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-
-import { Toaster } from "sonner";
 
 import {
   APP_DESCRIPTION,

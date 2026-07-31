@@ -1,52 +1,22 @@
-import { getVacations } from "@/lib/vacations";
+import AdminPageHeader from "@/components/admin/AdminPageHeader";
+import { VacationManager } from "@/components/admin/VacationManager";
+import { prisma } from "@/lib/prisma";
 
 export default async function VacationsPage() {
-  const vacations = await getVacations();
+  const vacations = await prisma.vacation.findMany({
+    orderBy: {
+      startDate: "desc",
+    },
+  });
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-3xl font-bold">
-        Szabadságok
-      </h1>
+    <>
+      <AdminPageHeader
+        title="Szabadságok"
+        description="A szabadságok kezelése."
+      />
 
-      {vacations.length === 0 ? (
-        <p className="text-gray-500">
-          Még nincs felvett szabadság.
-        </p>
-      ) : (
-        <div className="rounded-xl border bg-white">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b">
-                <th className="p-4 text-left">Kezdete</th>
-                <th className="p-4 text-left">Vége</th>
-                <th className="p-4 text-left">Megjegyzés</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {vacations.map((vacation) => (
-                <tr
-                  key={vacation.id}
-                  className="border-b"
-                >
-                  <td className="p-4">
-                    {vacation.startDate.toLocaleDateString("hu-HU")}
-                  </td>
-
-                  <td className="p-4">
-                    {vacation.endDate.toLocaleDateString("hu-HU")}
-                  </td>
-
-                  <td className="p-4">
-                    {vacation.reason || "-"}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
+      <VacationManager vacations={vacations} />
+    </>
   );
 }

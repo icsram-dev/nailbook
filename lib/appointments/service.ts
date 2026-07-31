@@ -16,6 +16,18 @@ interface UpdateAppointmentInput extends CreateAppointmentInput {
   appointmentId: string;
 }
 
+export async function getAppointmentById(id: string) {
+  return prisma.appointment.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      customer: true,
+      service: true,
+    },
+  });
+}
+
 export async function createAppointment({
   customerId,
   serviceId,
@@ -49,11 +61,8 @@ export async function createAppointment({
       serviceId,
       startTime,
       endTime: validation.endTime,
-
       price: service.price,
-
       customerNote: note,
-
       status,
     },
     include: {
@@ -101,16 +110,21 @@ export async function updateAppointment({
       serviceId,
       startTime,
       endTime: validation.endTime,
-
       price: service.price,
-
       customerNote: note,
-
       status,
     },
     include: {
       customer: true,
       service: true,
+    },
+  });
+}
+
+export async function deleteAppointment(id: string) {
+  return prisma.appointment.delete({
+    where: {
+      id,
     },
   });
 }

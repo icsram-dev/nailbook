@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { WeekDay } from "@prisma/client";
 import { useRouter } from "next/navigation";
 
-import { updateOpeningHoursAction } from "@/app/admin/opening-hours/actions";
+import { updateOpeningHours } from "@/app/admin/opening-hours/actions";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { OpeningHour } from "@/types/opening-hour";
@@ -55,18 +55,21 @@ export default function OpeningHoursForm({
     );
   }
 
-  function handleSubmit() {
-    startTransition(async () => {
-      const result = await updateOpeningHoursAction(rows);
+ function handleSubmit() {
+  startTransition(async () => {
+    try {
+      await updateOpeningHours(rows);
 
-      if (result.success) {
-        router.refresh();
-        alert(result.message);
-      } else {
-        alert(result.message);
-      }
-    });
-  }
+      router.refresh();
+
+      alert("A nyitvatartás sikeresen mentve.");
+    } catch (error) {
+      console.error(error);
+
+      alert("Nem sikerült elmenteni a nyitvatartást.");
+    }
+  });
+}
 
   return (
     <div className="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">

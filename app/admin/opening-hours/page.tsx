@@ -1,5 +1,6 @@
-import OpeningHoursForm from "@/components/admin/OpeningHoursForm";
-import { getOpeningHours } from "@/lib/opening-hours";
+import OpeningHoursTable from "@/components/admin/opening-hours/OpeningHoursTable";
+
+import { getOpeningHours } from "./actions";
 
 export default async function OpeningHoursPage() {
   const openingHours = await getOpeningHours();
@@ -7,13 +8,19 @@ export default async function OpeningHoursPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Nyitvatartás</h1>
-        <p className="text-sm text-neutral-500">
-          Állítsd be a szalon heti nyitvatartását.
+        <h1 className="text-2xl font-bold">
+          Nyitvatartás
+        </h1>
+
+        <p className="text-muted-foreground">
+          Állítsd be, mely napokon fogadsz
+          vendégeket.
         </p>
       </div>
 
-      <OpeningHoursForm openingHours={openingHours} />
+      <OpeningHoursTable
+        openingHours={openingHours}
+      />
     </div>
   );
 }

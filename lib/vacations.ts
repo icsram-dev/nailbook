@@ -1,16 +1,23 @@
-import { prisma } from "@/lib/prisma";
-import { VacationInput } from "./validations/vacation";
+import { startOfDay, endOfDay } from "date-fns";
 
-export async function createVacation(data: VacationInput) {
-  return prisma.vacation.create({
-    data,
-  });
-}
+import { prisma } from "@/lib/prisma";
+
+import type { VacationData } from "@/lib/validations/vacation";
 
 export async function getVacations() {
   return prisma.vacation.findMany({
     orderBy: {
-      startDate: "asc",
+      startDate: "desc",
+    },
+  });
+}
+
+export async function createVacation(data: VacationData) {
+  return prisma.vacation.create({
+    data: {
+      startDate: startOfDay(data.startDate),
+      endDate: endOfDay(data.endDate),
+      reason: data.reason?.trim() || null,
     },
   });
 }

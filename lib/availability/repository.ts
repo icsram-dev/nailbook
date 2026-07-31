@@ -55,13 +55,19 @@ export async function getAppointments(date: Date) {
 }
 
 export async function getVacations(date: Date) {
+  const startOfDay = new Date(date);
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date(date);
+  endOfDay.setHours(23, 59, 59, 999);
+
   return prisma.vacation.findMany({
     where: {
       startDate: {
-        lte: date,
+        lte: endOfDay,
       },
       endDate: {
-        gte: date,
+        gte: startOfDay,
       },
     },
   });

@@ -21,7 +21,9 @@ type Props = {
   appointmentId: string;
 };
 
-export default function CancelBookingButton({ appointmentId }: Props) {
+export default function CancelBookingButton({
+  appointmentId,
+}: Props) {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
@@ -29,19 +31,34 @@ export default function CancelBookingButton({ appointmentId }: Props) {
     try {
       setLoading(true);
 
-      const res = await fetch(`/api/my-bookings/${appointmentId}/cancel`, {
-        method: "PATCH",
-      });
+      const res = await fetch(
+        `/api/my-bookings/${appointmentId}/cancel`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      const data = await res.json();
 
       if (!res.ok) {
-        throw new Error();
+        console.error("Lemondási hiba:", data);
+
+        throw new Error(
+          data.error ?? "Nem sikerült lemondani az időpontot."
+        );
       }
 
       toast.success("Az időpont sikeresen le lett mondva.");
 
       router.refresh();
-    } catch {
-      toast.error("Nem sikerült lemondani az időpontot.");
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Nem sikerült lemondani az időpontot."
+      );
     } finally {
       setLoading(false);
     }
@@ -51,7 +68,11 @@ export default function CancelBookingButton({ appointmentId }: Props) {
     <AlertDialog>
       <AlertDialogTrigger
         render={
-          <Button variant="destructive" size="sm" disabled={loading}>
+          <Button
+            variant="destructive"
+            size="sm"
+            disabled={loading}
+          >
             Lemondás
           </Button>
         }
@@ -59,7 +80,9 @@ export default function CancelBookingButton({ appointmentId }: Props) {
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Biztosan le szeretnéd mondani?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Biztosan le szeretnéd mondani?
+          </AlertDialogTitle>
 
           <AlertDialogDescription>
             Ez a művelet nem vonható vissza.
@@ -67,10 +90,17 @@ export default function CancelBookingButton({ appointmentId }: Props) {
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Mégse</AlertDialogCancel>
+          <AlertDialogCancel>
+            Mégse
+          </AlertDialogCancel>
 
-          <AlertDialogAction onClick={handleCancel} disabled={loading}>
-            {loading ? "Lemondás..." : "Igen, lemondom"}
+          <AlertDialogAction
+            onClick={handleCancel}
+            disabled={loading}
+          >
+            {loading
+              ? "Lemondás..."
+              : "Igen, lemondom"}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

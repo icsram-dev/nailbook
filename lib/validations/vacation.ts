@@ -2,22 +2,27 @@ import { z } from "zod";
 
 export const vacationSchema = z
   .object({
-    startDate: z.string().min(1, "A kezdő dátum kötelező."),
-    endDate: z.string().min(1, "A befejező dátum kötelező."),
-    reason: z.string().max(255).optional(),
+    startDate: z.coerce.date({
+      error: "A kezdő dátum megadása kötelező.",
+    }),
+
+    endDate: z.coerce.date({
+      error: "A záró dátum megadása kötelező.",
+    }),
+
+    reason: z
+      .string()
+      .trim()
+      .max(255, "A megjegyzés legfeljebb 255 karakter lehet.")
+      .optional()
+      .or(z.literal("")),
   })
-  .transform((data) => ({
-    startDate: new Date(data.startDate),
-    endDate: new Date(data.endDate),
-    reason: data.reason,
-  }))
   .refine(
-    (data) => data.startDate <= data.endDate,
+    (data) => data.endDate >= data.startDate,
     {
-      message:
-        "A kezdő dátum nem lehet későbbi, mint a befejező dátum.",
       path: ["endDate"],
-    }
+      message: "A záró dátum nem lehet korábbi a kezdő dátumnál.",
+    },
   );
 
 export type VacationInput = z.input<typeof vacationSchema>;

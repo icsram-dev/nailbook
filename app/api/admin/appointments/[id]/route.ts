@@ -1,72 +1,99 @@
-import { NextResponse } from "next/server";
-import { auth } from "@/auth";
-import { appointmentSchema } from "@/lib/validations/appointment";
-import { updateAppointment } from "@/lib/appointment";
+import { NextRequest, NextResponse } from "next/server";
+import { AppointmentStatus } from "@prisma/client";
 
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+import {
+  deleteAppointment,
+  getAppointmentById,
+  updateAppointment,
+} from "@/lib/appointments/service";
 
-export async function PATCH(request: Request, { params }: Props) {
-  console.log("PATCH route meghívva");
-
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const session = await auth();
+    const { id } = await params;
 
-    if (!session || session.user.role !== "ADMIN") {
+    const appointment = await getAppointmentById(id);
+
+    if (!appointment) {
       return NextResponse.json(
-        { error: "Nincs jogosultság." },
-        { status: 403 },
+        {
+          message: "A foglalás nem található.",
+        },
+        {
+          status: 404,
+        }
       );
     }
 
+    return NextResponse.json(appointment);
+  } catch {
+    return NextResponse.json(
+      {
+        message: "Hiba történt.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
+
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
     const { id } = await params;
 
     const body = await request.json();
 
-    const result = appointmentSchema.safeParse(body);
-
-    if (!result.success) {
-      return NextResponse.json(
-        {
-          error: "Érvénytelen adatok.",
-          issues: result.error.flatten(),
-        },
-        {
-          status: 400,
-        },
-      );
-    }
-
     const appointment = await updateAppointment({
       appointmentId: id,
-      ...result.data,
+      customerId: body.customerId,
+      serviceId: body.serviceId,
+      startTime: new Date(body.startTime),
+      note: body.note,
+      status: body.status as AppointmentStatus,
     });
 
     return NextResponse.json(appointment);
   } catch (error) {
-    console.error(error);
-
-    if (error instanceof Error) {
-      return NextResponse.json(
-        {
-          error: error.message,
-        },
-        {
-          status: 400,
-        },
-      );
-    }
-
     return NextResponse.json(
       {
-        error: "Ismeretlen hiba történt.",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Hiba történt.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+
+    await deleteAppointment(id);
+
+    return NextResponse.json({
+      success: true,
+    });
+  } catch {
+    return NextResponse.json(
+      {
+        message: "Nem sikerült törölni a foglalást.",
       },
       {
         status: 500,
-      },
+      }
     );
   }
 }

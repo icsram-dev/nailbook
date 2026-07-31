@@ -32,40 +32,43 @@ export async function validateAppointment({
   const endTime = new Date(startTime);
   endTime.setMinutes(endTime.getMinutes() + service.duration);
 
-  const isWithinOpeningHours = await checkOpeningHours({
-    startTime,
-    endTime,
-  });
-
-  if (!isWithinOpeningHours) {
+  if (
+    !(await checkOpeningHours({
+      startTime,
+      endTime,
+    }))
+  ) {
     return {
       ok: false,
-      message: "A kiválasztott időpont kívül esik a nyitvatartási időn.",
+      message:
+        "A kiválasztott időpont kívül esik a nyitvatartási időn.",
     };
   }
 
-  const isDuringVacation = await checkVacation({
-    startTime,
-    endTime,
-  });
-
-  if (isDuringVacation) {
+  if (
+    await checkVacation({
+      startTime,
+      endTime,
+    })
+  ) {
     return {
       ok: false,
-      message: "Erre az időpontra szabadság van beállítva.",
+      message:
+        "Erre az időpontra szabadság van beállítva.",
     };
   }
 
-  const hasOverlap = await checkAppointmentOverlap({
-    appointmentId,
-    startTime,
-    endTime,
-  });
-
-  if (hasOverlap) {
+  if (
+    await checkAppointmentOverlap({
+      appointmentId,
+      startTime,
+      endTime,
+    })
+  ) {
     return {
       ok: false,
-      message: "Ebben az időpontban már van foglalás.",
+      message:
+        "Ebben az időpontban már van foglalás.",
     };
   }
 

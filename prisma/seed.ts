@@ -1,6 +1,7 @@
 import "dotenv/config";
-import { prisma } from "@/lib/prisma";
 import { WeekDay } from "@prisma/client";
+
+import { prisma } from "@/lib/prisma";
 
 async function main() {
   const openingHours = [
@@ -36,14 +37,14 @@ async function main() {
     },
     {
       day: WeekDay.SATURDAY,
-      opensAt: "08:00",
-      closesAt: "17:00",
+      opensAt: null,
+      closesAt: null,
       isOpen: false,
     },
     {
       day: WeekDay.SUNDAY,
-      opensAt: "08:00",
-      closesAt: "17:00",
+      opensAt: null,
+      closesAt: null,
       isOpen: false,
     },
   ];
@@ -53,11 +54,7 @@ async function main() {
       where: {
         day: openingHour.day,
       },
-      update: {
-        opensAt: openingHour.opensAt,
-        closesAt: openingHour.closesAt,
-        isOpen: openingHour.isOpen,
-      },
+      update: openingHour,
       create: openingHour,
     });
   }

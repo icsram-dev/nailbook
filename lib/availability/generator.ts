@@ -1,3 +1,5 @@
+import { endOfDay } from "date-fns";
+
 import { generateTimeSlots } from "./slots";
 import {
   getAppointments,
@@ -69,9 +71,12 @@ export async function generateAvailableSlots({
     }
 
     const isDuringVacation = vacations.some((vacation) => {
+      const vacationStart = new Date(vacation.startDate);
+      const vacationEnd = endOfDay(new Date(vacation.endDate));
+
       return (
-        vacation.startDate < slot.endTime &&
-        vacation.endDate > slot.startTime
+        vacationStart < slot.endTime &&
+        vacationEnd > slot.startTime
       );
     });
 

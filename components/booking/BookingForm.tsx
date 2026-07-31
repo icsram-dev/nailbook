@@ -7,6 +7,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { toast } from "sonner";
+
 import { useCreateAppointment } from "@/hooks/useCreateAppointment";
 
 import {
@@ -15,7 +17,7 @@ import {
 } from "@/schemas/booking";
 
 import ServiceSelect from "./ServiceSelect";
-import DatePicker from "./DatePicker";
+import DatePicker from "./BookingCalendar";
 import TimeSlots from "./TimeSlots";
 import BookingNote from "./BookingNote";
 import BookingSummary from "./BookingSummary";
@@ -51,12 +53,24 @@ export default function BookingForm() {
         startTime: new Date(data.slot),
         note: data.note,
       });
+      
 
-      router.push("/appointments");
+      toast.success("Sikeresen lefoglaltad az időpontot.");
+
+      router.push("/my-bookings");
+      router.refresh();
     } catch (error) {
       console.error("Foglalás sikertelen:", error);
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Nem sikerült lefoglalni az időpontot."
+      );
     }
   }
+
+  
 
   return (
     <FormProvider {...form}>

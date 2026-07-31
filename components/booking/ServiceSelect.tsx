@@ -1,17 +1,21 @@
 "use client";
 
+import { Clock3, CheckCircle2 } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 
 import { useServices } from "@/hooks/useServices";
 
 import type { BookingFormValues } from "@/schemas/booking";
 
+import LoadingState from "@/components/common/LoadingState";
+import ErrorState from "@/components/common/ErrorState";
+
+import { Card } from "@/components/ui/Card";
+import { Badge } from "@/components/ui/Badge";
+
 export default function ServiceSelect() {
-  const {
-    watch,
-    setValue,
-    resetField,
-  } = useFormContext<BookingFormValues>();
+  const { watch, setValue, resetField } =
+    useFormContext<BookingFormValues>();
 
   const serviceId = watch("serviceId");
 
@@ -22,14 +26,15 @@ export default function ServiceSelect() {
   } = useServices();
 
   if (isPending) {
-    return <p>Szolgáltatások betöltése...</p>;
+    return <LoadingState rows={4} />;
   }
 
   if (error) {
     return (
-      <p className="text-red-500">
-        Nem sikerült betölteni a szolgáltatásokat.
-      </p>
+      <ErrorState
+        title="Nem sikerült betölteni a szolgáltatásokat"
+        description="Próbáld meg később újra."
+      />
     );
   }
 
@@ -39,38 +44,56 @@ export default function ServiceSelect() {
         const selected = serviceId === service.id;
 
         return (
-          <button
+          <Card
             key={service.id}
-            type="button"
             onClick={() => {
               setValue("serviceId", service.id);
               resetField("date");
               resetField("slot");
             }}
-            className={`rounded-xl border p-5 text-left transition ${
-              selected
-                ? "border-blue-600 bg-blue-50"
-                : "hover:border-blue-300"
-            }`}
+            className={[
+              "cursor-pointer transition-all duration-200",
+              "hover:-translate-y-0.5 hover:shadow-md",
+              selected &&
+                "border-primary ring-primary/20 ring-2",
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
-            <h3 className="text-lg font-semibold">
-              {service.name}
-            </h3>
+            <button
+              type="button"
+              className="flex h-full w-full flex-col p-6 text-left"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-semibold">
+                    {service.name}
+                  </h3>
 
-            {service.description && (
-              <p className="mt-2 text-sm text-gray-600">
-                {service.description}
-              </p>
-            )}
+                  {service.description && (
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      {service.description}
+                    </p>
+                  )}
+                </div>
 
-            <div className="mt-4 flex justify-between text-sm text-gray-500">
-              <span>{service.duration} perc</span>
+                {selected && (
+                  <CheckCircle2 className="h-5 w-5 text-primary" />
+                )}
+              </div>
 
-              <span>
-                {service.price.toLocaleString("hu-HU")} Ft
-              </span>
-            </div>
-          </button>
+              <div className="mt-6 flex items-center justify-between">
+                <Badge variant="secondary">
+                  {service.price.toLocaleString("hu-HU")} Ft
+                </Badge>
+
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Clock3 className="h-4 w-4" />
+                  {service.duration} perc
+                </div>
+              </div>
+            </button>
+          </Card>
         );
       })}
     </div>

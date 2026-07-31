@@ -24,11 +24,19 @@ export async function PATCH(
 
     const { id } = await params;
 
-    const appointment = await prisma.appointment.findUnique({
-      where: {
-        id,
-      },
-    });
+   const appointment = await prisma.appointment.findUnique({
+  where: {
+    id,
+  },
+});
+
+console.log({
+  id: appointment?.id,
+  status: appointment?.status,
+  startTime: appointment?.startTime,
+  customerId: appointment?.customerId,
+  sessionUserId: session.user.id,
+});
 
     if (!appointment) {
       return NextResponse.json(
