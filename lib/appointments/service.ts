@@ -8,12 +8,17 @@ interface CreateAppointmentInput {
   customerId: string;
   serviceId: string;
   startTime: Date;
-  note?: string;
+  customerNote?: string;
   status?: AppointmentStatus;
 }
 
-interface UpdateAppointmentInput extends CreateAppointmentInput {
+interface UpdateAppointmentInput {
   appointmentId: string;
+  customerId: string;
+  serviceId: string;
+  startTime: Date;
+  customerNote?: string;
+  status?: AppointmentStatus;
 }
 
 export async function getAppointmentById(id: string) {
@@ -32,7 +37,7 @@ export async function createAppointment({
   customerId,
   serviceId,
   startTime,
-  note,
+  customerNote,
   status = AppointmentStatus.CONFIRMED,
 }: CreateAppointmentInput) {
   const validation = await validateAppointment({
@@ -62,7 +67,7 @@ export async function createAppointment({
       startTime,
       endTime: validation.endTime,
       price: service.price,
-      customerNote: note,
+      customerNote,
       status,
     },
     include: {
@@ -77,7 +82,7 @@ export async function updateAppointment({
   customerId,
   serviceId,
   startTime,
-  note,
+  customerNote,
   status,
 }: UpdateAppointmentInput) {
   const validation = await validateAppointment({
@@ -111,7 +116,7 @@ export async function updateAppointment({
       startTime,
       endTime: validation.endTime,
       price: service.price,
-      customerNote: note,
+      customerNote,
       status,
     },
     include: {
@@ -121,10 +126,13 @@ export async function updateAppointment({
   });
 }
 
-export async function deleteAppointment(id: string) {
-  return prisma.appointment.delete({
+export async function cancelAppointment(id: string) {
+  return prisma.appointment.update({
     where: {
       id,
+    },
+    data: {
+      status: AppointmentStatus.CANCELLED,
     },
   });
 }

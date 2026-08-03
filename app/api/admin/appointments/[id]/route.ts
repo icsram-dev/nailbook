@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { AppointmentStatus } from "@prisma/client";
 
 import {
-  deleteAppointment,
+  cancelAppointment,
   getAppointmentById,
   updateAppointment,
 } from "@/lib/appointments/service";
@@ -19,7 +19,7 @@ export async function GET(
     if (!appointment) {
       return NextResponse.json(
         {
-          message: "A foglalás nem található.",
+          error: "A foglalás nem található.",
         },
         {
           status: 404,
@@ -28,10 +28,12 @@ export async function GET(
     }
 
     return NextResponse.json(appointment);
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
-        message: "Hiba történt.",
+        error: "Hiba történt.",
       },
       {
         status: 500,
@@ -40,7 +42,7 @@ export async function GET(
   }
 }
 
-export async function PATCH(
+export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -54,15 +56,17 @@ export async function PATCH(
       customerId: body.customerId,
       serviceId: body.serviceId,
       startTime: new Date(body.startTime),
-      note: body.note,
+      customerNote: body.customerNote ?? null,
       status: body.status as AppointmentStatus,
     });
 
     return NextResponse.json(appointment);
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
-        message:
+        error:
           error instanceof Error
             ? error.message
             : "Hiba történt.",
@@ -81,15 +85,17 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await deleteAppointment(id);
+    await cancelAppointment(id);
 
     return NextResponse.json({
       success: true,
     });
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
-        message: "Nem sikerült törölni a foglalást.",
+        error: "Nem sikerült törölni a foglalást.",
       },
       {
         status: 500,

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { appointmentSchema } from "@/schemas/appointment";
-import { updateAppointment } from "@/lib/appointments/service";
+import { updateAppointment, cancelAppointment } from "@/lib/appointments/service";
 
 type RouteContext = {
   params: Promise<{
@@ -19,6 +19,10 @@ export async function GET(
     const appointment = await prisma.appointment.findUnique({
       where: {
         id,
+      },
+      include: {
+        customer: true,
+        service: true,
       },
     });
 
@@ -85,11 +89,7 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    await prisma.appointment.delete({
-      where: {
-        id,
-      },
-    });
+    await cancelAppointment(id);
 
     return NextResponse.json({
       success: true,

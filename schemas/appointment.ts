@@ -2,6 +2,8 @@ import { AppointmentStatus } from "@prisma/client";
 import { z } from "zod";
 
 export const appointmentSchema = z.object({
+  customerId: z.string().cuid(),
+
   serviceId: z.string().cuid(),
 
   startTime: z.coerce.date(),

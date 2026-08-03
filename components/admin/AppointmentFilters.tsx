@@ -62,10 +62,6 @@ export default function AppointmentFilters() {
     Megerősítve
   </option>
 
-  <option value={AppointmentStatus.IN_PROGRESS}>
-    Folyamatban
-  </option>
-
   <option value={AppointmentStatus.COMPLETED}>
     Befejezve
   </option>

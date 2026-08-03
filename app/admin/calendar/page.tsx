@@ -1,45 +1,15 @@
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import { CalendarView } from "@/components/calendar/CalendarView";
-import { prisma } from "@/lib/prisma";
+import { Calendar } from "@/components/calendar/Calendar";
 
-export default async function CalendarPage() {
-  const [appointments, customers, services] =
-    await Promise.all([
-      prisma.appointment.findMany({
-        include: {
-          customer: true,
-          service: true,
-        },
-        orderBy: {
-          startTime: "asc",
-        },
-      }),
-
-      prisma.user.findMany({
-        orderBy: {
-          name: "asc",
-        },
-      }),
-
-      prisma.service.findMany({
-        orderBy: {
-          name: "asc",
-        },
-      }),
-    ]);
-
+export default function CalendarPage() {
   return (
     <>
       <AdminPageHeader
         title="Naptár"
-        description="Foglalások heti áttekintése."
+        description="Foglalások kezelése."
       />
 
-      <CalendarView
-        appointments={appointments}
-        customers={customers}
-        services={services}
-      />
+      <Calendar />
     </>
   );
 }

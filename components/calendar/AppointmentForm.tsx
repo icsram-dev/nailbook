@@ -18,6 +18,7 @@ type Customer = {
 type Service = {
   id: string;
   name: string;
+  description: string | null;
   duration: number;
   price: number;
 };
@@ -30,18 +31,44 @@ export function AppointmentForm({
 }: AppointmentFormProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
-  const [loadedStartTime, setLoadedStartTime] = useState<string | null>(null);
+
+  const [date, setDate] = useState("");
+const [time, setTime] = useState("");
+const [customer, setCustomer] = useState<{
+  name: string;
+  email: string;
+  phone: string;
+} | null>(null);
 
   const [customerId, setCustomerId] = useState("");
   const [serviceId, setServiceId] = useState("");
+  const [customerNote, setCustomerNote] = useState("");
+const [internalNote, setInternalNote] = useState("");
   const [status, setStatus] = useState("CONFIRMED");
 
   const [loading, setLoading] = useState(false);
 
   const isEditMode = !!appointmentId;
 
-  const startTime =
-    appointmentId && loadedStartTime ? loadedStartTime : selectedDate;
+ const startTime =
+  date && time
+    ? new Date(`${date}T${time}:00`).toISOString()
+    : null;
+
+useEffect(() => {
+  if (!selectedDate || appointmentId) return;
+
+  const start = new Date(selectedDate);
+
+  setDate(start.toISOString().split("T")[0]);
+
+  setTime(
+    start.toLocaleTimeString("hu-HU", {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
+  );
+}, [selectedDate, appointmentId]);
 
   useEffect(() => {
     async function loadData() {
@@ -69,6 +96,7 @@ export function AppointmentForm({
       return;
     }
 
+
     async function loadAppointment() {
       try {
         const res = await fetch(`/api/appointments/${appointmentId}`);
@@ -77,11 +105,23 @@ export function AppointmentForm({
           throw new Error("Nem sikerült betölteni a foglalást.");
         }
 
-        const appointment = await res.json();
+       const appointment = await res.json();
 
-        setCustomerId(appointment.customerId);
-        setServiceId(appointment.serviceId);
-        setLoadedStartTime(appointment.startTime);
+setCustomer(appointment.customer);
+
+setCustomerId(appointment.customerId);
+setServiceId(appointment.serviceId);
+       
+        const start = new Date(appointment.startTime);
+
+setDate(start.toISOString().split("T")[0]);
+
+setTime(
+  start.toLocaleTimeString("hu-HU", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+);
         setStatus(appointment.status);
       } catch (error) {
         console.error(error);
@@ -124,12 +164,14 @@ export function AppointmentForm({
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          customerId,
-          serviceId,
-          startTime,
-          status,
-        }),
+       body: JSON.stringify({
+  customerId,
+  serviceId,
+  startTime,
+  status,
+  customerNote,
+  internalNote,
+}),
       });
 
       const data = await res.json();
@@ -152,36 +194,77 @@ export function AppointmentForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {isEditMode && customer && (
+  <div className="rounded-2xl border border-pink-100 bg-pink-50 p-5">
+    <h3 className="text-lg font-semibold text-gray-900">
+      {customer.name}
+    </h3>
+
+    <div className="mt-3 space-y-2 text-sm text-gray-600">
+      <div>📞 {customer.phone}</div>
+      <div>✉️ {customer.email}</div>
+    </div>
+  </div>
+)}
       {startTime && (
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Kezdési idő
           </label>
+        
 
-          <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-            {new Date(startTime).toLocaleString("hu-HU")}
-          </div>
+         <div className="grid grid-cols-2 gap-4">
+  <div>
+    <label className="mb-1 block text-sm font-medium text-gray-700">
+      Dátum
+    </label>
+
+    <input
+      type="date"
+      value={date}
+      onChange={(e) => setDate(e.target.value)}
+      className="w-full rounded-xl border border-gray-300 p-3"
+    />
+  </div>
+
+  <div>
+    <label className="mb-1 block text-sm font-medium text-gray-700">
+      Kezdés
+    </label>
+
+    <input
+      type="time"
+      value={time}
+      onChange={(e) => setTime(e.target.value)}
+      className="w-full rounded-xl border border-gray-300 p-3"
+    />
+  </div>
+</div>
         </div>
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Vendég
-        </label>
+      {!isEditMode && (
+  <div>
+    <label className="mb-1 block text-sm font-medium text-gray-700">
+      Vendég
+    </label>
 
-        <select
-          value={customerId}
-          onChange={(e) => setCustomerId(e.target.value)}
-          className="w-full rounded-xl border border-gray-300 p-3"
-        >
-          <option value="">Válassz vendéget...</option>
+    <select
+      value={customerId}
+      onChange={(e) => setCustomerId(e.target.value)}
+      className="w-full rounded-xl border border-gray-300 p-3"
+    >
+      <option value="">Válassz vendéget...</option>
 
-          {customers.map((customer) => (
-            <option key={customer.id} value={customer.id}>
-              {customer.name}
-            </option>
-          ))}
-        </select>
+      {customers.map((customer) => (
+        <option key={customer.id} value={customer.id}>
+          {customer.name}
+        </option>
+      ))}
+    </select>
+  </div>
+)}
       </div>
 
       <div>
@@ -198,11 +281,39 @@ export function AppointmentForm({
 
           {services.map((service) => (
             <option key={service.id} value={service.id}>
-              {service.name}
-            </option>
+  {service.name}
+  {service.description ? ` – ${service.description}` : ""}
+</option>
           ))}
         </select>
       </div>
+      <div>
+  <label className="mb-1 block text-sm font-medium text-gray-700">
+    Vendég megjegyzése
+  </label>
+
+  <textarea
+    value={customerNote}
+    onChange={(e) => setCustomerNote(e.target.value)}
+    rows={3}
+    className="w-full rounded-xl border border-gray-300 p-3"
+    placeholder="A vendég által megadott megjegyzés..."
+  />
+</div>
+
+<div>
+  <label className="mb-1 block text-sm font-medium text-gray-700">
+    Belső megjegyzés
+  </label>
+
+  <textarea
+    value={internalNote}
+    onChange={(e) => setInternalNote(e.target.value)}
+    rows={3}
+    className="w-full rounded-xl border border-gray-300 p-3"
+    placeholder="Csak az admin látja..."
+  />
+</div>
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">
           Státusz
@@ -251,7 +362,10 @@ export function AppointmentForm({
               </label>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                {endDate.toLocaleString("hu-HU")}
+                {endDate.toLocaleTimeString("hu-HU", {
+  hour: "2-digit",
+  minute: "2-digit",
+})}
               </div>
             </div>
           )}

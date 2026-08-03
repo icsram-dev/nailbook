@@ -12,14 +12,68 @@ export async function GET() {
 
     if (!session?.user?.id) {
       return NextResponse.json(
-        {
-          error: "Bejelentkezés szükséges.",
-        },
-        {
-          status: 401,
-        }
+        { error: "Bejelentkezés szükséges." },
+        { status: 401 }
       );
     }
+
+    const appointments = await prisma.appointment.findMany({
+      include: {
+        customer: true,
+        service: true,
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+    });
+
+    const events = appointments.map((appointment) => {
+      const colors = {
+        PENDING: "#f59e0b",
+        CONFIRMED: "#22c55e",
+        COMPLETED: "#3b82f6",
+        CANCELLED: "#ef4444",
+        NO_SHOW: "#6b7280",
+      };
+
+      return {
+        id: appointment.id,
+        title: `${appointment.customer.name}\n${appointment.service.name}`,
+        start: appointment.startTime,
+        end: appointment.endTime,
+
+        backgroundColor:
+          colors[appointment.status],
+
+        borderColor:
+          colors[appointment.status],
+
+        extendedProps: {
+          customerId: appointment.customer.id,
+          customerName: appointment.customer.name,
+
+          serviceId: appointment.service.id,
+          serviceName: appointment.service.name,
+
+          status: appointment.status,
+
+          note: appointment.note,
+        },
+      };
+    });
+
+    return NextResponse.json(events);
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Hiba történt.",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
 
     const appointments = await prisma.appointment.findMany({
       where: {

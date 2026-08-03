@@ -19,10 +19,7 @@ const statusConfig: Record<
     label: "Megerősítve",
     className: "bg-green-100 text-green-800",
   },
-  IN_PROGRESS: {
-    label: "Folyamatban",
-    className: "bg-blue-100 text-blue-800",
-  },
+
   COMPLETED: {
     label: "Teljesítve",
     className: "bg-emerald-100 text-emerald-800",

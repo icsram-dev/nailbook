@@ -1,3 +1,4 @@
+import { AppointmentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 interface CheckAppointmentOverlapParams {
@@ -13,14 +14,17 @@ export async function checkAppointmentOverlap({
 }: CheckAppointmentOverlapParams): Promise<boolean> {
   const overlappingAppointment = await prisma.appointment.findFirst({
     where: {
-      id: appointmentId
-        ? {
-            not: appointmentId,
-          }
-        : undefined,
+      ...(appointmentId && {
+        id: {
+          not: appointmentId,
+        },
+      }),
 
       status: {
-        notIn: ["CANCELLED", "NO_SHOW"],
+        notIn: [
+          AppointmentStatus.CANCELLED,
+          AppointmentStatus.NO_SHOW,
+        ],
       },
 
       startTime: {
@@ -31,10 +35,11 @@ export async function checkAppointmentOverlap({
         gt: startTime,
       },
     },
+
     select: {
       id: true,
     },
   });
 
-  return overlappingAppointment !== null;
+  return !!overlappingAppointment;
 }

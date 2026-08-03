@@ -10,7 +10,6 @@ const statusVariants: Record<
 > = {
   PENDING: "warning",
   CONFIRMED: "success",
-  IN_PROGRESS: "info",
   COMPLETED: "default",
   CANCELLED: "danger",
   NO_SHOW: "danger",
@@ -19,7 +18,6 @@ const statusVariants: Record<
 const statusLabels: Record<AppointmentStatus, string> = {
   PENDING: "Függő",
   CONFIRMED: "Megerősítve",
-  IN_PROGRESS: "Folyamatban",
   COMPLETED: "Befejezve",
   CANCELLED: "Lemondva",
   NO_SHOW: "Nem jelent meg",
@@ -31,9 +29,12 @@ export async function UpcomingAppointments() {
       startTime: {
         gte: new Date(),
       },
-      status: {
-        in: ["PENDING", "CONFIRMED", "IN_PROGRESS"],
-      },
+    status: {
+  in: [
+    AppointmentStatus.PENDING,
+    AppointmentStatus.CONFIRMED,
+  ],
+},
     },
     include: {
       customer: true,

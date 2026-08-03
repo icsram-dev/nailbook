@@ -19,12 +19,12 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-  });
+  name: "",
+  email: "",
+  phone: "+36 ",
+  password: "",
+  confirmPassword: "",
+});
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -142,56 +142,62 @@ export default function RegisterPage() {
 
           {/* Telefonszám */}
 
-          <div className="relative">
-            <Phone
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+          {/* Telefonszám */}
 
-            <input
-              required
-              type="tel"
-              placeholder="+36 30 358 0496"
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
-              value={form.phone}
-              autoComplete="tel"
-              maxLength={17}
-              onChange={(e) => {
-                let value = e.target.value;
+<div className="relative">
+  <Phone
+    size={18}
+    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+  />
 
-                value = value.replace(/[^\d+]/g, "");
+  <input
+    required
+    type="tel"
+    className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+    value={form.phone}
+    autoComplete="tel"
+    maxLength={17}
+    onFocus={() => {
+      if (!form.phone) {
+        setForm((prev) => ({
+          ...prev,
+          phone: "+36 ",
+        }));
+      }
+    }}
+    onChange={(e) => {
+      let value = e.target.value;
 
-                if (value.includes("+")) {
-                  value = "+" + value.substring(1).replace(/\+/g, "");
-                }
+      if (!value.startsWith("+36")) {
+        value = "+36 ";
+      }
 
-                if (value.startsWith("+36")) {
-                  const digits = value.slice(3).replace(/\D/g, "");
+      const digits = value
+        .replace("+36", "")
+        .replace(/\D/g, "")
+        .slice(0, 9);
 
-                  let formatted = "+36";
+      let formatted = "+36 ";
 
-                  if (digits.length > 0) {
-                    formatted += " " + digits.slice(0, 2);
-                  }
+      if (digits.length > 0) {
+        formatted += digits.slice(0, 2);
+      }
 
-                  if (digits.length > 2) {
-                    formatted += " " + digits.slice(2, 5);
-                  }
+      if (digits.length > 2) {
+        formatted += " " + digits.slice(2, 5);
+      }
 
-                  if (digits.length > 5) {
-                    formatted += " " + digits.slice(5, 9);
-                  }
+      if (digits.length > 5) {
+        formatted += " " + digits.slice(5, 9);
+      }
 
-                  value = formatted;
-                }
-
-                setForm((prev) => ({
-                  ...prev,
-                  phone: value,
-                }));
-              }}
-            />
-          </div>
+      setForm((prev) => ({
+        ...prev,
+        phone: formatted,
+      }));
+    }}
+  />
+</div>
 
           {/* Jelszó */}
           <div className="relative">
