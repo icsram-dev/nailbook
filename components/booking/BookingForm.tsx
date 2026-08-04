@@ -53,11 +53,10 @@ export default function BookingForm() {
         startTime: new Date(data.slot),
         note: data.note,
       });
-      
 
       toast.success("Sikeresen lefoglaltad az időpontot.");
 
-      router.push("/my-bookings");
+      router.push("/booking/success");
       router.refresh();
     } catch (error) {
       console.error("Foglalás sikertelen:", error);
@@ -69,8 +68,6 @@ export default function BookingForm() {
       );
     }
   }
-
-  
 
   return (
     <FormProvider {...form}>

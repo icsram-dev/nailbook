@@ -1,5 +1,4 @@
 export interface AppointmentValidationInput {
-  customerId: string;
   serviceId: string;
   startTime: Date;
   appointmentId?: string;

@@ -41,10 +41,9 @@ export async function createAppointment({
   status = AppointmentStatus.CONFIRMED,
 }: CreateAppointmentInput) {
   const validation = await validateAppointment({
-    customerId,
-    serviceId,
-    startTime,
-  });
+  serviceId,
+  startTime,
+});
 
   if (!validation.ok) {
     throw new Error(validation.message);
@@ -86,11 +85,10 @@ export async function updateAppointment({
   status,
 }: UpdateAppointmentInput) {
   const validation = await validateAppointment({
-    customerId,
-    serviceId,
-    startTime,
-    appointmentId,
-  });
+  serviceId,
+  startTime,
+  appointmentId,
+});
 
   if (!validation.ok) {
     throw new Error(validation.message);
