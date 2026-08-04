@@ -1,9 +1,11 @@
+import { randomUUID } from "crypto";
+
 import { AppointmentStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
+import { sendBookingConfirmation } from "@/lib/mail";
 
 import { validateAppointment } from "./validation";
-import { sendBookingConfirmation } from "@/lib/mail";
 
 interface CreateAppointmentInput {
   customerId: string;
@@ -69,6 +71,7 @@ export async function createAppointment({
       price: service.price,
       customerNote,
       status,
+      cancelToken: randomUUID(),
     },
     include: {
       customer: true,
@@ -76,23 +79,28 @@ export async function createAppointment({
     },
   });
 
- try {
-  await sendBookingConfirmation({
-    to: appointment.customer.email,
-    customerName: appointment.customer.name,
-    serviceName: appointment.service.name,
-    appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
-    appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
-      hour: "2-digit",
-      minute: "2-digit",
-    }),
-  });
-} catch (error) {
-  console.error(
-    "Nem sikerült elküldeni a visszaigazoló e-mailt:",
-    error
-  );
-};
+  try {
+    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
+
+    await sendBookingConfirmation({
+      to: appointment.customer.email,
+      customerName: appointment.customer.name,
+      serviceName: appointment.service.name,
+      appointmentDate:
+        appointment.startTime.toLocaleDateString("hu-HU"),
+      appointmentTime:
+        appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      cancelUrl,
+    });
+  } catch (error) {
+    console.error(
+      "Nem sikerült elküldeni a visszaigazoló e-mailt:",
+      error
+    );
+  }
 
   return appointment;
 }

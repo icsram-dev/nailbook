@@ -1,5 +1,6 @@
 import {
   Body,
+  Button,
   Container,
   Head,
   Heading,
@@ -15,6 +16,7 @@ type BookingConfirmationProps = {
   serviceName: string;
   appointmentDate: string;
   appointmentTime: string;
+  cancelUrl: string;
 };
 
 export function BookingConfirmation({
@@ -22,6 +24,7 @@ export function BookingConfirmation({
   serviceName,
   appointmentDate,
   appointmentTime,
+  cancelUrl,
 }: BookingConfirmationProps) {
   return (
     <Html>
@@ -34,8 +37,7 @@ export function BookingConfirmation({
       <Body
         style={{
           backgroundColor: "#f6f6f6",
-          fontFamily:
-            "Arial, Helvetica, sans-serif",
+          fontFamily: "Arial, Helvetica, sans-serif",
           padding: "32px 0",
         }}
       >
@@ -61,8 +63,7 @@ export function BookingConfirmation({
           <Text>Szia {customerName}! 👋</Text>
 
           <Text>
-            Köszönjük, hogy a NailBookot
-            választottad! Az időpontodat
+            Köszönjük, hogy a NailBookot választottad! Az időpontodat
             sikeresen lefoglaltuk.
           </Text>
 
@@ -76,31 +77,48 @@ export function BookingConfirmation({
             }}
           >
             <Text>
-              <strong>💅 Szolgáltatás:</strong>{" "}
-              {serviceName}
+              <strong>💅 Szolgáltatás:</strong> {serviceName}
             </Text>
 
             <Text>
-              <strong>📅 Dátum:</strong>{" "}
-              {appointmentDate}
+              <strong>📅 Dátum:</strong> {appointmentDate}
             </Text>
 
             <Text>
-              <strong>🕒 Időpont:</strong>{" "}
-              {appointmentTime}
+              <strong>🕒 Időpont:</strong> {appointmentTime}
             </Text>
           </Section>
 
           <Text>
-            Kérünk, hogy néhány perccel az
-            időpont előtt érkezz meg.
+            Kérünk, hogy néhány perccel az időpont előtt érkezz meg.
           </Text>
 
           <Text>
-            Ha mégsem megfelelő az időpont,
-            kérjük, mondd le időben, hogy más
+            Ha mégsem megfelelő az időpont, kérjük, mondd le időben, hogy más
             vendég is foglalhasson.
           </Text>
+
+          <Hr />
+
+          <Text>
+            Ha mégsem megfelelő az időpont, az alábbi gombra kattintva
+            lemondhatod:
+          </Text>
+
+          <Button
+            href={cancelUrl}
+            style={{
+              backgroundColor: "#ec4899",
+              color: "#ffffff",
+              padding: "12px 20px",
+              borderRadius: "8px",
+              textDecoration: "none",
+              display: "inline-block",
+              fontWeight: "bold",
+            }}
+          >
+            Időpont lemondása
+          </Button>
 
           <Hr />
 
