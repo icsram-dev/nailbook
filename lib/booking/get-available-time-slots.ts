@@ -65,8 +65,11 @@ export async function getAvailableTimeSlots({
       prisma.appointment.findMany({
         where: {
           status: {
-            not: "CANCELLED",
-          },
+  notIn: [
+    "CANCELLED",
+    "NO_SHOW",
+  ],
+},
           startTime: {
             gte: dayStart,
             lte: dayEnd,
