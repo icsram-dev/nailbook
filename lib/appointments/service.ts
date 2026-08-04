@@ -3,6 +3,7 @@ import { AppointmentStatus } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 import { validateAppointment } from "./validation";
+import { sendBookingConfirmation } from "@/lib/mail";
 
 interface CreateAppointmentInput {
   customerId: string;
@@ -41,9 +42,9 @@ export async function createAppointment({
   status = AppointmentStatus.CONFIRMED,
 }: CreateAppointmentInput) {
   const validation = await validateAppointment({
-  serviceId,
-  startTime,
-});
+    serviceId,
+    startTime,
+  });
 
   if (!validation.ok) {
     throw new Error(validation.message);
@@ -59,7 +60,7 @@ export async function createAppointment({
     throw new Error("A szolgáltatás nem található.");
   }
 
-  return prisma.appointment.create({
+  const appointment = await prisma.appointment.create({
     data: {
       customerId,
       serviceId,
@@ -74,6 +75,26 @@ export async function createAppointment({
       service: true,
     },
   });
+
+ try {
+  await sendBookingConfirmation({
+    to: appointment.customer.email,
+    customerName: appointment.customer.name,
+    serviceName: appointment.service.name,
+    appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+    appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  });
+} catch (error) {
+  console.error(
+    "Nem sikerült elküldeni a visszaigazoló e-mailt:",
+    error
+  );
+};
+
+  return appointment;
 }
 
 export async function updateAppointment({
@@ -85,10 +106,10 @@ export async function updateAppointment({
   status,
 }: UpdateAppointmentInput) {
   const validation = await validateAppointment({
-  serviceId,
-  startTime,
-  appointmentId,
-});
+    serviceId,
+    startTime,
+    appointmentId,
+  });
 
   if (!validation.ok) {
     throw new Error(validation.message);

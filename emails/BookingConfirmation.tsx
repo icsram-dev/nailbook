@@ -28,60 +28,97 @@ export function BookingConfirmation({
       <Head />
 
       <Preview>
-        Időpontfoglalás visszaigazolása
+        Sikeres időpontfoglalás – NailBook
       </Preview>
 
       <Body
         style={{
-          backgroundColor: "#f5f5f5",
-          fontFamily: "Arial, sans-serif",
+          backgroundColor: "#f6f6f6",
+          fontFamily:
+            "Arial, Helvetica, sans-serif",
+          padding: "32px 0",
         }}
       >
         <Container
           style={{
             backgroundColor: "#ffffff",
-            margin: "40px auto",
-            padding: "32px",
-            borderRadius: "12px",
+            maxWidth: "560px",
+            margin: "0 auto",
+            padding: "40px",
+            borderRadius: "16px",
           }}
         >
-          <Heading>NailBook</Heading>
+          <Heading
+            style={{
+              textAlign: "center",
+              color: "#db2777",
+              marginBottom: "24px",
+            }}
+          >
+            💅 NailBook
+          </Heading>
 
           <Text>Szia {customerName}! 👋</Text>
 
           <Text>
-            Köszönjük a foglalásodat.
+            Köszönjük, hogy a NailBookot
+            választottad! Az időpontodat
+            sikeresen lefoglaltuk.
           </Text>
 
-          <Hr />
-
-          <Section>
+          <Section
+            style={{
+              backgroundColor: "#fdf2f8",
+              border: "1px solid #fbcfe8",
+              borderRadius: "12px",
+              padding: "20px",
+              margin: "28px 0",
+            }}
+          >
             <Text>
-              <strong>Szolgáltatás:</strong>{" "}
+              <strong>💅 Szolgáltatás:</strong>{" "}
               {serviceName}
             </Text>
 
             <Text>
-              <strong>Dátum:</strong>{" "}
+              <strong>📅 Dátum:</strong>{" "}
               {appointmentDate}
             </Text>
 
             <Text>
-              <strong>Időpont:</strong>{" "}
+              <strong>🕒 Időpont:</strong>{" "}
               {appointmentTime}
             </Text>
           </Section>
 
-          <Hr />
-
           <Text>
-            Várunk szeretettel!
+            Kérünk, hogy néhány perccel az
+            időpont előtt érkezz meg.
           </Text>
 
           <Text>
-            Üdvözlettel,
-            <br />
-            NailBook
+            Ha mégsem megfelelő az időpont,
+            kérjük, mondd le időben, hogy más
+            vendég is foglalhasson.
+          </Text>
+
+          <Hr />
+
+          <Text
+            style={{
+              color: "#6b7280",
+              fontSize: "14px",
+            }}
+          >
+            Várunk szeretettel!
+          </Text>
+
+          <Text
+            style={{
+              fontWeight: "bold",
+            }}
+          >
+            NailBook 💗
           </Text>
         </Container>
       </Body>
