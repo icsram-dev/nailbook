@@ -1,8 +1,12 @@
-import { prisma } from "@/lib/prisma";
 import { Role } from "@prisma/client";
+
+import { prisma } from "@/lib/prisma";
 
 export async function getCustomers() {
   const customers = await prisma.user.findMany({
+    where: {
+      role: Role.CUSTOMER,
+    },
     select: {
       id: true,
       name: true,
@@ -20,40 +24,56 @@ export async function getCustomers() {
         select: {
           price: true,
           startTime: true,
-        },
-        orderBy: {
-          startTime: "desc",
+          status: true,
         },
       },
     },
-     where: {
-  role: Role.CUSTOMER,
-},
-
     orderBy: {
       name: "asc",
     },
   });
 
-  console.log("Customers:", customers);
+  return customers.map((customer) => {
+    const sortedAppointments = [...customer.appointments].sort(
+      (a, b) =>
+        b.startTime.getTime() - a.startTime.getTime()
+    );
 
-  return customers.map((customer) => ({
-    id: customer.id,
-    name: customer.name,
-    email: customer.email,
-    phone: customer.phone,
-    role: customer.role,
+    const nextAppointment = customer.appointments
+      .filter(
+        (appointment) =>
+          appointment.status === "CONFIRMED" &&
+          appointment.startTime > new Date()
+      )
+      .sort(
+        (a, b) =>
+          a.startTime.getTime() -
+          b.startTime.getTime()
+      )[0];
 
-    appointmentCount: customer._count.appointments,
+    return {
+      id: customer.id,
+      name: customer.name,
+      email: customer.email,
+      phone: customer.phone,
+      role: customer.role,
 
-    totalSpent: customer.appointments.reduce(
-      (sum, appointment) => sum + appointment.price,
-      0
-    ),
+      appointmentCount:
+        customer._count.appointments,
 
-    lastAppointment:
-      customer.appointments[0]?.startTime ?? null,
-  }));
+      totalSpent: customer.appointments.reduce(
+        (sum, appointment) =>
+          sum + appointment.price,
+        0
+      ),
+
+      lastAppointment:
+        sortedAppointments[0]?.startTime ?? null,
+
+      nextAppointment:
+        nextAppointment?.startTime ?? null,
+    };
+  });
 }
 
 export async function getCustomerById(id: string) {
@@ -83,9 +103,22 @@ export async function getCustomerById(id: string) {
   }
 
   const totalSpent = customer.appointments.reduce(
-    (sum, appointment) => sum + appointment.price,
+    (sum, appointment) =>
+      sum + appointment.price,
     0
   );
+
+  const nextAppointment = customer.appointments
+    .filter(
+      (appointment) =>
+        appointment.status === "CONFIRMED" &&
+        appointment.startTime > new Date()
+    )
+    .sort(
+      (a, b) =>
+        a.startTime.getTime() -
+        b.startTime.getTime()
+    )[0];
 
   return {
     id: customer.id,
@@ -93,12 +126,17 @@ export async function getCustomerById(id: string) {
     email: customer.email,
     phone: customer.phone,
 
-    appointmentCount: customer.appointments.length,
+    appointmentCount:
+      customer.appointments.length,
 
     totalSpent,
 
     lastAppointment:
-      customer.appointments[0]?.startTime ?? null,
+      customer.appointments[0]?.startTime ??
+      null,
+
+    nextAppointment:
+      nextAppointment?.startTime ?? null,
 
     appointments: customer.appointments,
   };

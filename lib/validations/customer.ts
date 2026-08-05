@@ -15,7 +15,7 @@ export const customerSchema = z.object({
   phone: z
     .string()
     .trim()
-    .optional(),
+    .min(8, "Adj meg egy telefonszámot."),
 });
 
 export type CustomerInput = z.input<typeof customerSchema>;

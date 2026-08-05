@@ -1,15 +1,14 @@
-import TodayAppointments from "@/components/admin/TodayAppointments";
 import DashboardCard from "@/components/admin/DashboardCard";
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
-import WeeklyRevenueChart from "@/components/admin/WeeklyRevenueChart";
+import PendingAppointments from "@/components/admin/PendingAppointments";
 import { getDashboardData } from "@/lib/dashboard";
 
 import {
   CalendarDays,
-  Users,
-  Scissors,
   Wallet,
   Banknote,
+  Clock3,
+  CircleX,
 } from "lucide-react";
 
 export default async function AdminPage() {
@@ -24,28 +23,11 @@ export default async function AdminPage() {
 
       <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
         <DashboardCard
-          title="Vendégek"
-          value={dashboard.customerCount}
-          icon={<Users size={30} />}
-        />
-
-        <DashboardCard
-          title="Szolgáltatások"
-          value={dashboard.serviceCount}
-          icon={<Scissors size={30} />}
-        />
-
-        <DashboardCard
-          title="Összes foglalás"
-          value={dashboard.appointmentCount}
-          icon={<CalendarDays size={30} />}
-        />
-
-        <DashboardCard
           title="Mai foglalások"
           value={dashboard.todayAppointments}
           icon={<CalendarDays size={30} />}
           color="bg-green-100 text-green-600"
+          href="/admin/calendar"
         />
 
         <DashboardCard
@@ -53,6 +35,15 @@ export default async function AdminPage() {
           value={dashboard.tomorrowAppointments}
           icon={<CalendarDays size={30} />}
           color="bg-indigo-100 text-indigo-600"
+          href="/admin/calendar"
+        />
+
+        <DashboardCard
+          title="Jóváhagyásra vár"
+          value={dashboard.pendingAppointments}
+          icon={<Clock3 size={30} />}
+          color="bg-amber-100 text-amber-600"
+          href="/admin/calendar?status=pending"
         />
 
         <DashboardCard
@@ -72,16 +63,20 @@ export default async function AdminPage() {
           icon={<Banknote size={30} />}
           color="bg-yellow-100 text-yellow-600"
         />
-      </div>
 
-      <div className="mt-10">
-        <WeeklyRevenueChart
-          data={dashboard.weeklyChart}
+        <DashboardCard
+          title="Lemondások"
+          value={dashboard.cancelledAppointments}
+          icon={<CircleX size={30} />}
+          color="bg-red-100 text-red-600"
+          href="/admin/cancelled"
         />
       </div>
 
       <div className="mt-10">
-        <TodayAppointments />
+        <PendingAppointments
+          appointments={dashboard.pendingList}
+        />
       </div>
     </>
   );

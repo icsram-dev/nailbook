@@ -13,6 +13,7 @@ const STATUS_LABELS = {
 
 type Appointment = {
   id: string;
+
   customerName: string;
   customerPhone?: string | null;
   customerEmail?: string | null;
@@ -37,6 +38,9 @@ type Props = {
   onClose: () => void;
   onEdit: () => void;
   onDelete: () => void;
+
+  // Később fogjuk bekötni
+  onConfirm?: () => void;
 };
 
 export function AppointmentDetailsModal({
@@ -45,6 +49,7 @@ export function AppointmentDetailsModal({
   onClose,
   onEdit,
   onDelete,
+  onConfirm,
 }: Props) {
   if (!appointment) return null;
 
@@ -61,11 +66,13 @@ export function AppointmentDetailsModal({
           </h3>
 
           <p className="text-gray-500">
-            {appointment.customerPhone || "Nincs telefonszám"}
+            {appointment.customerPhone ??
+              "Nincs telefonszám"}
           </p>
 
           <p className="text-gray-500">
-            {appointment.customerEmail || "Nincs e-mail"}
+            {appointment.customerEmail ??
+              "Nincs e-mail"}
           </p>
         </div>
 
@@ -87,34 +94,40 @@ export function AppointmentDetailsModal({
         </div>
 
         <div className="rounded-xl border p-4">
-      <p>
-  <strong>Kezdés:</strong>{" "}
-  {new Date(appointment.startTime).toLocaleString("hu-HU", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  })}
-</p>
-
-<p>
-  <strong>Befejezés:</strong>{" "}
-  {new Date(appointment.endTime).toLocaleString("hu-HU", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    hour: "2-digit",
-    minute: "2-digit",
-  })}
-</p>
+          <p>
+            <strong>Kezdés:</strong>{" "}
+            {new Date(
+              appointment.startTime
+            ).toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
 
           <p>
-  <strong>Státusz:</strong>{" "}
-  {STATUS_LABELS[
-    appointment.status as keyof typeof STATUS_LABELS
-  ]}
-</p>
+            <strong>Befejezés:</strong>{" "}
+            {new Date(
+              appointment.endTime
+            ).toLocaleString("hu-HU", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+
+          <p>
+            <strong>Státusz:</strong>{" "}
+            {
+              STATUS_LABELS[
+                appointment.status as keyof typeof STATUS_LABELS
+              ]
+            }
+          </p>
         </div>
 
         {appointment.customerNote && (
@@ -138,6 +151,17 @@ export function AppointmentDetailsModal({
         )}
 
         <div className="flex justify-end gap-3">
+          {appointment.status === "PENDING" &&
+            onConfirm && (
+              <Button
+                type="button"
+                className="bg-green-600 hover:bg-green-700"
+                onClick={onConfirm}
+              >
+                ✓ Jóváhagyás
+              </Button>
+            )}
+
           <Button
             type="button"
             className="bg-red-600 hover:bg-red-700"

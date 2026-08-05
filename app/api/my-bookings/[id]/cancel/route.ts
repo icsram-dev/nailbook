@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
+import { sendBookingCancelledByCustomer } from "@/lib/mail";
 
 type Props = {
   params: Promise<{
@@ -80,15 +81,45 @@ if (hours < 24) {
 }
 
     const updated = await prisma.appointment.update({
-      where: {
-        id,
-      },
-      data: {
-        status: "CANCELLED",
-      },
-    });
+  where: {
+    id,
+  },
+  data: {
+  status: "CANCELLED",
 
-    return NextResponse.json(updated);
+  cancelledBy: "CUSTOMER",
+  cancelledAt: new Date(),
+},
+  include: {
+    customer: true,
+    service: true,
+  },
+});
+
+try {
+  await sendBookingCancelledByCustomer({
+    to: updated.customer.email,
+    customerName: updated.customer.name,
+    serviceName: updated.service.name,
+    appointmentDate: updated.startTime.toLocaleDateString(
+      "hu-HU"
+    ),
+    appointmentTime: updated.startTime.toLocaleTimeString(
+      "hu-HU",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    ),
+  });
+} catch (error) {
+  console.error(
+    "Nem sikerült elküldeni a lemondási visszaigazolást:",
+    error
+  );
+}
+
+return NextResponse.json(updated);
   } catch (error) {
     console.error(error);
 

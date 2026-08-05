@@ -19,6 +19,11 @@ enum AppointmentStatus {
   NO_SHOW
 }
 
+enum CancelledBy {
+  CUSTOMER
+  ADMIN
+}
+
 enum WeekDay {
   MONDAY
   TUESDAY
@@ -83,28 +88,35 @@ model Appointment {
 
   price Int
 
-status AppointmentStatus @default(PENDING)
+  status AppointmentStatus @default(PENDING)
 
-customerNote String?
-internalNote String?
+  customerNote String?
+  internalNote String?
 
-createdByAdmin Boolean @default(false)
+  createdByAdmin Boolean @default(false)
 
-reminderSent Boolean @default(false)
+  reminderSent Boolean @default(false)
 
-cancelToken String? @unique
+  cancelToken String? @unique
 
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+  // Lemondás adatai
+  cancelledBy CancelledBy?
+  cancelledAt DateTime?
+  cancelReason String?
 
-  customer User    @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  service  Service @relation(fields: [serviceId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customer User @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  service Service @relation(fields: [serviceId], references: [id])
 
   @@index([customerId])
   @@index([serviceId])
   @@index([startTime])
   @@index([status])
+  @@index([cancelledBy])
 }
+
 model OpeningHour {
   id String @id @default(cuid())
 
@@ -146,8 +158,24 @@ model PasswordResetToken {
   createdAt DateTime @default(now())
 
   userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([token])
   @@index([userId])
+}
+
+model Settings {
+  id String @id @default(cuid())
+
+  autoConfirmBookings Boolean @default(false)
+
+  emailNotifications Boolean @default(true)
+
+  reminderEnabled Boolean @default(true)
+  reminderDaysBefore Int @default(2)
+
+  cancellationHours Int @default(24)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

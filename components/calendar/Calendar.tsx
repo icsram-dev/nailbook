@@ -13,21 +13,53 @@ import type {
 } from "@fullcalendar/core";
 
 import { Card } from "@/components/ui/Card";
+import SearchInput from "@/components/ui/SearchInput";
 import { AppointmentModal } from "./AppointmentModal";
 import { AppointmentDetailsModal } from "./AppointmentDetailsModal";
 
 export function Calendar() {
   const [events, setEvents] = useState<EventInput[]>([]);
 
-  const [detailsOpen, setDetailsOpen] = useState(false);
-  const [editOpen, setEditOpen] = useState(false);
+const [search, setSearch] = useState("");
+const [statusFilter, setStatusFilter] = useState("ALL");
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedAppointmentId, setSelectedAppointmentId] =
-    useState<string | null>(null);
+const [detailsOpen, setDetailsOpen] = useState(false);
+const [editOpen, setEditOpen] = useState(false);
 
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<any>(null);
+const [selectedDate, setSelectedDate] = useState<string | null>(null);
+
+const [selectedAppointmentId, setSelectedAppointmentId] =
+  useState<string | null>(null);
+
+const [selectedAppointment, setSelectedAppointment] =
+  useState<any>(null);
+const filteredEvents = events.filter((event) => {
+  const customer =
+    event.extendedProps?.customerName?.toLowerCase() ?? "";
+
+  const service =
+    event.extendedProps?.serviceName?.toLowerCase() ?? "";
+
+  const phone =
+    event.extendedProps?.customerPhone?.toLowerCase() ?? "";
+
+  const email =
+    event.extendedProps?.customerEmail?.toLowerCase() ?? "";
+
+  const query = search.toLowerCase().trim();
+
+  const matchesSearch =
+    customer.includes(query) ||
+    service.includes(query) ||
+    phone.includes(query) ||
+    email.includes(query);
+
+  const matchesStatus =
+    statusFilter === "ALL" ||
+    event.extendedProps?.status === statusFilter;
+
+  return matchesSearch && matchesStatus;
+});
 
   const loadAppointments = useCallback(async () => {
     try {
@@ -84,7 +116,6 @@ export function Calendar() {
         clickInfo.event.extendedProps.price,
 
       startTime: clickInfo.event.startStr,
-
       endTime: clickInfo.event.endStr,
 
       status:
@@ -124,6 +155,40 @@ export function Calendar() {
     setEditOpen(true);
   }
 
+  async function handleConfirm() {
+    if (!selectedAppointmentId) return;
+
+    try {
+      const res = await fetch(
+        `/api/admin/appointments/${selectedAppointmentId}/confirm`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      if (!res.ok) {
+        const data = await res.json();
+
+        throw new Error(
+          data.error ??
+            "Nem sikerült jóváhagyni a foglalást."
+        );
+      }
+
+      handleClose();
+
+      await loadAppointments();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Nem sikerült jóváhagyni a foglalást."
+      );
+    }
+  }
+
   async function handleDelete() {
     if (!selectedAppointmentId) return;
 
@@ -142,7 +207,9 @@ export function Calendar() {
       );
 
       if (!res.ok) {
-        throw new Error("Nem sikerült törölni a foglalást.");
+        throw new Error(
+          "Nem sikerült törölni a foglalást."
+        );
       }
 
       handleClose();
@@ -150,12 +217,44 @@ export function Calendar() {
       await loadAppointments();
     } catch (error) {
       console.error(error);
+
       alert("Hiba történt a törlés során.");
     }
   }
 
   return (
-    <>
+    <> <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+  <div className="w-full max-w-md">
+    <SearchInput
+      value={search}
+      onChange={setSearch}
+      placeholder="Keresés vendég, telefonszám, e-mail vagy szolgáltatás alapján..."
+    />
+  </div>
+
+  <div className="flex flex-wrap gap-2">
+    {[
+      { label: "Összes", value: "ALL" },
+      { label: "Függőben", value: "PENDING" },
+      { label: "Jóváhagyott", value: "CONFIRMED" },
+      { label: "Befejezett", value: "COMPLETED" },
+      { label: "Lemondott", value: "CANCELLED" },
+    ].map((item) => (
+      <button
+        key={item.value}
+        type="button"
+        onClick={() => setStatusFilter(item.value)}
+        className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+          statusFilter === item.value
+            ? "bg-pink-600 text-white"
+            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+        }`}
+      >
+        {item.label}
+      </button>
+    ))}
+  </div>
+</div>
       <Card className="overflow-hidden">
         <FullCalendar
           plugins={[
@@ -180,7 +279,8 @@ export function Calendar() {
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right:
+              "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           buttonText={{
             today: "Ma",
@@ -188,7 +288,7 @@ export function Calendar() {
             week: "Hét",
             day: "Nap",
           }}
-          events={events}
+          events={filteredEvents}
           eventContent={(eventInfo) => {
             const { customerName } =
               eventInfo.event.extendedProps;
@@ -214,6 +314,7 @@ export function Calendar() {
         onClose={handleClose}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onConfirm={handleConfirm}
       />
 
       <AppointmentModal

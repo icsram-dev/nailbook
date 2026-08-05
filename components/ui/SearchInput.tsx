@@ -5,11 +5,13 @@ import { Search } from "lucide-react";
 type Props = {
   value: string;
   onChange: (value: string) => void;
+  placeholder?: string;
 };
 
-export default function CustomerSearch({
+export default function SearchInput({
   value,
   onChange,
+  placeholder = "Keresés...",
 }: Props) {
   return (
     <div className="relative mb-6 max-w-md">
@@ -20,8 +22,8 @@ export default function CustomerSearch({
 
       <input
         type="text"
-        placeholder="Keresés név, email vagy telefonszám alapján..."
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-xl border bg-white py-3 pl-11 pr-4 shadow-sm outline-none transition focus:border-pink-500"
       />

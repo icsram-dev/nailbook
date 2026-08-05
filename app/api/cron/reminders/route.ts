@@ -1,12 +1,43 @@
-import { addDays, endOfDay, startOfDay } from "date-fns";
+import {
+  addDays,
+  endOfDay,
+  startOfDay,
+} from "date-fns";
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { sendReminderEmail } from "@/lib/mail";
 
+import {
+  remindersEnabled,
+  reminderDaysBefore,
+  emailsEnabled,
+} from "@/lib/settings/helpers";
+
 export async function GET() {
   try {
-    const targetDate = addDays(new Date(), 2);
+    if (!(await remindersEnabled())) {
+      return NextResponse.json({
+        success: true,
+        sent: 0,
+        message: "Az emlékeztetők ki vannak kapcsolva.",
+      });
+    }
+
+    if (!(await emailsEnabled())) {
+      return NextResponse.json({
+        success: true,
+        sent: 0,
+        message: "Az e-mail értesítések ki vannak kapcsolva.",
+      });
+    }
+
+    const daysBefore = await reminderDaysBefore();
+
+    const targetDate = addDays(
+      new Date(),
+      daysBefore
+    );
 
     const appointments = await prisma.appointment.findMany({
       where: {
@@ -23,6 +54,8 @@ export async function GET() {
       },
     });
 
+    let sent = 0;
+
     for (const appointment of appointments) {
       try {
         const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
@@ -32,12 +65,17 @@ export async function GET() {
           customerName: appointment.customer.name,
           serviceName: appointment.service.name,
           appointmentDate:
-            appointment.startTime.toLocaleDateString("hu-HU"),
+            appointment.startTime.toLocaleDateString(
+              "hu-HU"
+            ),
           appointmentTime:
-            appointment.startTime.toLocaleTimeString("hu-HU", {
-              hour: "2-digit",
-              minute: "2-digit",
-            }),
+            appointment.startTime.toLocaleTimeString(
+              "hu-HU",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            ),
           cancelUrl,
         });
 
@@ -49,6 +87,8 @@ export async function GET() {
             reminderSent: true,
           },
         });
+
+        sent++;
       } catch (error) {
         console.error(
           `Nem sikerült emlékeztetőt küldeni a(z) ${appointment.id} foglaláshoz:`,
@@ -59,7 +99,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      sent: appointments.length,
+      sent,
     });
   } catch (error) {
     console.error(error);
@@ -67,7 +107,8 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        error: "Hiba történt az emlékeztetők küldése közben.",
+        error:
+          "Hiba történt az emlékeztetők küldése közben.",
       },
       {
         status: 500,

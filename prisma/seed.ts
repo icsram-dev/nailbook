@@ -60,6 +60,27 @@ async function main() {
   }
 
   console.log("✅ Alapértelmezett nyitvatartás létrehozva.");
+
+  await prisma.settings.upsert({
+    where: {
+      id: "default-settings",
+    },
+    update: {},
+    create: {
+      id: "default-settings",
+
+      autoConfirmBookings: false,
+
+      emailNotifications: true,
+
+      reminderEnabled: true,
+      reminderDaysBefore: 2,
+
+      cancellationHours: 24,
+    },
+  });
+
+  console.log("✅ Alapértelmezett beállítások létrehozva.");
 }
 
 main()

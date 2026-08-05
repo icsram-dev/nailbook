@@ -1,9 +1,15 @@
 import { randomUUID } from "crypto";
 
 import { AppointmentStatus } from "@prisma/client";
+import { getSettings } from "@/lib/settings";
 
 import { prisma } from "@/lib/prisma";
-import { sendBookingConfirmation } from "@/lib/mail";
+import {
+  sendBookingRequest,
+  sendBookingCancelledByAdmin,
+  sendBookingUpdated,
+  sendBookingConfirmed,
+} from "@/lib/mail";
 
 import { validateAppointment } from "./validation";
 
@@ -41,7 +47,7 @@ export async function createAppointment({
   serviceId,
   startTime,
   customerNote,
-  status = AppointmentStatus.CONFIRMED,
+  status,
 }: CreateAppointmentInput) {
   const validation = await validateAppointment({
     serviceId,
@@ -62,6 +68,14 @@ export async function createAppointment({
     throw new Error("A szolgáltatás nem található.");
   }
 
+  const settings = await getSettings();
+
+const appointmentStatus =
+  status ??
+  (settings?.autoConfirmBookings
+    ? AppointmentStatus.CONFIRMED
+    : AppointmentStatus.PENDING);
+
   const appointment = await prisma.appointment.create({
     data: {
       customerId,
@@ -70,7 +84,7 @@ export async function createAppointment({
       endTime: validation.endTime,
       price: service.price,
       customerNote,
-      status,
+      status: appointmentStatus,
       cancelToken: randomUUID(),
     },
     include: {
@@ -79,10 +93,11 @@ export async function createAppointment({
     },
   });
 
-  try {
-    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
+ try {
+  const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
 
-    await sendBookingConfirmation({
+  if (appointment.status === AppointmentStatus.PENDING) {
+    await sendBookingRequest({
       to: appointment.customer.email,
       customerName: appointment.customer.name,
       serviceName: appointment.service.name,
@@ -95,14 +110,29 @@ export async function createAppointment({
         }),
       cancelUrl,
     });
-  } catch (error) {
-    console.error(
-      "Nem sikerült elküldeni a visszaigazoló e-mailt:",
-      error
-    );
+  } else {
+    await sendBookingConfirmed({
+      to: appointment.customer.email,
+      customerName: appointment.customer.name,
+      serviceName: appointment.service.name,
+      appointmentDate:
+        appointment.startTime.toLocaleDateString("hu-HU"),
+      appointmentTime:
+        appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      cancelUrl,
+    });
   }
+} catch (error) {
+  console.error(
+    "Nem sikerült elküldeni a foglalási e-mailt:",
+    error
+  );
+}
 
-  return appointment;
+return appointment;
 }
 
 export async function updateAppointment({
@@ -113,6 +143,20 @@ export async function updateAppointment({
   customerNote,
   status,
 }: UpdateAppointmentInput) {
+  const currentAppointment = await prisma.appointment.findUnique({
+    where: {
+      id: appointmentId,
+    },
+    include: {
+      customer: true,
+      service: true,
+    },
+  });
+
+  if (!currentAppointment) {
+    throw new Error("A foglalás nem található.");
+  }
+
   const validation = await validateAppointment({
     serviceId,
     startTime,
@@ -133,7 +177,7 @@ export async function updateAppointment({
     throw new Error("A szolgáltatás nem található.");
   }
 
-  return prisma.appointment.update({
+  const appointment = await prisma.appointment.update({
     where: {
       id: appointmentId,
     },
@@ -151,15 +195,97 @@ export async function updateAppointment({
       service: true,
     },
   });
+
+  try {
+    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
+
+    // Admin jóváhagyta a foglalást
+    if (
+      currentAppointment.status === AppointmentStatus.PENDING &&
+      appointment.status === AppointmentStatus.CONFIRMED
+    ) {
+      await sendBookingConfirmed({
+        to: appointment.customer.email,
+        customerName: appointment.customer.name,
+        serviceName: appointment.service.name,
+        appointmentDate:
+          appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime:
+          appointment.startTime.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        cancelUrl,
+      });
+    }
+
+    // Admin módosította az időpontot
+    else if (
+      currentAppointment.startTime.getTime() !==
+        appointment.startTime.getTime() ||
+      currentAppointment.serviceId !== appointment.serviceId
+    ) {
+      await sendBookingUpdated({
+        to: appointment.customer.email,
+        customerName: appointment.customer.name,
+        serviceName: appointment.service.name,
+        appointmentDate:
+          appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime:
+          appointment.startTime.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        cancelUrl,
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Nem sikerült elküldeni az értesítő e-mailt:",
+      error
+    );
+  }
+
+  return appointment;
 }
 
 export async function cancelAppointment(id: string) {
-  return prisma.appointment.update({
+  const appointment = await prisma.appointment.update({
     where: {
       id,
     },
     data: {
-      status: AppointmentStatus.CANCELLED,
+  status: AppointmentStatus.CANCELLED,
+  cancelToken: null,
+
+  cancelledBy: "ADMIN",
+  cancelledAt: new Date(),
+},
+    include: {
+      customer: true,
+      service: true,
     },
   });
+
+  try {
+    await sendBookingCancelledByAdmin({
+      to: appointment.customer.email,
+      customerName: appointment.customer.name,
+      serviceName: appointment.service.name,
+      appointmentDate:
+        appointment.startTime.toLocaleDateString("hu-HU"),
+      appointmentTime:
+        appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+    });
+  } catch (error) {
+    console.error(
+      "Nem sikerült elküldeni a törlési e-mailt:",
+      error
+    );
+  }
+
+  return appointment;
 }

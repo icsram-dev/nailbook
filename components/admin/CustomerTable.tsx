@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import CustomerSearch from "@/components/admin/CustomerSearch";
+import SearchInput from "@/components/ui/SearchInput";
 import { CustomerTableItem } from "@/types/customer";
 
 type Props = {
@@ -35,21 +35,35 @@ export default function CustomerTable({
 
   return (
     <>
-      <CustomerSearch
+      <SearchInput
         value={search}
         onChange={setSearch}
+        placeholder="Keresés név, e-mail vagy telefonszám alapján..."
       />
 
-      <div className="overflow-hidden rounded-2xl border bg-white shadow-sm">
-        <table className="w-full">
+      <div className="overflow-x-auto rounded-2xl border bg-white shadow-sm">
+        <table className="min-w-full">
           <thead className="border-b bg-gray-50">
             <tr className="text-left text-sm text-gray-500">
               <th className="px-6 py-4">Név</th>
               <th className="px-6 py-4">Telefon</th>
-              <th className="px-6 py-4">Email</th>
-              <th className="px-6 py-4">Foglalások</th>
-              <th className="px-6 py-4">Összes költés</th>
-              <th className="px-6 py-4">Utolsó látogatás</th>
+              <th className="px-6 py-4">E-mail</th>
+
+              <th className="px-6 py-4 text-center">
+                Foglalások
+              </th>
+
+              <th className="px-6 py-4 text-right">
+                Összes költés
+              </th>
+
+              <th className="px-6 py-4">
+                Utolsó látogatás
+              </th>
+
+              <th className="px-6 py-4">
+                Következő időpont
+              </th>
             </tr>
           </thead>
 
@@ -57,7 +71,7 @@ export default function CustomerTable({
             {filteredCustomers.length === 0 ? (
               <tr>
                 <td
-                  colSpan={6}
+                  colSpan={7}
                   className="px-6 py-10 text-center text-gray-500"
                 >
                   Nincs a keresésnek megfelelő vendég.
@@ -86,20 +100,28 @@ export default function CustomerTable({
                     {customer.email}
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 text-center">
                     {customer.appointmentCount}
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="whitespace-nowrap px-6 py-4 text-right">
                     {customer.totalSpent.toLocaleString(
                       "hu-HU"
                     )}{" "}
                     Ft
                   </td>
 
-                  <td className="px-6 py-4">
+                  <td className="whitespace-nowrap px-6 py-4">
                     {customer.lastAppointment
                       ? customer.lastAppointment.toLocaleDateString(
+                          "hu-HU"
+                        )
+                      : "-"}
+                  </td>
+
+                  <td className="whitespace-nowrap px-6 py-4">
+                    {customer.nextAppointment
+                      ? customer.nextAppointment.toLocaleDateString(
                           "hu-HU"
                         )
                       : "-"}

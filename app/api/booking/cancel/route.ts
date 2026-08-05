@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
+import { AppointmentStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
-import { AppointmentStatus } from "@prisma/client";
+import { getSettings } from "@/lib/settings";
 
 export async function POST(request: NextRequest) {
   try {
@@ -42,14 +43,36 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const settings = await getSettings();
+
+    const cancellationHours =
+      settings?.cancellationHours ?? 24;
+
+    const hoursUntilAppointment =
+      (appointment.startTime.getTime() - Date.now()) /
+      (1000 * 60 * 60);
+
+    if (hoursUntilAppointment < cancellationHours) {
+      return NextResponse.json(
+        {
+          error: `A foglalás legkésőbb ${cancellationHours} órával az időpont előtt mondható le.`,
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
     await prisma.appointment.update({
       where: {
         id: appointment.id,
       },
       data: {
-  status: AppointmentStatus.CANCELLED,
-  cancelToken: null,
-},
+        status: AppointmentStatus.CANCELLED,
+        cancelToken: null,
+        cancelledBy: "CUSTOMER",
+        cancelledAt: new Date(),
+      },
     });
 
     return NextResponse.json({

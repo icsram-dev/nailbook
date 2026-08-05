@@ -1,11 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import {
   addDays,
-  eachDayOfInterval,
   endOfDay,
   endOfMonth,
   endOfWeek,
-  format,
   startOfDay,
   startOfMonth,
   startOfWeek,
@@ -14,32 +12,15 @@ import {
 export async function getDashboardData() {
   const today = new Date();
 
-  const weekDays = eachDayOfInterval({
-    start: startOfWeek(today, { weekStartsOn: 1 }),
-    end: endOfWeek(today, { weekStartsOn: 1 }),
-  });
-
   const [
-  customerCount,
-  appointmentCount,
-  serviceCount,
-  todayAppointments,
-  tomorrowAppointments,
-  weeklyRevenue,
-  monthlyRevenue,
-  nextAppointment,
-  services,
-] = await Promise.all([
-    prisma.user.count({
-      where: {
-        role: "CUSTOMER",
-      },
-    }),
-
-    prisma.appointment.count(),
-
-    prisma.service.count(),
-
+    todayAppointments,
+    tomorrowAppointments,
+    pendingAppointments,
+    cancelledAppointments,
+    weeklyRevenue,
+    monthlyRevenue,
+    pendingList,
+  ] = await Promise.all([
     prisma.appointment.count({
       where: {
         startTime: {
@@ -58,12 +39,32 @@ export async function getDashboardData() {
       },
     }),
 
+    prisma.appointment.count({
+      where: {
+        status: "PENDING",
+      },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        status: "CANCELLED",
+        cancelledAt: {
+          gte: startOfMonth(today),
+          lte: endOfMonth(today),
+        },
+      },
+    }),
+
     prisma.appointment.aggregate({
       where: {
         status: "COMPLETED",
         startTime: {
-          gte: startOfWeek(today, { weekStartsOn: 1 }),
-          lte: endOfWeek(today, { weekStartsOn: 1 }),
+          gte: startOfWeek(today, {
+            weekStartsOn: 1,
+          }),
+          lte: endOfWeek(today, {
+            weekStartsOn: 1,
+          }),
         },
       },
       _sum: {
@@ -84,80 +85,39 @@ export async function getDashboardData() {
       },
     }),
 
-    
-
-    prisma.appointment.findFirst({
+    prisma.appointment.findMany({
       where: {
-        startTime: {
-          gte: today,
-        },
-        status: "CONFIRMED",
+        status: "PENDING",
       },
+
       include: {
         customer: true,
         service: true,
       },
+
       orderBy: {
         startTime: "asc",
       },
-    }),
 
-    prisma.service.findMany({
-  include: {
-    appointments: {
-      where: {
-        status: "COMPLETED",
-      },
-    },
-  },
-}),
+      take: 5,
+    }),
   ]);
 
-  
+  return {
+    todayAppointments,
 
-  const weeklyChart = await Promise.all(
-    weekDays.map(async (day) => {
-      const revenue = await prisma.appointment.aggregate({
-        where: {
-          status: "COMPLETED",
-          startTime: {
-            gte: startOfDay(day),
-            lte: endOfDay(day),
-          },
-        },
-        _sum: {
-          price: true,
-        },
-      });
+    tomorrowAppointments,
 
-      
+    pendingAppointments,
 
-      return {
-        day: format(day, "EEEEE"),
-        revenue: revenue._sum.price ?? 0,
-      };
-    })
-  );
+    cancelledAppointments,
 
-  const topServices = services
-  .map((service) => ({
-    id: service.id,
-    name: service.name,
-    bookings: service.appointments.length,
-  }))
-  .sort((a, b) => b.bookings - a.bookings)
-  .slice(0, 5);
+    weeklyRevenue:
+      weeklyRevenue._sum.price ?? 0,
 
- return {
-  customerCount,
-  appointmentCount,
-  serviceCount,
-  todayAppointments,
-  tomorrowAppointments,
-  weeklyRevenue: weeklyRevenue._sum.price ?? 0,
-  monthlyRevenue: monthlyRevenue._sum.price ?? 0,
-  weeklyChart,
-  nextAppointment,
-  topServices,
-};
+    monthlyRevenue:
+      monthlyRevenue._sum.price ?? 0,
+
+    pendingList,
+  };
 }

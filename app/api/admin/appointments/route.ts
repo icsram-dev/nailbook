@@ -24,24 +24,23 @@ export async function GET() {
     }
 
     const appointments = await prisma.appointment.findMany({
-  where: {
-    status: {
-      in: [
-        AppointmentStatus.PENDING,
-        AppointmentStatus.CONFIRMED,
-      ],
-    },
-  },
-
-  include: {
-    customer: true,
-    service: true,
-  },
-
-  orderBy: {
-    startTime: "asc",
-  },
-});
+      where: {
+        status: {
+          in: [
+            AppointmentStatus.PENDING,
+            AppointmentStatus.CONFIRMED,
+            AppointmentStatus.COMPLETED,
+          ],
+        },
+      },
+      include: {
+        customer: true,
+        service: true,
+      },
+      orderBy: {
+        startTime: "asc",
+      },
+    });
 
     return NextResponse.json(
       appointments.map((appointment) => ({
@@ -52,29 +51,37 @@ export async function GET() {
         start: appointment.startTime,
         end: appointment.endTime,
 
-        backgroundColor: STATUS_COLORS[appointment.status],
-        borderColor: STATUS_COLORS[appointment.status],
+        backgroundColor:
+          STATUS_COLORS[appointment.status],
+        borderColor:
+          STATUS_COLORS[appointment.status],
+        textColor: "#ffffff",
 
-       extendedProps: {
-  customerId: appointment.customer.id,
-  customerName: appointment.customer.name,
-  customerPhone: appointment.customer.phone,
-  customerEmail: appointment.customer.email,
+        extendedProps: {
+          customerId: appointment.customer.id,
+          customerName: appointment.customer.name,
+          customerPhone: appointment.customer.phone,
+          customerEmail: appointment.customer.email,
 
-  serviceId: appointment.service.id,
-  serviceName: appointment.service.name,
-  duration: appointment.service.duration,
+          serviceId: appointment.service.id,
+          serviceName: appointment.service.name,
+          duration: appointment.service.duration,
 
-  price: appointment.price,
+          price: appointment.price,
 
-  status: appointment.status,
+          status: appointment.status,
 
-  customerNote: appointment.customerNote,
-  internalNote: appointment.internalNote,
-},
+          startTime: appointment.startTime,
+          endTime: appointment.endTime,
+
+          customerNote: appointment.customerNote,
+          internalNote: appointment.internalNote,
+        },
       }))
     );
-  } catch {
+  } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       { error: "Hiba történt." },
       { status: 500 }
