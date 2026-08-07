@@ -8,10 +8,17 @@ export const serviceSchema = z.object({
     .max(100, "A szolgáltatás neve legfeljebb 100 karakter lehet."),
 
   description: z
-  .string()
-  .trim()
-  .max(500, "A leírás legfeljebb 500 karakter lehet.")
-  .optional(),
+    .string()
+    .trim()
+    .max(500, "A leírás legfeljebb 500 karakter lehet.")
+    .optional(),
+
+  image: z
+    .string()
+    .trim()
+    .url("Érvényes URL-t adj meg.")
+    .optional()
+    .or(z.literal("")),
 
   duration: z.coerce
     .number()

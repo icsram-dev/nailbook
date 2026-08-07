@@ -19,11 +19,15 @@ type ServiceFormProps = {
   defaultValues?: ServiceInput;
 };
 
-export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
+export function ServiceForm({
+  onSubmit,
+  defaultValues,
+}: ServiceFormProps) {
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<ServiceInput, unknown, ServiceData>({
     resolver: zodResolver(serviceSchema),
@@ -35,15 +39,21 @@ export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
       defaultValues ?? {
         name: "",
         description: "",
+        image: "",
         duration: 30,
         price: 0,
         active: true,
-      },
+      }
     );
   }, [defaultValues, reset]);
 
+  const image = watch("image");
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+    >
       <div>
         <label className="mb-1 block text-sm font-medium">
           Szolgáltatás neve
@@ -52,14 +62,21 @@ export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
         <Input {...register("name")} />
 
         {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {errors.name.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Leírás</label>
+        <label className="mb-1 block text-sm font-medium">
+          Leírás
+        </label>
 
-        <Textarea rows={3} {...register("description")} />
+        <Textarea
+          rows={3}
+          {...register("description")}
+        />
 
         {errors.description && (
           <p className="mt-1 text-sm text-red-600">
@@ -70,33 +87,79 @@ export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
 
       <div>
         <label className="mb-1 block text-sm font-medium">
-          Időtartam (perc)
+          Kép URL
         </label>
 
-        <Input type="number" {...register("duration")} />
+        <Input
+          placeholder="https://..."
+          {...register("image")}
+        />
 
-        {errors.duration && (
-          <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+        {errors.image && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.image.message}
+          </p>
+        )}
+
+        {image && (
+          <img
+            src={image}
+            alt="Előnézet"
+            className="mt-4 h-40 w-full rounded-xl border object-cover"
+          />
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Ár (Ft)</label>
+        <label className="mb-1 block text-sm font-medium">
+          Időtartam (perc)
+        </label>
 
-        <Input type="number" {...register("price")} />
+        <Input
+          type="number"
+          {...register("duration")}
+        />
+
+        {errors.duration && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.duration.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">
+          Ár (Ft)
+        </label>
+
+        <Input
+          type="number"
+          {...register("price")}
+        />
 
         {errors.price && (
-          <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {errors.price.message}
+          </p>
         )}
       </div>
 
       <div className="flex items-center gap-2">
-        <input id="active" type="checkbox" {...register("active")} />
+        <input
+          id="active"
+          type="checkbox"
+          {...register("active")}
+        />
 
-        <label htmlFor="active">Aktív szolgáltatás</label>
+        <label htmlFor="active">
+          Aktív szolgáltatás
+        </label>
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Mentés..." : "Mentés"}
       </Button>
     </form>
