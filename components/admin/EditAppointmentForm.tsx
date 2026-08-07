@@ -137,7 +137,8 @@ export default function EditAppointmentForm({
                   key={customer.id}
                   value={customer.id}
                 >
-                  {customer.name}
+                  {customer.lastName}{" "}
+                  {customer.firstName}
                 </option>
               ))}
             </select>

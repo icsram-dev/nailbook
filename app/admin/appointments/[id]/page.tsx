@@ -42,7 +42,7 @@ export default async function AppointmentPage({
         <div className="grid gap-6 md:grid-cols-2">
           <Info
             title="Vendég"
-            value={appointment.customer.name}
+            value={`${appointment.customer.lastName} ${appointment.customer.firstName}`}
           />
 
           <Info
@@ -85,21 +85,21 @@ export default async function AppointmentPage({
           />
 
           <div>
-  <p className="mb-2 text-sm text-gray-500">
-    Státusz
-  </p>
+            <p className="mb-2 text-sm text-gray-500">
+              Státusz
+            </p>
 
-  <div className="flex items-center gap-3">
-    <AppointmentStatusBadge
-      status={appointment.status}
-    />
+            <div className="flex items-center gap-3">
+              <AppointmentStatusBadge
+                status={appointment.status}
+              />
 
-    <AppointmentStatusSelect
-      id={appointment.id}
-      status={appointment.status}
-    />
-  </div>
-</div>
+              <AppointmentStatusSelect
+                id={appointment.id}
+                status={appointment.status}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </>
@@ -108,7 +108,7 @@ export default async function AppointmentPage({
 
 type InfoProps = {
   title: string;
-  value: string;
+  value: string | null;
 };
 
 function Info({
@@ -122,7 +122,7 @@ function Info({
       </p>
 
       <p className="text-lg font-semibold">
-        {value}
+        {value ?? "-"}
       </p>
     </div>
   );

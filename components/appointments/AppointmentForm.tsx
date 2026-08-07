@@ -7,8 +7,7 @@ import { Appointment, Service, User } from "@prisma/client";
 
 import {
   appointmentSchema,
-  type AppointmentInput,
-  type AppointmentData,
+  AppointmentFormValues,
 } from "@/lib/validations/appointment";
 
 import { Button } from "@/components/ui/Button";
@@ -19,7 +18,9 @@ type AppointmentFormProps = {
   appointment?: Appointment | null;
   customers: User[];
   services: Service[];
-  onSubmit: (data: AppointmentData) => void | Promise<void>;
+  onSubmit: (
+    data: AppointmentFormValues
+  ) => void | Promise<void>;
 };
 
 export function AppointmentForm({
@@ -33,12 +34,13 @@ export function AppointmentForm({
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<AppointmentInput, unknown, AppointmentData>({
+  } = useForm<AppointmentFormValues>({
     resolver: zodResolver(appointmentSchema),
     defaultValues: {
       customerId: "",
       serviceId: "",
-      startTime: new Date(),
+      date: "",
+      time: "",
       note: "",
     },
   });
@@ -48,33 +50,50 @@ export function AppointmentForm({
       reset({
         customerId: appointment.customerId,
         serviceId: appointment.serviceId,
-        startTime: appointment.startTime,
-        note: appointment.note ?? "",
+        date: appointment.startTime
+          .toISOString()
+          .slice(0, 10),
+        time: appointment.startTime
+          .toTimeString()
+          .slice(0, 5),
+        note: appointment.customerNote ?? "",
       });
     } else {
       reset({
         customerId: "",
         serviceId: "",
-        startTime: new Date(),
+        date: "",
+        time: "",
         note: "",
       });
     }
   }, [appointment, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+    >
       <div>
-        <label className="mb-1 block text-sm font-medium">Vendég</label>
+        <label className="mb-1 block text-sm font-medium">
+          Vendég
+        </label>
 
         <select
           {...register("customerId")}
           className="w-full rounded-md border p-2"
         >
-          <option value="">Válassz vendéget...</option>
+          <option value="">
+            Válassz vendéget...
+          </option>
 
           {customers.map((customer) => (
-            <option key={customer.id} value={customer.id}>
-              {customer.name}
+            <option
+              key={customer.id}
+              value={customer.id}
+            >
+              {customer.lastName}{" "}
+              {customer.firstName}
             </option>
           ))}
         </select>
@@ -87,16 +106,23 @@ export function AppointmentForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Szolgáltatás</label>
+        <label className="mb-1 block text-sm font-medium">
+          Szolgáltatás
+        </label>
 
         <select
           {...register("serviceId")}
           className="w-full rounded-md border p-2"
         >
-          <option value="">Válassz szolgáltatást...</option>
+          <option value="">
+            Válassz szolgáltatást...
+          </option>
 
           {services.map((service) => (
-            <option key={service.id} value={service.id}>
+            <option
+              key={service.id}
+              value={service.id}
+            >
               {service.name}
             </option>
           ))}
@@ -110,30 +136,57 @@ export function AppointmentForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Kezdés</label>
+        <label className="mb-1 block text-sm font-medium">
+          Dátum
+        </label>
 
         <Input
-          type="datetime-local"
-          {...register("startTime", {
-            valueAsDate: true,
-          })}
+          type="date"
+          {...register("date")}
         />
 
-        {errors.startTime && (
+        {errors.date && (
           <p className="mt-1 text-sm text-red-500">
-            {errors.startTime.message}
+            {errors.date.message}
           </p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Megjegyzés</label>
+        <label className="mb-1 block text-sm font-medium">
+          Időpont
+        </label>
 
-        <Textarea rows={4} {...register("note")} />
+        <Input
+          type="time"
+          {...register("time")}
+        />
+
+        {errors.time && (
+          <p className="mt-1 text-sm text-red-500">
+            {errors.time.message}
+          </p>
+        )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
-        {appointment ? "Mentés" : "Foglalás létrehozása"}
+      <div>
+        <label className="mb-1 block text-sm font-medium">
+          Megjegyzés
+        </label>
+
+        <Textarea
+          rows={4}
+          {...register("note")}
+        />
+      </div>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+      >
+        {appointment
+          ? "Mentés"
+          : "Foglalás létrehozása"}
       </Button>
     </form>
   );

@@ -77,7 +77,7 @@ export async function PATCH(
 
       await sendBookingConfirmed({
         to: updatedAppointment.customer.email,
-        customerName: updatedAppointment.customer.name,
+        customerName: `${updatedAppointment.customer.lastName} ${updatedAppointment.customer.firstName}`,
         serviceName: updatedAppointment.service.name,
         appointmentDate:
           updatedAppointment.startTime.toLocaleDateString(

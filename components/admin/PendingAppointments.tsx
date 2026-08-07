@@ -5,7 +5,8 @@ type Appointment = {
   startTime: Date;
 
   customer: {
-    name: string;
+    firstName: string;
+    lastName: string;
   };
 
   service: {
@@ -48,7 +49,8 @@ export default function PendingAppointments({
             >
               <div>
                 <h3 className="font-semibold">
-                  {appointment.customer.name}
+                  {appointment.customer.lastName}{" "}
+                  {appointment.customer.firstName}
                 </h3>
 
                 <p className="text-sm text-gray-500">

@@ -25,7 +25,8 @@ export function CustomerModal({
 }: CustomerModalProps) {
   const defaultValues: CustomerInput | undefined = customer
     ? {
-        name: customer.name,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
         email: customer.email,
         phone: customer.phone ?? "",
       }

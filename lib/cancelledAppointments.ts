@@ -17,26 +17,26 @@ export async function getCancelledAppointments() {
     },
   });
 
- return appointments.map((appointment) => ({
-  id: appointment.id,
+  return appointments.map((appointment) => ({
+    id: appointment.id,
 
-  customerId: appointment.customer.id,
+    customerId: appointment.customer.id,
 
-  customerName: appointment.customer.name,
-  customerEmail: appointment.customer.email,
-  customerPhone: appointment.customer.phone,
+    customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
+    customerEmail: appointment.customer.email,
+    customerPhone: appointment.customer.phone,
 
-  serviceName: appointment.service.name,
+    serviceName: appointment.service.name,
 
-  appointmentDate: appointment.startTime,
+    appointmentDate: appointment.startTime,
 
-  cancelledAt: appointment.cancelledAt,
+    cancelledAt: appointment.cancelledAt,
 
-  cancelledBy:
-    appointment.cancelledBy === CancelledBy.ADMIN
-      ? "Admin"
-      : "Vendég",
+    cancelledBy:
+      appointment.cancelledBy === CancelledBy.ADMIN
+        ? "Admin"
+        : "Vendég",
 
-  cancelReason: appointment.cancelReason,
-}));
+    cancelReason: appointment.cancelReason,
+  }));
 }

@@ -14,7 +14,8 @@ type Appointment = {
 
 type Customer = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string | null;
   phone: string | null;
   appointmentCount: number;
@@ -34,7 +35,7 @@ export default function CustomerProfile({
     <div className="mt-8 space-y-6">
       <div className="rounded-2xl border bg-white p-6 shadow-sm">
         <h2 className="text-xl font-semibold">
-          {customer.name}
+          {customer.lastName} {customer.firstName}
         </h2>
 
         <div className="mt-4 space-y-2 text-sm text-gray-600">

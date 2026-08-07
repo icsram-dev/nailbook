@@ -18,7 +18,10 @@ type CustomerFormProps = {
   defaultValues?: CustomerInput;
 };
 
-export function CustomerForm({ onSubmit, defaultValues }: CustomerFormProps) {
+export function CustomerForm({
+  onSubmit,
+  defaultValues,
+}: CustomerFormProps) {
   const {
     register,
     handleSubmit,
@@ -36,38 +39,73 @@ export function CustomerForm({ onSubmit, defaultValues }: CustomerFormProps) {
   }, [defaultValues, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="space-y-4"
+    >
       <div>
-        <label className="mb-1 block text-sm font-medium">Név</label>
+        <label className="mb-1 block text-sm font-medium">
+          Vezetéknév
+        </label>
 
-        <Input {...register("name")} />
+        <Input {...register("lastName")} />
 
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+        {errors.lastName && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.lastName.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">E-mail</label>
+        <label className="mb-1 block text-sm font-medium">
+          Keresztnév
+        </label>
 
-        <Input type="email" {...register("email")} />
+        <Input {...register("firstName")} />
+
+        {errors.firstName && (
+          <p className="mt-1 text-sm text-red-600">
+            {errors.firstName.message}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">
+          E-mail
+        </label>
+
+        <Input
+          type="email"
+          {...register("email")}
+        />
 
         {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">Telefonszám</label>
+        <label className="mb-1 block text-sm font-medium">
+          Telefonszám
+        </label>
 
         <Input {...register("phone")} />
 
         {errors.phone && (
-          <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {errors.phone.message}
+          </p>
         )}
       </div>
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+      >
         {isSubmitting ? "Mentés..." : "Mentés"}
       </Button>
     </form>

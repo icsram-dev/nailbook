@@ -1,19 +1,30 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
 import bcrypt from "bcrypt";
+import { randomUUID } from "crypto";
+
+import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/mail";
+
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
     const {
-      name,
+      firstName,
+      lastName,
       email,
       phone,
       password,
     } = body;
 
-    if (!name || !email || !phone || !password) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !phone ||
+      !password
+    ) {
       return NextResponse.json(
         {
           success: false,
@@ -25,17 +36,71 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingEmail = await prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
+    const trimmedFirstName = firstName.trim();
+    const trimmedLastName = lastName.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPhone = phone.replace(/\s+/g, " ").trim();
+
+    if (
+      trimmedFirstName.length < 2 ||
+      trimmedFirstName.length > 30
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "A keresztnév 2 és 30 karakter között lehet.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    if (
+      trimmedLastName.length < 2 ||
+      trimmedLastName.length > 30
+    ) {
+      return NextResponse.json(
+        {
+          success: false,
+          message:
+            "A vezetéknév 2 és 30 karakter között lehet.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(trimmedEmail)) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Érvénytelen e-mail cím.",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
+
+    const existingEmail =
+      await prisma.user.findUnique({
+        where: {
+          email: trimmedEmail,
+        },
+      });
 
     if (existingEmail) {
       return NextResponse.json(
         {
           success: false,
-          message: "Ez az email cím már használatban van.",
+          message:
+            "Ez az e-mail cím már használatban van.",
         },
         {
           status: 409,
@@ -43,17 +108,19 @@ export async function POST(request: Request) {
       );
     }
 
-    const existingPhone = await prisma.user.findUnique({
-      where: {
-        phone,
-      },
-    });
+    const existingPhone =
+      await prisma.user.findUnique({
+        where: {
+          phone: trimmedPhone,
+        },
+      });
 
     if (existingPhone) {
       return NextResponse.json(
         {
           success: false,
-          message: "Ez a telefonszám már használatban van.",
+          message:
+            "Ez a telefonszám már használatban van.",
         },
         {
           status: 409,
@@ -61,23 +128,44 @@ export async function POST(request: Request) {
       );
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
+    const passwordHash =
+      await bcrypt.hash(password, 10);
 
-    const user = await prisma.user.create({
-      data: {
-        name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone.replace(/\s+/g, " ").trim(),
-        password: passwordHash,
-      },
-    });
+    const verifyToken = randomUUID();
+
+const user = await prisma.user.create({
+  data: {
+    firstName: trimmedFirstName,
+    lastName: trimmedLastName,
+    email: trimmedEmail,
+    phone: trimmedPhone,
+    password: passwordHash,
+    verifyToken,
+  },
+});
+
+const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${verifyToken}`;
+
+try {
+  await sendVerificationEmail({
+    to: user.email,
+    firstName: user.firstName,
+    verifyUrl,
+  });
+} catch (error) {
+  console.error(
+    "Nem sikerült elküldeni a megerősítő e-mailt:",
+    error
+  );
+}
 
     return NextResponse.json(
       {
         success: true,
         user: {
           id: user.id,
-          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
           email: user.email,
           phone: user.phone,
         },

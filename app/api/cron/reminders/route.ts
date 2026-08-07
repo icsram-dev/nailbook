@@ -62,7 +62,7 @@ export async function GET() {
 
         await sendReminderEmail({
           to: appointment.customer.email,
-          customerName: appointment.customer.name,
+          customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
           serviceName: appointment.service.name,
           appointmentDate:
             appointment.startTime.toLocaleDateString(

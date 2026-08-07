@@ -37,12 +37,11 @@ export async function POST(request: NextRequest) {
 
     const resetToken = await createPasswordResetToken(user.id);
 
-    const resetUrl =
-      `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken.token}`;
+    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${resetToken.token}`;
 
     await sendPasswordResetEmail({
       to: user.email,
-      customerName: user.name,
+      customerName: `${user.lastName} ${user.firstName}`,
       resetUrl,
     });
 

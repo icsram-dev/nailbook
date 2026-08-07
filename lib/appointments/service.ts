@@ -70,11 +70,11 @@ export async function createAppointment({
 
   const settings = await getSettings();
 
-const appointmentStatus =
-  status ??
-  (settings?.autoConfirmBookings
-    ? AppointmentStatus.CONFIRMED
-    : AppointmentStatus.PENDING);
+  const appointmentStatus =
+    status ??
+    (settings?.autoConfirmBookings
+      ? AppointmentStatus.CONFIRMED
+      : AppointmentStatus.PENDING);
 
   const appointment = await prisma.appointment.create({
     data: {
@@ -93,46 +93,46 @@ const appointmentStatus =
     },
   });
 
- try {
-  const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
+  try {
+    const cancelUrl = `${process.env.NEXT_PUBLIC_APP_URL}/booking/cancel?token=${appointment.cancelToken}`;
 
-  if (appointment.status === AppointmentStatus.PENDING) {
-    await sendBookingRequest({
-      to: appointment.customer.email,
-      customerName: appointment.customer.name,
-      serviceName: appointment.service.name,
-      appointmentDate:
-        appointment.startTime.toLocaleDateString("hu-HU"),
-      appointmentTime:
-        appointment.startTime.toLocaleTimeString("hu-HU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      cancelUrl,
-    });
-  } else {
-    await sendBookingConfirmed({
-      to: appointment.customer.email,
-      customerName: appointment.customer.name,
-      serviceName: appointment.service.name,
-      appointmentDate:
-        appointment.startTime.toLocaleDateString("hu-HU"),
-      appointmentTime:
-        appointment.startTime.toLocaleTimeString("hu-HU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      cancelUrl,
-    });
+    if (appointment.status === AppointmentStatus.PENDING) {
+      await sendBookingRequest({
+        to: appointment.customer.email,
+        customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
+        serviceName: appointment.service.name,
+        appointmentDate:
+          appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime:
+          appointment.startTime.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        cancelUrl,
+      });
+    } else {
+      await sendBookingConfirmed({
+        to: appointment.customer.email,
+        customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
+        serviceName: appointment.service.name,
+        appointmentDate:
+          appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime:
+          appointment.startTime.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        cancelUrl,
+      });
+    }
+  } catch (error) {
+    console.error(
+      "Nem sikerült elküldeni a foglalási e-mailt:",
+      error
+    );
   }
-} catch (error) {
-  console.error(
-    "Nem sikerült elküldeni a foglalási e-mailt:",
-    error
-  );
-}
 
-return appointment;
+  return appointment;
 }
 
 export async function updateAppointment({
@@ -206,7 +206,7 @@ export async function updateAppointment({
     ) {
       await sendBookingConfirmed({
         to: appointment.customer.email,
-        customerName: appointment.customer.name,
+        customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
         appointmentDate:
           appointment.startTime.toLocaleDateString("hu-HU"),
@@ -227,7 +227,7 @@ export async function updateAppointment({
     ) {
       await sendBookingUpdated({
         to: appointment.customer.email,
-        customerName: appointment.customer.name,
+        customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
         appointmentDate:
           appointment.startTime.toLocaleDateString("hu-HU"),
@@ -255,12 +255,11 @@ export async function cancelAppointment(id: string) {
       id,
     },
     data: {
-  status: AppointmentStatus.CANCELLED,
-  cancelToken: null,
-
-  cancelledBy: "ADMIN",
-  cancelledAt: new Date(),
-},
+      status: AppointmentStatus.CANCELLED,
+      cancelToken: null,
+      cancelledBy: "ADMIN",
+      cancelledAt: new Date(),
+    },
     include: {
       customer: true,
       service: true,
@@ -270,7 +269,7 @@ export async function cancelAppointment(id: string) {
   try {
     await sendBookingCancelledByAdmin({
       to: appointment.customer.email,
-      customerName: appointment.customer.name,
+      customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
       serviceName: appointment.service.name,
       appointmentDate:
         appointment.startTime.toLocaleDateString("hu-HU"),

@@ -26,7 +26,8 @@ export function AppointmentCard({
       </p>
 
       <p className="truncate text-xs">
-        {appointment.customer.name}
+        {appointment.customer.lastName}{" "}
+        {appointment.customer.firstName}
       </p>
 
       <p className="mt-1 text-xs opacity-90">

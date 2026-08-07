@@ -73,7 +73,7 @@ export async function PATCH(request: Request) {
     },
   });
 
-  if (!user || !user.passwordHash) {
+  if (!user) {
     return NextResponse.json(
       {
         success: false,
@@ -87,7 +87,7 @@ export async function PATCH(request: Request) {
 
   const passwordCorrect = await bcrypt.compare(
     currentPassword,
-    user.passwordHash
+    user.password
   );
 
   if (!passwordCorrect) {
@@ -112,7 +112,7 @@ export async function PATCH(request: Request) {
       id: user.id,
     },
     data: {
-      passwordHash: hashedPassword,
+      password: hashedPassword,
     },
   });
 

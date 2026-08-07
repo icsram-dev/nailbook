@@ -25,8 +25,11 @@ export default function CustomerTable({
     }
 
     return customers.filter((customer) => {
+      const fullName =
+        `${customer.lastName} ${customer.firstName}`.toLowerCase();
+
       return (
-        customer.name.toLowerCase().includes(query) ||
+        fullName.includes(query) ||
         customer.email.toLowerCase().includes(query) ||
         customer.phone.toLowerCase().includes(query)
       );
@@ -89,7 +92,7 @@ export default function CustomerTable({
                   className="cursor-pointer border-b transition hover:bg-gray-50 last:border-0"
                 >
                   <td className="px-6 py-4 font-medium">
-                    {customer.name}
+                    {customer.lastName} {customer.firstName}
                   </td>
 
                   <td className="whitespace-nowrap px-6 py-4">

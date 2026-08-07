@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+
 import ProfileForm from "./ProfileForm";
 import ChangePasswordForm from "./ChangePasswordForm";
 
@@ -27,15 +28,16 @@ export default async function ProfilePage() {
         Profil
       </h1>
 
-    <ProfileForm
-  user={{
-    name: user.name,
-    email: user.email,
-    phone: user.phone ?? "",
-  }}
-/>
+      <ProfileForm
+        user={{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          phone: user.phone ?? "",
+        }}
+      />
 
-<ChangePasswordForm />
+      <ChangePasswordForm />
     </main>
   );
 }

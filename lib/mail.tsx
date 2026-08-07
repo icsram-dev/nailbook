@@ -7,8 +7,9 @@ import { BookingConfirmation } from "@/emails/BookingConfirmation";
 import Reminder from "@/emails/Reminder";
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
 import BookingCancelledByAdmin from "@/emails/BookingCancelledByAdmin";
-import BookingUpdated from "@/emails/BookingUpdated";
 import BookingCancelledByCustomer from "@/emails/BookingCancelledByCustomer";
+import BookingUpdated from "@/emails/BookingUpdated";
+import VerifyEmail from "@/emails/VerifyEmail";
 
 type BookingEmailParams = {
   to: string;
@@ -218,6 +219,32 @@ export async function sendBookingUpdated({
     from: "NailBook <onboarding@resend.dev>",
     to,
     subject: "Az időpontodat módosítottuk",
+    html,
+  });
+}
+type SendVerificationEmailParams = {
+  to: string;
+  firstName: string;
+  verifyUrl: string;
+};
+
+export async function sendVerificationEmail({
+  to,
+  firstName,
+  verifyUrl,
+}: SendVerificationEmailParams) {
+  const html = await render(
+    <VerifyEmail
+      firstName={firstName}
+      verifyUrl={verifyUrl}
+    />
+  );
+
+  return resend.emails.send({
+    from: "NailBook <onboarding@resend.dev>",
+    to,
+    subject:
+      "Üdvözlünk a NailBookban! Erősítsd meg az e-mail címed",
     html,
   });
 }

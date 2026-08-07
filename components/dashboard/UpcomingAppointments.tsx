@@ -29,12 +29,12 @@ export async function UpcomingAppointments() {
       startTime: {
         gte: new Date(),
       },
-    status: {
-  in: [
-    AppointmentStatus.PENDING,
-    AppointmentStatus.CONFIRMED,
-  ],
-},
+      status: {
+        in: [
+          AppointmentStatus.PENDING,
+          AppointmentStatus.CONFIRMED,
+        ],
+      },
     },
     include: {
       customer: true,
@@ -71,12 +71,15 @@ export async function UpcomingAppointments() {
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 font-bold text-pink-600">
-                  {appointment.customer.name.charAt(0).toUpperCase()}
+                  {appointment.customer.lastName
+                    .charAt(0)
+                    .toUpperCase()}
                 </div>
 
                 <div>
                   <h3 className="font-semibold">
-                    {appointment.customer.name}
+                    {appointment.customer.lastName}{" "}
+                    {appointment.customer.firstName}
                   </h3>
 
                   <p className="text-sm text-gray-500">
@@ -95,10 +98,13 @@ export async function UpcomingAppointments() {
                 </p>
 
                 <p className="text-sm text-gray-500">
-                  {appointment.startTime.toLocaleTimeString("hu-HU", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                  })}
+                  {appointment.startTime.toLocaleTimeString(
+                    "hu-HU",
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }
+                  )}
                 </p>
 
                 <div className="mt-2">

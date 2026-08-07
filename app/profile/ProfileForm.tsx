@@ -13,7 +13,8 @@ import {
 
 type Props = {
   user: {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     phone: string;
   };
@@ -30,7 +31,8 @@ export default function ProfileForm({
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     phone: user.phone,
   });
@@ -51,7 +53,8 @@ export default function ProfileForm({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: form.name,
+          firstName: form.firstName,
+          lastName: form.lastName,
           phone: form.phone,
         }),
       });
@@ -63,10 +66,7 @@ export default function ProfileForm({
         return;
       }
 
-      // Session frissítése
       await update();
-
-      // Server Components frissítése
       router.refresh();
 
       setSuccess("A profil sikeresen frissítve.");
@@ -102,12 +102,33 @@ export default function ProfileForm({
 
         <input
           required
+          placeholder="Vezetéknév"
           className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
-          value={form.name}
+          value={form.lastName}
           onChange={(e) =>
             setForm({
               ...form,
-              name: e.target.value,
+              lastName: e.target.value,
+            })
+          }
+        />
+      </div>
+
+      <div className="relative">
+        <User
+          size={18}
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+        />
+
+        <input
+          required
+          placeholder="Keresztnév"
+          className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+          value={form.firstName}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              firstName: e.target.value,
             })
           }
         />

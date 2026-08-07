@@ -17,14 +17,8 @@ export const appointmentSchema = z.object({
     .string()
     .min(1, "Az időpont megadása kötelező."),
 
-  price: z.coerce
-    .number()
-    .min(0, "Az ár nem lehet negatív."),
-
   note: z.string().trim().optional(),
 });
 
 export type AppointmentFormValues = z.infer<typeof appointmentSchema>;
-
-/* ➕ Add hozzá ezt is */
 export type AppointmentData = AppointmentFormValues;

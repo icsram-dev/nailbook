@@ -19,7 +19,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const email = String(credentials.email).trim().toLowerCase();
+        const email = String(credentials.email)
+          .trim()
+          .toLowerCase();
+
         const password = String(credentials.password);
 
         const user = await prisma.user.findUnique({
@@ -43,10 +46,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
         return {
           id: user.id,
-          name: user.name,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          name: `${user.lastName} ${user.firstName}`,
           email: user.email,
           phone: user.phone,
           role: user.role,
+          isEmailVerified: user.isEmailVerified,
         };
       },
     }),
@@ -64,10 +70,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
-        token.name = user.name;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
+        token.name = `${user.lastName} ${user.firstName}`;
         token.email = user.email;
         token.phone = user.phone;
         token.role = user.role;
+        token.isEmailVerified = user.isEmailVerified;
       }
 
       if (token.id) {
@@ -78,10 +87,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         });
 
         if (dbUser) {
-          token.name = dbUser.name;
+          token.firstName = dbUser.firstName;
+          token.lastName = dbUser.lastName;
+          token.name = `${dbUser.lastName} ${dbUser.firstName}`;
           token.email = dbUser.email;
           token.phone = dbUser.phone;
           token.role = dbUser.role;
+          token.isEmailVerified =
+            dbUser.isEmailVerified;
         }
       }
 
@@ -91,10 +104,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.name = token.name as string;
-        session.user.email = token.email as string;
-        session.user.phone = token.phone as string;
-        session.user.role = token.role as string;
+
+        session.user.firstName =
+          token.firstName as string;
+
+        session.user.lastName =
+          token.lastName as string;
+
+        session.user.name =
+          token.name as string;
+
+        session.user.email =
+          token.email as string;
+
+        session.user.phone =
+          token.phone as string;
+
+        session.user.role =
+          token.role as string;
+
+        session.user.isEmailVerified =
+          token.isEmailVerified as boolean;
       }
 
       return session;

@@ -46,7 +46,7 @@ export async function GET() {
       appointments.map((appointment) => ({
         id: appointment.id,
 
-        title: `${appointment.customer.name}\n${appointment.service.name}`,
+        title: `${appointment.customer.lastName} ${appointment.customer.firstName}\n${appointment.service.name}`,
 
         start: appointment.startTime,
         end: appointment.endTime,
@@ -59,7 +59,7 @@ export async function GET() {
 
         extendedProps: {
           customerId: appointment.customer.id,
-          customerName: appointment.customer.name,
+          customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
           customerPhone: appointment.customer.phone,
           customerEmail: appointment.customer.email,
 

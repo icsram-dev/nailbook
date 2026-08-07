@@ -27,13 +27,23 @@ export default async function AppointmentsPage({
   const appointments = await prisma.appointment.findMany({
     where: {
       ...(search && {
-        customer: {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
+  customer: {
+    OR: [
+      {
+        firstName: {
+          contains: search,
+          mode: "insensitive",
         },
-      }),
+      },
+      {
+        lastName: {
+          contains: search,
+          mode: "insensitive",
+        },
+      },
+    ],
+  },
+}),
 
       ...(status && {
         status: status as AppointmentStatus,
@@ -100,7 +110,7 @@ export default async function AppointmentsPage({
                     href={`/admin/appointments/${appointment.id}`}
                     className="text-pink-600 hover:underline"
                   >
-                    {appointment.customer.name}
+                    {appointment.customer.lastName} {appointment.customer.firstName}
                   </Link>
                 </td>
 

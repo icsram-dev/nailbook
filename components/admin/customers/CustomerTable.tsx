@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 
 type Customer = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   createdAt: Date;
@@ -25,11 +26,15 @@ export default function CustomerTable({
   const filteredCustomers = useMemo(() => {
     const value = search.toLowerCase();
 
-    return customers.filter(
-      (customer) =>
-        customer.name.toLowerCase().includes(value) ||
+    return customers.filter((customer) => {
+      const fullName =
+        `${customer.lastName} ${customer.firstName}`.toLowerCase();
+
+      return (
+        fullName.includes(value) ||
         customer.email.toLowerCase().includes(value)
-    );
+      );
+    });
   }, [customers, search]);
 
   return (
@@ -61,7 +66,7 @@ export default function CustomerTable({
                 className="border-t transition hover:bg-gray-50"
               >
                 <td className="px-6 py-4 font-medium">
-                  {customer.name}
+                  {customer.lastName} {customer.firstName}
                 </td>
 
                 <td className="px-6 py-4">

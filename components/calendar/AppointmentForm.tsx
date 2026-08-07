@@ -12,7 +12,8 @@ type AppointmentFormProps = {
 
 type Customer = {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
 };
 
 type Service = {
@@ -33,42 +34,44 @@ export function AppointmentForm({
   const [services, setServices] = useState<Service[]>([]);
 
   const [date, setDate] = useState("");
-const [time, setTime] = useState("");
-const [customer, setCustomer] = useState<{
-  name: string;
-  email: string;
-  phone: string;
-} | null>(null);
+  const [time, setTime] = useState("");
+
+  const [customer, setCustomer] = useState<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+  } | null>(null);
 
   const [customerId, setCustomerId] = useState("");
   const [serviceId, setServiceId] = useState("");
   const [customerNote, setCustomerNote] = useState("");
-const [internalNote, setInternalNote] = useState("");
+  const [internalNote, setInternalNote] = useState("");
   const [status, setStatus] = useState("CONFIRMED");
 
   const [loading, setLoading] = useState(false);
 
   const isEditMode = !!appointmentId;
 
- const startTime =
-  date && time
-    ? new Date(`${date}T${time}:00`).toISOString()
-    : null;
+  const startTime =
+    date && time
+      ? new Date(`${date}T${time}:00`).toISOString()
+      : null;
 
-useEffect(() => {
-  if (!selectedDate || appointmentId) return;
+  useEffect(() => {
+    if (!selectedDate || appointmentId) return;
 
-  const start = new Date(selectedDate);
+    const start = new Date(selectedDate);
 
-  setDate(start.toISOString().split("T")[0]);
+    setDate(start.toISOString().split("T")[0]);
 
-  setTime(
-    start.toLocaleTimeString("hu-HU", {
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  );
-}, [selectedDate, appointmentId]);
+    setTime(
+      start.toLocaleTimeString("hu-HU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    );
+  }, [selectedDate, appointmentId]);
 
   useEffect(() => {
     async function loadData() {
@@ -76,7 +79,9 @@ useEffect(() => {
         const res = await fetch("/api/appointments/form-data");
 
         if (!res.ok) {
-          throw new Error("Nem sikerült betölteni az adatokat.");
+          throw new Error(
+            "Nem sikerült betölteni az adatokat."
+          );
         }
 
         const data = await res.json();
@@ -96,33 +101,43 @@ useEffect(() => {
       return;
     }
 
-
     async function loadAppointment() {
       try {
-        const res = await fetch(`/api/appointments/${appointmentId}`);
+        const res = await fetch(
+          `/api/appointments/${appointmentId}`
+        );
 
         if (!res.ok) {
-          throw new Error("Nem sikerült betölteni a foglalást.");
+          throw new Error(
+            "Nem sikerült betölteni a foglalást."
+          );
         }
 
-       const appointment = await res.json();
+        const appointment = await res.json();
 
-setCustomer(appointment.customer);
+        setCustomer(appointment.customer);
 
-setCustomerId(appointment.customerId);
-setServiceId(appointment.serviceId);
-       
+        setCustomerId(appointment.customerId);
+        setServiceId(appointment.serviceId);
+
         const start = new Date(appointment.startTime);
 
-setDate(start.toISOString().split("T")[0]);
+        setDate(start.toISOString().split("T")[0]);
 
-setTime(
-  start.toLocaleTimeString("hu-HU", {
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-);
+        setTime(
+          start.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        );
+
         setStatus(appointment.status);
+        setCustomerNote(
+          appointment.customerNote ?? ""
+        );
+        setInternalNote(
+          appointment.internalNote ?? ""
+        );
       } catch (error) {
         console.error(error);
       }
@@ -131,18 +146,24 @@ setTime(
     void loadAppointment();
   }, [appointmentId]);
 
-  const selectedService = services.find((service) => service.id === serviceId);
+  const selectedService = services.find(
+    (service) => service.id === serviceId
+  );
 
   const endDate = (() => {
     if (!startTime || !selectedService) return null;
 
     const date = new Date(startTime);
-    date.setMinutes(date.getMinutes() + selectedService.duration);
+    date.setMinutes(
+      date.getMinutes() + selectedService.duration
+    );
 
     return date;
   })();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
 
     if (!startTime || !customerId || !serviceId) {
@@ -164,20 +185,22 @@ setTime(
         headers: {
           "Content-Type": "application/json",
         },
-       body: JSON.stringify({
-  customerId,
-  serviceId,
-  startTime,
-  status,
-  customerNote,
-  internalNote,
-}),
+        body: JSON.stringify({
+          customerId,
+          serviceId,
+          startTime,
+          status,
+          customerNote,
+          internalNote,
+        }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error ?? "Hiba történt.");
+        throw new Error(
+          data.error ?? "Hiba történt."
+        );
       }
 
       onSuccess();
@@ -193,79 +216,93 @@ setTime(
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-6"
+    >
       {isEditMode && customer && (
-  <div className="rounded-2xl border border-pink-100 bg-pink-50 p-5">
-    <h3 className="text-lg font-semibold text-gray-900">
-      {customer.name}
-    </h3>
+        <div className="rounded-2xl border border-pink-100 bg-pink-50 p-5">
+          <h3 className="text-lg font-semibold text-gray-900">
+            {customer.lastName}{" "}
+            {customer.firstName}
+          </h3>
 
-    <div className="mt-3 space-y-2 text-sm text-gray-600">
-      <div>📞 {customer.phone}</div>
-      <div>✉️ {customer.email}</div>
-    </div>
-  </div>
-)}
+          <div className="mt-3 space-y-2 text-sm text-gray-600">
+            <div>📞 {customer.phone}</div>
+            <div>✉️ {customer.email}</div>
+          </div>
+        </div>
+      )}
+
       {startTime && (
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">
             Kezdési idő
           </label>
-        
 
-         <div className="grid grid-cols-2 gap-4">
-  <div>
-    <label className="mb-1 block text-sm font-medium text-gray-700">
-      Dátum
-    </label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Dátum
+              </label>
 
-    <input
-      type="date"
-      value={date}
-      onChange={(e) => setDate(e.target.value)}
-      className="w-full rounded-xl border border-gray-300 p-3"
-    />
-  </div>
+              <input
+                type="date"
+                value={date}
+                onChange={(e) =>
+                  setDate(e.target.value)
+                }
+                className="w-full rounded-xl border border-gray-300 p-3"
+              />
+            </div>
 
-  <div>
-    <label className="mb-1 block text-sm font-medium text-gray-700">
-      Kezdés
-    </label>
+            <div>
+              <label className="mb-1 block text-sm font-medium text-gray-700">
+                Kezdés
+              </label>
 
-    <input
-      type="time"
-      value={time}
-      onChange={(e) => setTime(e.target.value)}
-      className="w-full rounded-xl border border-gray-300 p-3"
-    />
-  </div>
-</div>
+              <input
+                type="time"
+                value={time}
+                onChange={(e) =>
+                  setTime(e.target.value)
+                }
+                className="w-full rounded-xl border border-gray-300 p-3"
+              />
+            </div>
+          </div>
         </div>
       )}
 
-      <div>
       {!isEditMode && (
-  <div>
-    <label className="mb-1 block text-sm font-medium text-gray-700">
-      Vendég
-    </label>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">
+            Vendég
+          </label>
 
-    <select
-      value={customerId}
-      onChange={(e) => setCustomerId(e.target.value)}
-      className="w-full rounded-xl border border-gray-300 p-3"
-    >
-      <option value="">Válassz vendéget...</option>
+          <select
+            value={customerId}
+            onChange={(e) =>
+              setCustomerId(e.target.value)
+            }
+            className="w-full rounded-xl border border-gray-300 p-3"
+          >
+            <option value="">
+              Válassz vendéget...
+            </option>
 
-      {customers.map((customer) => (
-        <option key={customer.id} value={customer.id}>
-          {customer.name}
-        </option>
-      ))}
-    </select>
-  </div>
-)}
-      </div>
+            {customers.map((customer) => (
+              <option
+                key={customer.id}
+                value={customer.id}
+              >
+                {customer.lastName}{" "}
+                {customer.firstName}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
 
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">
@@ -274,46 +311,61 @@ setTime(
 
         <select
           value={serviceId}
-          onChange={(e) => setServiceId(e.target.value)}
+          onChange={(e) =>
+            setServiceId(e.target.value)
+          }
           className="w-full rounded-xl border border-gray-300 p-3"
         >
-          <option value="">Válassz szolgáltatást...</option>
+          <option value="">
+            Válassz szolgáltatást...
+          </option>
 
           {services.map((service) => (
-            <option key={service.id} value={service.id}>
-  {service.name}
-  {service.description ? ` – ${service.description}` : ""}
-</option>
+            <option
+              key={service.id}
+              value={service.id}
+            >
+              {service.name}
+              {service.description
+                ? ` – ${service.description}`
+                : ""}
+            </option>
           ))}
         </select>
       </div>
+
       <div>
-  <label className="mb-1 block text-sm font-medium text-gray-700">
-    Vendég megjegyzése
-  </label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          Vendég megjegyzése
+        </label>
 
-  <textarea
-    value={customerNote}
-    onChange={(e) => setCustomerNote(e.target.value)}
-    rows={3}
-    className="w-full rounded-xl border border-gray-300 p-3"
-    placeholder="A vendég által megadott megjegyzés..."
-  />
-</div>
+        <textarea
+          value={customerNote}
+          onChange={(e) =>
+            setCustomerNote(e.target.value)
+          }
+          rows={3}
+          className="w-full rounded-xl border border-gray-300 p-3"
+          placeholder="A vendég által megadott megjegyzés..."
+        />
+      </div>
 
-<div>
-  <label className="mb-1 block text-sm font-medium text-gray-700">
-    Belső megjegyzés
-  </label>
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          Belső megjegyzés
+        </label>
 
-  <textarea
-    value={internalNote}
-    onChange={(e) => setInternalNote(e.target.value)}
-    rows={3}
-    className="w-full rounded-xl border border-gray-300 p-3"
-    placeholder="Csak az admin látja..."
-  />
-</div>
+        <textarea
+          value={internalNote}
+          onChange={(e) =>
+            setInternalNote(e.target.value)
+          }
+          rows={3}
+          className="w-full rounded-xl border border-gray-300 p-3"
+          placeholder="Csak az admin látja..."
+        />
+      </div>
+
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">
           Státusz
@@ -321,13 +373,23 @@ setTime(
 
         <select
           value={status}
-          onChange={(e) => setStatus(e.target.value)}
+          onChange={(e) =>
+            setStatus(e.target.value)
+          }
           className="w-full rounded-xl border border-gray-300 p-3"
         >
-          <option value="CONFIRMED">Megerősítve</option>
-          <option value="COMPLETED">Teljesítve</option>
-          <option value="CANCELLED">Lemondva</option>
-          <option value="NO_SHOW">Nem jelent meg</option>
+          <option value="CONFIRMED">
+            Megerősítve
+          </option>
+          <option value="COMPLETED">
+            Teljesítve
+          </option>
+          <option value="CANCELLED">
+            Lemondva
+          </option>
+          <option value="NO_SHOW">
+            Nem jelent meg
+          </option>
         </select>
       </div>
 
@@ -350,7 +412,10 @@ setTime(
               </label>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                {selectedService.price.toLocaleString("hu-HU")} Ft
+                {selectedService.price.toLocaleString(
+                  "hu-HU"
+                )}{" "}
+                Ft
               </div>
             </div>
           </div>
@@ -362,10 +427,13 @@ setTime(
               </label>
 
               <div className="rounded-xl border border-gray-200 bg-gray-50 p-3">
-                {endDate.toLocaleTimeString("hu-HU", {
-  hour: "2-digit",
-  minute: "2-digit",
-})}
+                {endDate.toLocaleTimeString(
+                  "hu-HU",
+                  {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  }
+                )}
               </div>
             </div>
           )}
@@ -381,8 +449,15 @@ setTime(
           Mégse
         </Button>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Mentés..." : isEditMode ? "Módosítás" : "Mentés"}
+        <Button
+          type="submit"
+          disabled={loading}
+        >
+          {loading
+            ? "Mentés..."
+            : isEditMode
+            ? "Módosítás"
+            : "Mentés"}
         </Button>
       </div>
     </form>

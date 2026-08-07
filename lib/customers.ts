@@ -9,7 +9,8 @@ export async function getCustomers() {
     },
     select: {
       id: true,
-      name: true,
+      firstName: true,
+      lastName: true,
       email: true,
       phone: true,
       role: true,
@@ -28,9 +29,14 @@ export async function getCustomers() {
         },
       },
     },
-    orderBy: {
-      name: "asc",
-    },
+    orderBy: [
+      {
+        lastName: "asc",
+      },
+      {
+        firstName: "asc",
+      },
+    ],
   });
 
   return customers.map((customer) => {
@@ -53,7 +59,9 @@ export async function getCustomers() {
 
     return {
       id: customer.id,
-      name: customer.name,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      name: `${customer.lastName} ${customer.firstName}`,
       email: customer.email,
       phone: customer.phone,
       role: customer.role,
@@ -122,7 +130,9 @@ export async function getCustomerById(id: string) {
 
   return {
     id: customer.id,
-    name: customer.name,
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    name: `${customer.lastName} ${customer.firstName}`,
     email: customer.email,
     phone: customer.phone,
 

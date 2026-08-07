@@ -19,13 +19,29 @@ export async function PATCH(request: Request) {
 
   const body = await request.json();
 
-  const { name, phone } = body;
+  const {
+    firstName,
+    lastName,
+    phone,
+  } = body;
 
-  if (!name || name.trim().length < 2) {
+  if (!firstName || firstName.trim().length < 2) {
     return NextResponse.json(
       {
         success: false,
-        message: "Adj meg egy érvényes nevet.",
+        message: "Adj meg egy érvényes keresztnevet.",
+      },
+      {
+        status: 400,
+      }
+    );
+  }
+
+  if (!lastName || lastName.trim().length < 2) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Adj meg egy érvényes vezetéknevet.",
       },
       {
         status: 400,
@@ -54,7 +70,8 @@ export async function PATCH(request: Request) {
       id: session.user.id,
     },
     data: {
-      name: name.trim(),
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
       phone: phone.trim(),
     },
   });

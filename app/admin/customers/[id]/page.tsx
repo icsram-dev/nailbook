@@ -10,7 +10,9 @@ type Props = {
   }>;
 };
 
-export default async function CustomerPage({ params }: Props) {
+export default async function CustomerPage({
+  params,
+}: Props) {
   const { id } = await params;
 
   const customer = await getCustomerById(id);
@@ -22,7 +24,7 @@ export default async function CustomerPage({ params }: Props) {
   return (
     <>
       <AdminPageHeader
-        title={customer.name}
+        title={`${customer.lastName} ${customer.firstName}`}
         description="Vendég profilja és foglalási előzményei."
       />
 

@@ -71,7 +71,8 @@ export default async function TodayAppointments() {
                   </td>
 
                   <td className="py-4">
-                    {appointment.customer.name}
+                    {appointment.customer.lastName}{" "}
+                    {appointment.customer.firstName}
                   </td>
 
                   <td className="py-4">

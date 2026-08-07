@@ -3,7 +3,15 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Mail, Phone, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Eye,
+  EyeOff,
+  Loader2,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 
@@ -12,77 +20,145 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [
+    showConfirmPassword,
+    setShowConfirmPassword,
+  ] = useState(false);
 
   const [error, setError] = useState("");
 
   const [form, setForm] = useState({
-  name: "",
-  email: "",
-  phone: "+36 ",
-  password: "",
-  confirmPassword: "",
-});
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "+36 ",
+    password: "",
+    confirmPassword: "",
+  });
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    e: React.FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
 
     setError("");
 
-    const phoneRegex = /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
+    const firstName =
+      form.firstName.trim();
 
-    if (!phoneRegex.test(form.phone)) {
-      setError("A telefonszám formátuma: +36 30 358 0496");
+    const lastName =
+      form.lastName.trim();
+
+    const email =
+      form.email.trim().toLowerCase();
+
+    if (
+      firstName.length < 2 ||
+      firstName.length > 30
+    ) {
+      setError(
+        "A keresztnév 2 és 30 karakter között lehet."
+      );
       return;
     }
 
-    if (form.password !== form.confirmPassword) {
-      setError("A két jelszó nem egyezik.");
+    if (
+      lastName.length < 2 ||
+      lastName.length > 30
+    ) {
+      setError(
+        "A vezetéknév 2 és 30 karakter között lehet."
+      );
+      return;
+    }
+
+    const emailRegex =
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      setError("Érvénytelen e-mail cím.");
+      return;
+    }
+
+    const phoneRegex =
+      /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
+
+    if (!phoneRegex.test(form.phone)) {
+      setError(
+        "A telefonszám formátuma: +36 30 358 0496"
+      );
+      return;
+    }
+
+    if (
+      form.password !==
+      form.confirmPassword
+    ) {
+      setError(
+        "A két jelszó nem egyezik."
+      );
       return;
     }
 
     if (form.password.length < 8) {
-      setError("A jelszónak legalább 8 karakter hosszúnak kell lennie.");
+      setError(
+        "A jelszónak legalább 8 karakter hosszúnak kell lennie."
+      );
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch("/api/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: form.name,
-          email: form.email,
-          phone: form.phone.replace(/\s+/g, " ").trim(),
-          password: form.password,
-        }),
-      });
+      const response = await fetch(
+        "/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            phone: form.phone
+              .replace(/\s+/g, " ")
+              .trim(),
+            password: form.password,
+          }),
+        }
+      );
 
-      const data = await response.json();
+      const data =
+        await response.json();
 
       if (!response.ok) {
         setError(data.message);
         return;
       }
 
-      router.push("/login?registered=true");
+      router.push(
+        "/login?registered=true"
+      );
     } catch {
-      setError("Váratlan hiba történt.");
+      setError(
+        "Váratlan hiba történt."
+      );
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="mx-auto max-w-md px-6 py-12">
+        <main className="mx-auto max-w-md px-6 py-12">
       <div className="rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">Regisztráció</h1>
+        <h1 className="mb-2 text-center text-3xl font-bold">
+          Regisztráció
+        </h1>
 
         <p className="mb-8 text-center text-gray-500">
           Hozd létre a NailBook fiókodat.
@@ -94,8 +170,11 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Név */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+          {/* Vezetéknév */}
 
           <div className="relative">
             <User
@@ -105,13 +184,35 @@ export default function RegisterPage() {
 
             <input
               required
-              placeholder="Pl. Kiss Anna"
+              placeholder="Vezetéknév"
               className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
-              value={form.name}
+              value={form.lastName}
               onChange={(e) =>
                 setForm({
                   ...form,
-                  name: e.target.value,
+                  lastName: e.target.value,
+                })
+              }
+            />
+          </div>
+
+          {/* Keresztnév */}
+
+          <div className="relative">
+            <User
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+
+            <input
+              required
+              placeholder="Keresztnév"
+              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              value={form.firstName}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  firstName: e.target.value,
                 })
               }
             />
@@ -142,64 +243,65 @@ export default function RegisterPage() {
 
           {/* Telefonszám */}
 
-          {/* Telefonszám */}
+          <div className="relative">
+            <Phone
+              size={18}
+              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+            />
 
-<div className="relative">
-  <Phone
-    size={18}
-    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-  />
+            <input
+              required
+              type="tel"
+              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              value={form.phone}
+              autoComplete="tel"
+              maxLength={17}
+              onFocus={() => {
+                if (!form.phone) {
+                  setForm((prev) => ({
+                    ...prev,
+                    phone: "+36 ",
+                  }));
+                }
+              }}
+              onChange={(e) => {
+                let value = e.target.value;
 
-  <input
-    required
-    type="tel"
-    className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
-    value={form.phone}
-    autoComplete="tel"
-    maxLength={17}
-    onFocus={() => {
-      if (!form.phone) {
-        setForm((prev) => ({
-          ...prev,
-          phone: "+36 ",
-        }));
-      }
-    }}
-    onChange={(e) => {
-      let value = e.target.value;
+                if (!value.startsWith("+36")) {
+                  value = "+36 ";
+                }
 
-      if (!value.startsWith("+36")) {
-        value = "+36 ";
-      }
+                const digits = value
+                  .replace("+36", "")
+                  .replace(/\D/g, "")
+                  .slice(0, 9);
 
-      const digits = value
-        .replace("+36", "")
-        .replace(/\D/g, "")
-        .slice(0, 9);
+                let formatted = "+36 ";
 
-      let formatted = "+36 ";
+                if (digits.length > 0) {
+                  formatted += digits.slice(0, 2);
+                }
 
-      if (digits.length > 0) {
-        formatted += digits.slice(0, 2);
-      }
+                if (digits.length > 2) {
+                  formatted +=
+                    " " + digits.slice(2, 5);
+                }
 
-      if (digits.length > 2) {
-        formatted += " " + digits.slice(2, 5);
-      }
+                if (digits.length > 5) {
+                  formatted +=
+                    " " + digits.slice(5, 9);
+                }
 
-      if (digits.length > 5) {
-        formatted += " " + digits.slice(5, 9);
-      }
-
-      setForm((prev) => ({
-        ...prev,
-        phone: formatted,
-      }));
-    }}
-  />
-</div>
+                setForm((prev) => ({
+                  ...prev,
+                  phone: formatted,
+                }));
+              }}
+            />
+          </div>
 
           {/* Jelszó */}
+
           <div className="relative">
             <Lock
               size={18}
@@ -208,7 +310,11 @@ export default function RegisterPage() {
 
             <input
               required
-              type={showPassword ? "text" : "password"}
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
               placeholder="Minimum 8 karakter"
               className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
               value={form.password}
@@ -222,10 +328,18 @@ export default function RegisterPage() {
 
             <button
               type="button"
-              onClick={() => setShowPassword(!showPassword)}
+              onClick={() =>
+                setShowPassword(
+                  !showPassword
+                )
+              }
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
             >
-              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
             </button>
           </div>
 
@@ -239,31 +353,51 @@ export default function RegisterPage() {
 
             <input
               required
-              type={showConfirmPassword ? "text" : "password"}
+              type={
+                showConfirmPassword
+                  ? "text"
+                  : "password"
+              }
               placeholder="Jelszó megerősítése"
               className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
               value={form.confirmPassword}
               onChange={(e) =>
                 setForm({
                   ...form,
-                  confirmPassword: e.target.value,
+                  confirmPassword:
+                    e.target.value,
                 })
               }
             />
 
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() =>
+                setShowConfirmPassword(
+                  !showConfirmPassword
+                )
+              }
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
             >
-              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              {showConfirmPassword ? (
+                <EyeOff size={18} />
+              ) : (
+                <Eye size={18} />
+              )}
             </button>
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button
+            type="submit"
+            disabled={loading}
+            className="w-full"
+          >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2 size={18} className="animate-spin" />
+                <Loader2
+                  size={18}
+                  className="animate-spin"
+                />
                 Regisztráció...
               </span>
             ) : (

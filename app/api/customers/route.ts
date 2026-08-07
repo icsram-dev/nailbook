@@ -19,14 +19,21 @@ export async function GET() {
           },
         },
       },
-      orderBy: {
-        name: "asc",
-      },
+      orderBy: [
+        {
+          lastName: "asc",
+        },
+        {
+          firstName: "asc",
+        },
+      ],
     });
 
     const result = customers.map((customer) => ({
       id: customer.id,
-      name: customer.name,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      name: `${customer.lastName} ${customer.firstName}`,
       email: customer.email,
       phone: customer.phone,
 
@@ -95,7 +102,8 @@ export async function POST(request: NextRequest) {
 
     const customer = await prisma.user.create({
       data: {
-        name: result.data.name,
+        firstName: result.data.firstName,
+        lastName: result.data.lastName,
         email: result.data.email,
         phone: result.data.phone,
         password: hashedPassword,
