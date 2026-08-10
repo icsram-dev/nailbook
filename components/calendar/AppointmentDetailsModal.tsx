@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { Modal } from "@/components/ui/Modal";
 import { Button } from "@/components/ui/Button";
 
@@ -10,6 +12,11 @@ const STATUS_LABELS = {
   CANCELLED: "Lemondva",
   NO_SHOW: "Nem jelent meg",
 };
+
+type CancellationReason =
+  | "CUSTOMER_CANCELLED"
+  | "ADMIN_CANCELLED"
+  | "OTHER";
 
 type Appointment = {
   id: string;
@@ -37,9 +44,14 @@ type Props = {
 
   onClose: () => void;
   onEdit: () => void;
-  onDelete: () => void;
 
-  // Később fogjuk bekötni
+  onDelete: (
+    reason: CancellationReason,
+    note?: string
+  ) => void;
+
+  onNoShow: () => void;
+
   onConfirm?: () => void;
 };
 
@@ -49,21 +61,64 @@ export function AppointmentDetailsModal({
   onClose,
   onEdit,
   onDelete,
+  onNoShow,
   onConfirm,
 }: Props) {
+  const [showCancellationForm, setShowCancellationForm] =
+    useState(false);
+
+  const [reason, setReason] =
+    useState<CancellationReason>(
+      "CUSTOMER_CANCELLED"
+    );
+
+  const [note, setNote] = useState("");
+
   if (!appointment) return null;
+
+  const appointmentStart = new Date(
+    appointment.startTime
+  );
+
+  const isPast =
+    appointmentStart.getTime() < Date.now();
+
+  const canMarkAsNoShow =
+    isPast &&
+    (appointment.status === "PENDING" ||
+      appointment.status === "CONFIRMED");
+
+  function handleCancel() {
+    onDelete(
+      reason,
+      note.trim() || undefined
+    );
+
+    setShowCancellationForm(false);
+    setNote("");
+  }
+
+  function handleClose() {
+    setShowCancellationForm(false);
+    setNote("");
+    setReason("CUSTOMER_CANCELLED");
+
+    onClose();
+  }
 
   return (
     <Modal
       open={open}
+      onClose={handleClose}
       title="Foglalás részletei"
-      onClose={onClose}
     >
       <div className="space-y-6">
+
+        {/* Vendég adatai */}
         <div>
-          <h3 className="text-xl font-semibold">
+          <h2 className="text-xl font-semibold">
             {appointment.customerName}
-          </h3>
+          </h2>
 
           <p className="text-gray-500">
             {appointment.customerPhone ??
@@ -76,6 +131,7 @@ export function AppointmentDetailsModal({
           </p>
         </div>
 
+        {/* Szolgáltatás */}
         <div className="rounded-xl border p-4">
           <p>
             <strong>Szolgáltatás:</strong>{" "}
@@ -89,22 +145,27 @@ export function AppointmentDetailsModal({
 
           <p>
             <strong>Ár:</strong>{" "}
-            {appointment.price.toLocaleString("hu-HU")} Ft
+            {appointment.price.toLocaleString(
+              "hu-HU"
+            )}{" "}
+            Ft
           </p>
         </div>
 
+        {/* Időpont és státusz */}
         <div className="rounded-xl border p-4">
           <p>
             <strong>Kezdés:</strong>{" "}
-            {new Date(
-              appointment.startTime
-            ).toLocaleString("hu-HU", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
+            {appointmentStart.toLocaleString(
+              "hu-HU",
+              {
+                year: "numeric",
+                month: "2-digit",
+                day: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}
           </p>
 
           <p>
@@ -122,61 +183,215 @@ export function AppointmentDetailsModal({
 
           <p>
             <strong>Státusz:</strong>{" "}
-            {
-              STATUS_LABELS[
-                appointment.status as keyof typeof STATUS_LABELS
-              ]
-            }
+            {STATUS_LABELS[
+              appointment.status as keyof typeof STATUS_LABELS
+            ] ?? appointment.status}
           </p>
         </div>
 
+        {/* Vendég megjegyzése */}
         {appointment.customerNote && (
           <div>
             <h4 className="font-semibold">
               Vendég megjegyzése
             </h4>
 
-            <p>{appointment.customerNote}</p>
+            <p className="mt-1 text-gray-600">
+              {appointment.customerNote}
+            </p>
           </div>
         )}
 
+        {/* Belső megjegyzés */}
         {appointment.note && (
           <div>
             <h4 className="font-semibold">
               Belső megjegyzés
             </h4>
 
-            <p>{appointment.note}</p>
+            <p className="mt-1 text-gray-600">
+              {appointment.note}
+            </p>
           </div>
         )}
 
-        <div className="flex justify-end gap-3">
-          {appointment.status === "PENDING" &&
-            onConfirm && (
+        {/* Normál műveletek */}
+        {!showCancellationForm ? (
+          <div className="flex flex-wrap justify-end gap-3">
+
+            {/* Jóváhagyás */}
+            {appointment.status === "PENDING" &&
+              onConfirm && (
+                <Button
+                  type="button"
+                  className="bg-green-600 hover:bg-green-700"
+                  onClick={onConfirm}
+                >
+                  ✓ Jóváhagyás
+                </Button>
+              )}
+
+            {/* Nem jelent meg */}
+            {canMarkAsNoShow && (
               <Button
                 type="button"
-                className="bg-green-600 hover:bg-green-700"
-                onClick={onConfirm}
+                className="bg-orange-500 hover:bg-orange-600"
+                onClick={onNoShow}
               >
-                ✓ Jóváhagyás
+                Nem jelent meg
               </Button>
             )}
 
-          <Button
-            type="button"
-            className="bg-red-600 hover:bg-red-700"
-            onClick={onDelete}
-          >
-            Törlés
-          </Button>
+            {/* Lemondás */}
+            {appointment.status !== "CANCELLED" &&
+              appointment.status !== "NO_SHOW" &&
+              appointment.status !== "COMPLETED" && (
+                <Button
+                  type="button"
+                  className="bg-red-600 hover:bg-red-700"
+                  onClick={() =>
+                    setShowCancellationForm(true)
+                  }
+                >
+                  Lemondás
+                </Button>
+              )}
 
-          <Button
-            type="button"
-            onClick={onEdit}
-          >
-            Szerkesztés
-          </Button>
-        </div>
+            {/* Szerkesztés */}
+            {appointment.status !== "CANCELLED" &&
+              appointment.status !== "NO_SHOW" && (
+                <Button
+                  type="button"
+                  onClick={onEdit}
+                >
+                  Szerkesztés
+                </Button>
+              )}
+          </div>
+        ) : (
+          /* Lemondási űrlap */
+          <div className="rounded-xl border border-red-200 bg-red-50 p-5">
+            <h3 className="font-semibold text-gray-900">
+              Foglalás lemondása
+            </h3>
+
+            <p className="mt-1 text-sm text-gray-600">
+              Válaszd ki a lemondás okát.
+            </p>
+
+            <div className="mt-4 space-y-3">
+
+              {/* Vendég lemondta */}
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="cancellationReason"
+                  value="CUSTOMER_CANCELLED"
+                  checked={
+                    reason ===
+                    "CUSTOMER_CANCELLED"
+                  }
+                  onChange={() =>
+                    setReason(
+                      "CUSTOMER_CANCELLED"
+                    )
+                  }
+                />
+
+                <span>
+                  Vendég lemondta
+                </span>
+              </label>
+
+              {/* Admin lemondta */}
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="cancellationReason"
+                  value="ADMIN_CANCELLED"
+                  checked={
+                    reason ===
+                    "ADMIN_CANCELLED"
+                  }
+                  onChange={() =>
+                    setReason(
+                      "ADMIN_CANCELLED"
+                    )
+                  }
+                />
+
+                <span>
+                  Admin lemondta
+                </span>
+              </label>
+
+              {/* Egyéb */}
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="radio"
+                  name="cancellationReason"
+                  value="OTHER"
+                  checked={reason === "OTHER"}
+                  onChange={() =>
+                    setReason("OTHER")
+                  }
+                />
+
+                <span>
+                  Egyéb
+                </span>
+              </label>
+            </div>
+
+            {/* Megjegyzés */}
+            <div className="mt-4">
+              <label
+                htmlFor="cancellation-note"
+                className="mb-2 block text-sm font-medium text-gray-700"
+              >
+                Megjegyzés{" "}
+                <span className="font-normal text-gray-400">
+                  (opcionális)
+                </span>
+              </label>
+
+              <textarea
+                id="cancellation-note"
+                value={note}
+                onChange={(event) =>
+                  setNote(event.target.value)
+                }
+                rows={3}
+                placeholder="Pl. betegség, technikai ok..."
+                className="w-full rounded-xl border bg-white px-3 py-2 text-sm outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-100"
+              />
+            </div>
+
+            {/* Lemondás műveletei */}
+            <div className="mt-5 flex justify-end gap-3">
+              <Button
+                type="button"
+                onClick={() => {
+                  setShowCancellationForm(false);
+                  setNote("");
+                  setReason(
+                    "CUSTOMER_CANCELLED"
+                  );
+                }}
+              >
+                Mégse
+              </Button>
+
+              <Button
+                type="button"
+                className="bg-red-600 text-white hover:bg-red-700"
+                onClick={handleCancel}
+              >
+                Lemondás megerősítése
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </Modal>
   );

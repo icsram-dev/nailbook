@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import huLocale from "@fullcalendar/core/locales/hu";
+
 import type {
   DateSelectArg,
   EventClickArg,
@@ -14,74 +16,120 @@ import type {
 
 import { Card } from "@/components/ui/Card";
 import SearchInput from "@/components/ui/SearchInput";
+
 import { AppointmentModal } from "./AppointmentModal";
 import { AppointmentDetailsModal } from "./AppointmentDetailsModal";
+
+type CancellationReason =
+  | "CUSTOMER_CANCELLED"
+  | "ADMIN_CANCELLED"
+  | "OTHER";
+
+type SelectedAppointment = {
+  id: string;
+
+  customerName: string;
+  customerPhone?: string | null;
+  customerEmail?: string | null;
+
+  serviceName: string;
+  duration: number;
+  price: number;
+
+  startTime: string;
+  endTime: string;
+
+  status: string;
+
+  customerNote?: string | null;
+  note?: string | null;
+};
 
 export function Calendar() {
   const [events, setEvents] = useState<EventInput[]>([]);
 
-const [search, setSearch] = useState("");
-const [statusFilter, setStatusFilter] = useState("ALL");
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] =
+    useState("ALL");
 
-const [detailsOpen, setDetailsOpen] = useState(false);
-const [editOpen, setEditOpen] = useState(false);
+  const [detailsOpen, setDetailsOpen] =
+    useState(false);
 
-const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [editOpen, setEditOpen] =
+    useState(false);
 
-const [selectedAppointmentId, setSelectedAppointmentId] =
-  useState<string | null>(null);
+  const [selectedDate, setSelectedDate] =
+    useState<string | null>(null);
 
-const [selectedAppointment, setSelectedAppointment] =
-  useState<any>(null);
-const filteredEvents = events.filter((event) => {
-  const customer =
-    event.extendedProps?.customerName?.toLowerCase() ?? "";
+  const [selectedAppointmentId, setSelectedAppointmentId] =
+    useState<string | null>(null);
 
-  const service =
-    event.extendedProps?.serviceName?.toLowerCase() ?? "";
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<SelectedAppointment | null>(null);
 
-  const phone =
-    event.extendedProps?.customerPhone?.toLowerCase() ?? "";
+  const filteredEvents = events.filter((event) => {
+    const customer =
+      event.extendedProps?.customerName
+        ?.toLowerCase() ?? "";
 
-  const email =
-    event.extendedProps?.customerEmail?.toLowerCase() ?? "";
+    const service =
+      event.extendedProps?.serviceName
+        ?.toLowerCase() ?? "";
 
-  const query = search.toLowerCase().trim();
+    const phone =
+      event.extendedProps?.customerPhone
+        ?.toLowerCase() ?? "";
 
-  const matchesSearch =
-    customer.includes(query) ||
-    service.includes(query) ||
-    phone.includes(query) ||
-    email.includes(query);
+    const email =
+      event.extendedProps?.customerEmail
+        ?.toLowerCase() ?? "";
 
-  const matchesStatus =
-    statusFilter === "ALL" ||
-    event.extendedProps?.status === statusFilter;
+    const query = search.toLowerCase().trim();
 
-  return matchesSearch && matchesStatus;
-});
+    const matchesSearch =
+      customer.includes(query) ||
+      service.includes(query) ||
+      phone.includes(query) ||
+      email.includes(query);
 
-  const loadAppointments = useCallback(async () => {
-    try {
-      const res = await fetch("/api/admin/appointments");
+    const matchesStatus =
+      statusFilter === "ALL" ||
+      event.extendedProps?.status ===
+        statusFilter;
 
-      if (!res.ok) {
-        throw new Error("Nem sikerült betölteni a foglalásokat.");
+    return matchesSearch && matchesStatus;
+  });
+
+  const loadAppointments = useCallback(
+    async () => {
+      try {
+        const res = await fetch(
+          "/api/admin/appointments"
+        );
+
+        if (!res.ok) {
+          throw new Error(
+            "Nem sikerült betölteni a foglalásokat."
+          );
+        }
+
+        const data = await res.json();
+
+        setEvents(data);
+      } catch (error) {
+        console.error(error);
       }
-
-      const data = await res.json();
-
-      setEvents(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }, []);
+    },
+    []
+  );
 
   useEffect(() => {
     void loadAppointments();
   }, [loadAppointments]);
 
-  function handleSelect(selectInfo: DateSelectArg) {
+  function handleSelect(
+    selectInfo: DateSelectArg
+  ) {
     setSelectedAppointmentId(null);
     setSelectedAppointment(null);
 
@@ -90,42 +138,61 @@ const filteredEvents = events.filter((event) => {
     setEditOpen(true);
   }
 
-  function handleEventClick(clickInfo: EventClickArg) {
-    setSelectedAppointmentId(clickInfo.event.id);
-    setSelectedDate(clickInfo.event.startStr);
+  function handleEventClick(
+    clickInfo: EventClickArg
+  ) {
+    setSelectedAppointmentId(
+      clickInfo.event.id
+    );
+
+    setSelectedDate(
+      clickInfo.event.startStr
+    );
 
     setSelectedAppointment({
       id: clickInfo.event.id,
 
       customerName:
-        clickInfo.event.extendedProps.customerName,
+        clickInfo.event.extendedProps
+          .customerName,
 
       customerPhone:
-        clickInfo.event.extendedProps.customerPhone,
+        clickInfo.event.extendedProps
+          .customerPhone,
 
       customerEmail:
-        clickInfo.event.extendedProps.customerEmail,
+        clickInfo.event.extendedProps
+          .customerEmail,
 
       serviceName:
-        clickInfo.event.extendedProps.serviceName,
+        clickInfo.event.extendedProps
+          .serviceName,
 
       duration:
-        clickInfo.event.extendedProps.duration,
+        clickInfo.event.extendedProps
+          .duration,
 
       price:
-        clickInfo.event.extendedProps.price,
+        clickInfo.event.extendedProps
+          .price,
 
-      startTime: clickInfo.event.startStr,
-      endTime: clickInfo.event.endStr,
+      startTime:
+        clickInfo.event.startStr,
+
+      endTime:
+        clickInfo.event.endStr,
 
       status:
-        clickInfo.event.extendedProps.status,
+        clickInfo.event.extendedProps
+          .status,
 
       customerNote:
-        clickInfo.event.extendedProps.customerNote,
+        clickInfo.event.extendedProps
+          .customerNote,
 
       note:
-        clickInfo.event.extendedProps.internalNote,
+        clickInfo.event.extendedProps
+          .internalNote,
     });
 
     setDetailsOpen(true);
@@ -189,26 +256,33 @@ const filteredEvents = events.filter((event) => {
     }
   }
 
-  async function handleDelete() {
+  async function handleDelete(
+    reason: CancellationReason,
+    note?: string
+  ) {
     if (!selectedAppointmentId) return;
-
-    const confirmed = window.confirm(
-      "Biztosan le szeretnéd mondani ezt a foglalást?"
-    );
-
-    if (!confirmed) return;
 
     try {
       const res = await fetch(
         `/api/appointments/${selectedAppointmentId}`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reason,
+            note,
+          }),
         }
       );
 
+      const data = await res.json();
+
       if (!res.ok) {
         throw new Error(
-          "Nem sikerült törölni a foglalást."
+          data.error ??
+            "Nem sikerült lemondani a foglalást."
         );
       }
 
@@ -218,64 +292,117 @@ const filteredEvents = events.filter((event) => {
     } catch (error) {
       console.error(error);
 
-      alert("Hiba történt a törlés során.");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Hiba történt a lemondás során."
+      );
+    }
+  }
+
+  async function handleNoShow() {
+    if (!selectedAppointmentId) return;
+
+    const confirmed = window.confirm(
+      "Biztosan nem jelent meg a vendég ezen az időponton?"
+    );
+
+    if (!confirmed) return;
+
+    try {
+      const res = await fetch(
+        `/api/appointments/${selectedAppointmentId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reason: "NO_SHOW",
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(
+          data.error ??
+            "Nem sikerült a foglalást nem jelent meg státuszra állítani."
+        );
+      }
+
+      handleClose();
+
+      await loadAppointments();
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Hiba történt a státusz módosítása során."
+      );
     }
   }
 
   return (
-    <> <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-  <div className="w-full max-w-md">
-    <SearchInput
-      value={search}
-      onChange={setSearch}
-      placeholder="Keresés vendég, telefonszám, e-mail vagy szolgáltatás alapján..."
-    />
-  </div>
+    <>
+      <Card>
+        <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <SearchInput
+            value={search}
+            onChange={setSearch}
+            placeholder="Keresés név, telefon, e-mail vagy szolgáltatás alapján..."
+          />
 
-  <div className="flex flex-wrap gap-2">
-    {[
-      { label: "Összes", value: "ALL" },
-      { label: "Függőben", value: "PENDING" },
-      { label: "Jóváhagyott", value: "CONFIRMED" },
-      { label: "Befejezett", value: "COMPLETED" },
-      { label: "Lemondott", value: "CANCELLED" },
-    ].map((item) => (
-      <button
-        key={item.value}
-        type="button"
-        onClick={() => setStatusFilter(item.value)}
-        className={`rounded-full px-4 py-2 text-sm font-medium transition ${
-          statusFilter === item.value
-            ? "bg-pink-600 text-white"
-            : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-        }`}
-      >
-        {item.label}
-      </button>
-    ))}
-  </div>
-</div>
-      <Card className="overflow-hidden">
+          <select
+            value={statusFilter}
+            onChange={(event) =>
+              setStatusFilter(event.target.value)
+            }
+            className="rounded-xl border bg-white px-4 py-2 text-sm outline-none focus:border-pink-500"
+          >
+            <option value="ALL">
+              Összes státusz
+            </option>
+
+            <option value="PENDING">
+              Függőben
+            </option>
+
+            <option value="CONFIRMED">
+              Megerősítve
+            </option>
+
+            <option value="COMPLETED">
+              Teljesítve
+            </option>
+
+            <option value="CANCELLED">
+              Lemondva
+            </option>
+
+            <option value="NO_SHOW">
+              Nem jelent meg
+            </option>
+          </select>
+        </div>
+
         <FullCalendar
           plugins={[
             dayGridPlugin,
             timeGridPlugin,
             interactionPlugin,
           ]}
-          locale={huLocale}
           initialView="timeGridWeek"
-          firstDay={1}
-          nowIndicator
-          editable={false}
-          selectable
+          locale={huLocale}
+          selectable={true}
           select={handleSelect}
           eventClick={handleEventClick}
-          weekends
-          allDaySlot={false}
-          slotMinTime="08:00:00"
-          slotMaxTime="20:00:00"
-          slotDuration="00:30:00"
+          events={filteredEvents}
           height="auto"
+          nowIndicator={true}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
@@ -288,10 +415,10 @@ const filteredEvents = events.filter((event) => {
             week: "Hét",
             day: "Nap",
           }}
-          events={filteredEvents}
           eventContent={(eventInfo) => {
-            const { customerName } =
-              eventInfo.event.extendedProps;
+            const customerName =
+              eventInfo.event.extendedProps
+                ?.customerName ?? "";
 
             return (
               <div className="p-1 text-xs leading-tight">
@@ -314,6 +441,7 @@ const filteredEvents = events.filter((event) => {
         onClose={handleClose}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onNoShow={handleNoShow}
         onConfirm={handleConfirm}
       />
 

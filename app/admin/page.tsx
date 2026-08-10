@@ -1,5 +1,4 @@
 import DashboardCard from "@/components/admin/DashboardCard";
-import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import PendingAppointments from "@/components/admin/PendingAppointments";
 import { getDashboardData } from "@/lib/dashboard";
 
@@ -9,6 +8,7 @@ import {
   Banknote,
   Clock3,
   CircleX,
+  UserX,
 } from "lucide-react";
 
 export default async function AdminPage() {
@@ -16,11 +16,6 @@ export default async function AdminPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Dashboard"
-        description="Áttekintés a mai napról."
-      />
-
       <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
         <DashboardCard
           title="Mai foglalások"
@@ -69,7 +64,15 @@ export default async function AdminPage() {
           value={dashboard.cancelledAppointments}
           icon={<CircleX size={30} />}
           color="bg-red-100 text-red-600"
-          href="/admin/cancelled"
+          href="/admin/calendar?status=CANCELLED"
+        />
+
+        <DashboardCard
+          title="Nem jelentek meg"
+          value={dashboard.noShowAppointments}
+          icon={<UserX size={30} />}
+          color="bg-orange-100 text-orange-600"
+          href="/admin/calendar?status=NO_SHOW"
         />
       </div>
 

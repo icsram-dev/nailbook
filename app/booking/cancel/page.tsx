@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-export default function CancelBookingPage() {
+function CancelBookingContent() {
   const searchParams = useSearchParams();
 
   const [loading, setLoading] = useState(true);
@@ -89,5 +89,13 @@ export default function CancelBookingPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function CancelBookingPage() {
+  return (
+    <Suspense fallback={<main className="min-h-[70vh]" />}>
+      <CancelBookingContent />
+    </Suspense>
   );
 }

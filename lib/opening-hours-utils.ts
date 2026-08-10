@@ -1,25 +1,22 @@
+import { WeekDay } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
-export async function isWithinOpeningHours(
-  date: Date
-): Promise<boolean> {
-  // JavaScript: vasárnap = 0, hétfő = 1, ..., szombat = 6
-  const jsDay = date.getDay();
+const WEEK_DAYS: WeekDay[] = [
+  WeekDay.SUNDAY,
+  WeekDay.MONDAY,
+  WeekDay.TUESDAY,
+  WeekDay.WEDNESDAY,
+  WeekDay.THURSDAY,
+  WeekDay.FRIDAY,
+  WeekDay.SATURDAY,
+];
 
-  // Mi: hétfő = 1 ... vasárnap = 7
-  const weekday = jsDay === 0 ? 7 : jsDay;
-
+export async function isWithinOpeningHours(date: Date): Promise<boolean> {
   const openingHour = await prisma.openingHour.findUnique({
-    where: {
-      weekday,
-    },
+    where: { day: WEEK_DAYS[date.getDay()] },
   });
 
-  if (!openingHour) {
-    return false;
-  }
-
-  if (openingHour.isClosed) {
+  if (!openingHour?.isOpen || !openingHour.opensAt || !openingHour.closesAt) {
     return false;
   }
 
@@ -29,8 +26,5 @@ export async function isWithinOpeningHours(
     hour12: false,
   });
 
-  return (
-    time >= openingHour.opensAt &&
-    time < openingHour.closesAt
-  );
+  return time >= openingHour.opensAt && time < openingHour.closesAt;
 }

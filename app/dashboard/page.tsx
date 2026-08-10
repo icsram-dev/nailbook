@@ -6,7 +6,7 @@ import {
   Clock,
 } from "lucide-react";
 
-import { StatCard } from "@/components/dashboard/StatsCard";
+import StatCard from "@/components/ui/StatCard";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 import { QuickActions } from "@/components/dashboard/QuickActions";
 
@@ -94,25 +94,25 @@ export default async function DashboardPage() {
         <StatCard
           title="Mai időpontok"
           value={todayAppointments}
-          icon={<CalendarDays size={28} />}
+          icon="📅"
         />
 
         <StatCard
           title="Vendégek"
           value={customerCount}
-          icon={<Users size={28} />}
+          icon="👥"
         />
 
         <StatCard
           title="Havi bevétel"
           value={`${(monthlyRevenue._sum.price ?? 0).toLocaleString("hu-HU")} Ft`}
-          icon={<Wallet size={28} />}
+          icon="💳"
         />
 
         <StatCard
           title="Függő foglalások"
           value={pendingAppointments}
-          icon={<Clock size={28} />}
+          icon="⏳"
         />
       </div>
 

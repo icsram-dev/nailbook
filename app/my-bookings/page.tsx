@@ -1,11 +1,8 @@
 import { auth } from "@/auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
-import CancelBookingButton from "@/components/my-bookings/CancelBookingButton";
-import {
-  getAppointmentStatusClasses,
-  getAppointmentStatusLabel,
-} from "@/lib/appointmentStatus";
+
+import AppointmentCard from "@/components/appointments/AppointmentCard";
 
 export default async function MyBookingsPage() {
   const session = await auth();
@@ -14,10 +11,12 @@ export default async function MyBookingsPage() {
     redirect("/login");
   }
 
+  // Az admin nem használhatja a vendég Foglalásaim oldalt.
   if (session.user.role === "ADMIN") {
     redirect("/admin");
   }
 
+  // A lejárt, még aktív foglalások automatikusan teljesítettnek számítanak.
   await prisma.appointment.updateMany({
     where: {
       customerId: session.user.id,
@@ -45,13 +44,37 @@ export default async function MyBookingsPage() {
     },
   });
 
-  return (
-    <main className="mx-auto max-w-5xl px-6 py-12">
-      <h1 className="mb-8 text-3xl font-bold">
-        Foglalásaim
-      </h1>
+  const appointmentsForCards = appointments.map((appointment) => ({
+    id: appointment.id,
+    startTime: appointment.startTime.toISOString(),
+    endTime: appointment.endTime.toISOString(),
+    price: appointment.price,
+    status: appointment.status,
+    customerNote: appointment.customerNote,
+    createdAt: appointment.createdAt.toISOString(),
+    updatedAt: appointment.updatedAt.toISOString(),
+    service: {
+      id: appointment.service.id,
+      name: appointment.service.name,
+      description: appointment.service.description,
+      duration: appointment.service.duration,
+      price: appointment.service.price,
+    },
+  }));
 
-      {appointments.length === 0 ? (
+  return (
+    <main className="mx-auto max-w-5xl px-4 py-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-semibold">
+          Foglalásaim
+        </h1>
+
+        <p className="mt-2 text-muted-foreground">
+          Itt találod a korábbi és a közelgő időpontjaidat.
+        </p>
+      </div>
+
+      {appointmentsForCards.length === 0 ? (
         <div className="rounded-2xl border bg-white p-8 text-center shadow-sm">
           <h2 className="text-xl font-semibold">
             Még nincs foglalásod
@@ -63,111 +86,12 @@ export default async function MyBookingsPage() {
         </div>
       ) : (
         <div className="space-y-6">
-          {appointments.map((appointment) => {
-            const isInactive = [
-              "COMPLETED",
-              "CANCELLED",
-              "NO_SHOW",
-            ].includes(appointment.status);
-
-            return (
-              <div
-                key={appointment.id}
-                className={`rounded-2xl border p-6 shadow-sm transition ${
-                  isInactive
-                    ? "bg-gray-50 opacity-70"
-                    : "bg-white hover:shadow-md"
-                }`}
-              >
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">
-                      {appointment.service.name}
-                    </h2>
-
-                    <p className="mt-1 text-gray-500">
-                      {appointment.startTime.toLocaleDateString(
-                        "hu-HU",
-                        {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        }
-                      )}
-                    </p>
-                  </div>
-
-                  <div className="flex flex-col items-start gap-4 md:items-end">
-                    <span
-                      className={`inline-flex rounded-full px-4 py-2 text-sm font-medium ${getAppointmentStatusClasses(
-                        appointment.status
-                      )}`}
-                    >
-                      {getAppointmentStatusLabel(
-                        appointment.status
-                      )}
-                    </span>
-
-                    {!isInactive &&
-                      ["PENDING", "CONFIRMED"].includes(
-                        appointment.status
-                      ) && (
-                        <CancelBookingButton
-                          appointmentId={appointment.id}
-                        />
-                      )}
-                  </div>
-                </div>
-
-                <div className="mt-6 grid gap-6 sm:grid-cols-3">
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Kezdés
-                    </p>
-
-                    <p className="font-semibold">
-                      {appointment.startTime.toLocaleTimeString(
-                        "hu-HU",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      )}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Befejezés
-                    </p>
-
-                    <p className="font-semibold">
-                      {appointment.endTime.toLocaleTimeString(
-                        "hu-HU",
-                        {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                        }
-                      )}
-                    </p>
-                  </div>
-
-                  <div>
-                    <p className="text-sm text-gray-500">
-                      Ár
-                    </p>
-
-                    <p className="font-semibold">
-                      {appointment.price.toLocaleString(
-                        "hu-HU"
-                      )}{" "}
-                      Ft
-                    </p>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {appointmentsForCards.map((appointment) => (
+            <AppointmentCard
+              key={appointment.id}
+              appointment={appointment}
+            />
+          ))}
         </div>
       )}
     </main>

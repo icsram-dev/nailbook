@@ -1,7 +1,7 @@
 type Customer = {
   appointmentCount: number;
   totalSpent: number;
-  lastAppointment: Date | null;
+  cancelledAppointments: number;
 };
 
 type Props = {
@@ -21,10 +21,8 @@ export default function CustomerStats({
       value: `${customer.totalSpent.toLocaleString("hu-HU")} Ft`,
     },
     {
-      label: "Utolsó látogatás",
-      value: customer.lastAppointment
-        ? customer.lastAppointment.toLocaleDateString("hu-HU")
-        : "-",
+      label: "Lemondások",
+      value: customer.cancelledAppointments,
     },
   ];
 

@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import ImageUpload from "@/components/ui/ImageUpload";
 
 import {
   serviceSchema,
@@ -24,15 +25,16 @@ export function ServiceForm({
   defaultValues,
 }: ServiceFormProps) {
   const {
-    register,
-    handleSubmit,
-    reset,
-    watch,
-    formState: { errors, isSubmitting },
-  } = useForm<ServiceInput, unknown, ServiceData>({
-    resolver: zodResolver(serviceSchema),
-    defaultValues,
-  });
+  register,
+  handleSubmit,
+  reset,
+  watch,
+  setValue,
+  formState: { errors, isSubmitting },
+} = useForm<ServiceInput, unknown, ServiceData>({
+  resolver: zodResolver(serviceSchema),
+  defaultValues,
+});
 
   useEffect(() => {
     reset(
@@ -90,24 +92,31 @@ export function ServiceForm({
           Kép URL
         </label>
 
-        <Input
-          placeholder="https://..."
-          {...register("image")}
-        />
+        <div>
+  <label className="mb-1 block text-sm font-medium">
+    Kép
+  </label>
 
-        {errors.image && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.image.message}
-          </p>
-        )}
+  <ImageUpload
+    value={image}
+    onChange={(url) =>
+      setValue("image", url, {
+        shouldValidate: true,
+      })
+    }
+  />
 
-        {image && (
-          <img
-            src={image}
-            alt="Előnézet"
-            className="mt-4 h-40 w-full rounded-xl border object-cover"
-          />
-        )}
+  <input
+    type="hidden"
+    {...register("image")}
+  />
+
+  {errors.image && (
+    <p className="mt-1 text-sm text-red-600">
+      {errors.image.message}
+    </p>
+  )}
+</div>
       </div>
 
       <div>

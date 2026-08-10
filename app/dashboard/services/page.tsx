@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { ServiceManager } from "@/components/services/ServiceManager";
+import { ServiceManager } from "@/components/admin/ServiceManager";
 
 
 export default async function ServicesPage() {

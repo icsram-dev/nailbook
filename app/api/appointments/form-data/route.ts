@@ -7,12 +7,14 @@ export async function GET() {
       where: {
         role: "CUSTOMER",
       },
-      orderBy: {
-        name: "asc",
-      },
+      orderBy: [
+        { lastName: "asc" },
+        { firstName: "asc" },
+      ],
       select: {
         id: true,
-        name: true,
+        firstName: true,
+        lastName: true,
       },
     }),
     
@@ -34,7 +36,10 @@ export async function GET() {
   ]);
 
   return NextResponse.json({
-    customers,
+    customers: customers.map((customer) => ({
+      id: customer.id,
+      name: `${customer.lastName} ${customer.firstName}`,
+    })),
     services,
   });
 }

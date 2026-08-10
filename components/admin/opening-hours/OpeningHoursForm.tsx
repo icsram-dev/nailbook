@@ -5,7 +5,17 @@ import { useRouter } from "next/navigation";
 import { OpeningHour } from "@prisma/client";
 import { toast } from "sonner";
 
-import { WEEKDAYS } from "@/lib/weekdays";
+import { WeekDay } from "@prisma/client";
+
+const WEEKDAYS: Record<WeekDay, string> = {
+  MONDAY: "Hétfő",
+  TUESDAY: "Kedd",
+  WEDNESDAY: "Szerda",
+  THURSDAY: "Csütörtök",
+  FRIDAY: "Péntek",
+  SATURDAY: "Szombat",
+  SUNDAY: "Vasárnap",
+};
 
 type OpeningHoursFormProps = {
   openingHours: OpeningHour[];
@@ -64,7 +74,7 @@ export function OpeningHoursForm({
               className="border-b last:border-none"
             >
               <td className="px-6 py-4 font-medium">
-                {WEEKDAYS[day.weekday]}
+                {WEEKDAYS[day.day]}
               </td>
 
               <td className="px-6 py-4 text-center">
@@ -90,7 +100,7 @@ export function OpeningHoursForm({
               <td className="px-6 py-4 text-center">
                 <input
                   type="time"
-                  value={day.opensAt}
+                  value={day.opensAt ?? ""}
                   disabled={!day.isOpen}
                   onChange={(e) =>
                     setDays((prev) =>
@@ -111,7 +121,7 @@ export function OpeningHoursForm({
               <td className="px-6 py-4 text-center">
                 <input
                   type="time"
-                  value={day.closesAt}
+                  value={day.closesAt ?? ""}
                   disabled={!day.isOpen}
                   onChange={(e) =>
                     setDays((prev) =>

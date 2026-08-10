@@ -11,7 +11,9 @@ export async function getServices() {
 
 export async function getServiceById(id: string) {
   return prisma.service.findUnique({
-    where: { id },
+    where: {
+      id,
+    },
   });
 }
 
@@ -23,6 +25,7 @@ export async function createService(data: ServiceData) {
       duration: data.duration,
       price: data.price,
       active: data.active,
+      image: data.image || null,
     },
   });
 }
@@ -32,19 +35,24 @@ export async function updateService(
   data: ServiceData,
 ) {
   return prisma.service.update({
-    where: { id },
+    where: {
+      id,
+    },
     data: {
       name: data.name,
       description: data.description || null,
       duration: data.duration,
       price: data.price,
       active: data.active,
+      image: data.image || null,
     },
   });
 }
 
 export async function deleteService(id: string) {
   return prisma.service.delete({
-    where: { id },
+    where: {
+      id,
+    },
   });
 }

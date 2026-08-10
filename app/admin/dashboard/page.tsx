@@ -1,14 +1,9 @@
-import { DashboardCard } from "@/components/dashboard/DashboardCard";
+import DashboardCard from "@/components/admin/DashboardCard";
 import { DashboardGrid } from "@/components/dashboard/DashboardGrid";
 import { RevenueChart } from "@/components/dashboard/RevenueChart";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";
 
-import {
-  getDashboardStats,
-  getWeeklyRevenue,
-} from "@/lib/dashboard";
-import { formatCurrency } from "@/lib/formatters";
-import { getGreeting } from "@/lib/greetings";
+import { getDashboardData } from "@/lib/dashboard";
 
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
@@ -21,24 +16,13 @@ import {
 } from "lucide-react";
 
 export default async function DashboardPage() {
-  const [dashboard, weeklyRevenue] = await Promise.all([
-    getDashboardStats(),
-    getWeeklyRevenue(),
-  ]);
-
-  const {
-    customerCount,
-    serviceCount,
-    todayAppointments,
-    todayRevenue,
-    upcomingAppointments,
-  } = dashboard;
+  const dashboard = await getDashboardData();
 
   return (
     <div className="space-y-8">
       <div>
         <p className="text-lg font-medium text-pink-600">
-          {getGreeting()}
+          Üdvözöllek!
         </p>
 
         <h1 className="mt-1 text-3xl font-bold tracking-tight">
@@ -55,40 +39,34 @@ export default async function DashboardPage() {
       <DashboardGrid>
         <DashboardCard
           title="Mai foglalások"
-          value={todayAppointments}
-          description="Mai időpontok száma"
-          icon={CalendarDays}
+          value={dashboard.todayAppointments}
+          icon={<CalendarDays />}
         />
 
         <DashboardCard
           title="Mai bevétel"
-          value={formatCurrency(todayRevenue._sum.price ?? 0)}
-          description="Mai várható bevétel"
-          icon={DollarSign}
+          value={`${dashboard.weeklyRevenue.toLocaleString("hu-HU")} Ft`}
+          icon={<DollarSign />}
         />
 
         <DashboardCard
           title="Vendégek"
-          value={customerCount}
-          description="Összes regisztrált vendég"
-          icon={Users}
+          value={dashboard.pendingAppointments}
+          icon={<Users />}
         />
 
         <DashboardCard
           title="Szolgáltatások"
-          value={serviceCount}
-          description="Elérhető szolgáltatások"
-          icon={Sparkles}
+          value={dashboard.cancelledAppointments}
+          icon={<Sparkles />}
         />
       </DashboardGrid>
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <UpcomingAppointments
-          appointments={upcomingAppointments}
-        />
+        <UpcomingAppointments />
 
         <RevenueChart
-          data={weeklyRevenue}
+          data={[]}
         />
       </div>
     </div>

@@ -13,7 +13,7 @@ export default function BookingNote() {
   return (
     <div className="rounded-xl border p-5">
       <h3 className="mb-6 font-semibold">
-        4. Megjegyzés
+        3. Megjegyzés
       </h3>
 
       <p className="mb-4 text-sm text-muted-foreground">

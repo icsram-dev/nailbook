@@ -59,7 +59,7 @@ export default function BookingCalendar() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold">
-          2. Válassz napot
+          1. Válassz napot
         </h2>
 
         <p className="text-sm text-muted-foreground">

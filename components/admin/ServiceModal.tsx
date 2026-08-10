@@ -28,6 +28,7 @@ export function ServiceModal({
     ? {
         name: service.name,
         description: service.description ?? "",
+        image: service.image ?? "",
         duration: service.duration,
         price: service.price,
         active: service.active,

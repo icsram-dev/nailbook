@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         id: resetToken.user.id,
       },
       data: {
-        passwordHash,
+        password: passwordHash,
       },
     });
 

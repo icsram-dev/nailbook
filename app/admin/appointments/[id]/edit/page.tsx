@@ -31,9 +31,10 @@ export default async function EditAppointmentPage({
       where: {
         role: Role.CUSTOMER,
       },
-      orderBy: {
-        name: "asc",
-      },
+      orderBy: [
+        { lastName: "asc" },
+        { firstName: "asc" },
+      ],
     }),
 
     prisma.service.findMany({

@@ -31,11 +31,7 @@ const menu = [
     label: "Szabadságok",
     icon: "🌴",
   },
-  {
-    href: "/admin/statistics",
-    label: "Statisztikák",
-    icon: "📈",
-  },
+  
   {
     href: "/admin/settings",
     label: "Beállítások",

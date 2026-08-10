@@ -137,7 +137,7 @@ export default function BookingRequest({
               color: "#6b7280",
             }}
           >
-            • Az időpont legkésőbb <strong>24 órával korábban</strong>
+            • Az időpont legkésőbb <strong>24 órával korábban</strong><br />
             mondható le díjmentesen.
             <br />
             • 24 órán belüli lemondás esetén a szolgáltatás

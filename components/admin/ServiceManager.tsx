@@ -22,19 +22,29 @@ type ServiceManagerProps = {
   services: Service[];
 };
 
-export function ServiceManager({ services }: ServiceManagerProps) {
+export function ServiceManager({
+  services,
+}: ServiceManagerProps) {
   const [open, setOpen] = useState(false);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const [isPending, startTransition] = useTransition();
+  const [selectedService, setSelectedService] =
+    useState<Service | null>(null);
+
+  const [isPending, startTransition] =
+    useTransition();
 
   const router = useRouter();
 
-  async function saveService(data: ServiceData) {
+  async function saveService(
+    data: ServiceData,
+  ) {
     startTransition(async () => {
       try {
         if (selectedService) {
-          await updateServiceAction(selectedService.id, data);
+          await updateServiceAction(
+            selectedService.id,
+            data
+          );
         } else {
           await createServiceAction(data);
         }
@@ -43,14 +53,16 @@ export function ServiceManager({ services }: ServiceManagerProps) {
         router.refresh();
       } catch (error) {
         console.error(error);
-        alert("Hiba történt a mentés során.");
+        alert(
+          "Hiba történt a mentés során."
+        );
       }
     });
   }
 
   async function deleteService(id: string) {
     const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szolgáltatást?",
+      "Biztosan törölni szeretnéd ezt a szolgáltatást?"
     );
 
     if (!confirmed) {
@@ -59,7 +71,8 @@ export function ServiceManager({ services }: ServiceManagerProps) {
 
     startTransition(async () => {
       try {
-        const result = await deleteServiceAction(id);
+        const result =
+          await deleteServiceAction(id);
 
         if (!result.success) {
           alert(result.message);
@@ -92,9 +105,14 @@ export function ServiceManager({ services }: ServiceManagerProps) {
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Szolgáltatások</h1>
+        <h2 className="text-2xl font-semibold">
+          Szolgáltatások
+        </h2>
 
-        <Button onClick={createService} disabled={isPending}>
+        <Button
+          onClick={createService}
+          disabled={isPending}
+        >
           + Új szolgáltatás
         </Button>
       </div>

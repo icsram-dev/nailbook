@@ -51,7 +51,7 @@ export function VacationTable({
                   </Button>
 
                   <Button
-                    variant="danger"
+                    variant="destructive"
                     onClick={() => onDelete(vacation.id)}
                   >
                     Törlés

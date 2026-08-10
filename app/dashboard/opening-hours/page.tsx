@@ -1,4 +1,4 @@
-import { OpeningHoursForm } from "@/components/opening-hours/OpeningHoursForm";
+import OpeningHoursForm from "@/components/admin/OpeningHoursForm";
 import { getOpeningHours } from "@/lib/opening-hours";
 
 export default async function OpeningHoursPage() {

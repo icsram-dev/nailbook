@@ -1,13 +1,13 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, Suspense, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 
-export default function ResetPasswordPage() {
+function ResetPasswordPageContent() {
   const router = useRouter();
   const params = useSearchParams();
 
@@ -158,4 +158,8 @@ export default function ResetPasswordPage() {
       </div>
     </main>
   );
+}
+
+export default function ResetPasswordPage() {
+  return <Suspense fallback={<main className="min-h-screen" />}><ResetPasswordPageContent /></Suspense>;
 }

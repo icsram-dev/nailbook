@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
@@ -8,7 +8,7 @@ import { Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 
-export default function LoginPage() {
+function LoginPageContent() {
   const params = useSearchParams();
 
   const [loading, setLoading] = useState(false);
@@ -140,4 +140,8 @@ export default function LoginPage() {
       </div>
     </main>
   );
+}
+
+export default function LoginPage() {
+  return <Suspense fallback={<main className="min-h-screen" />}><LoginPageContent /></Suspense>;
 }

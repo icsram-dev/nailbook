@@ -1,31 +1,43 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateAvailableSlots } from "@/lib/availability/generator";
+import { getAvailableTimeSlots } from "@/lib/booking/get-available-time-slots";
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
+    const date = request.nextUrl.searchParams.get("date");
+    const serviceId = request.nextUrl.searchParams.get("serviceId");
 
-    const date = searchParams.get("date");
-    const serviceId = searchParams.get("serviceId");
+    console.log("=================================");
+    console.log("DATE:", date);
+    console.log("SERVICE:", serviceId);
+    console.log(
+      "REGEX:",
+      /^\d{4}-\d{2}-\d{2}$/.test(date ?? "")
+    );
+    console.log("=================================");
 
     if (!date || !serviceId) {
       return NextResponse.json(
-        {
-          error: "A date és serviceId paraméter kötelező.",
-        },
-        {
-          status: 400,
-        }
+        { error: "A dátum és a szolgáltatás megadása kötelező." },
+        { status: 400 }
       );
     }
 
-    const slots = await generateAvailableSlots({
-      date: new Date(date),
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+      return NextResponse.json(
+        { error: "Érvénytelen dátum." },
+        { status: 400 }
+      );
+    }
+
+    const slots = await getAvailableTimeSlots({
+      date: new Date(`${date}T12:00:00`),
       serviceId,
     });
 
     return NextResponse.json(slots);
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
         error:

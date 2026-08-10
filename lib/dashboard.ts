@@ -17,6 +17,7 @@ export async function getDashboardData() {
     tomorrowAppointments,
     pendingAppointments,
     cancelledAppointments,
+    noShowAppointments,
     weeklyRevenue,
     monthlyRevenue,
     pendingList,
@@ -52,6 +53,12 @@ export async function getDashboardData() {
           gte: startOfMonth(today),
           lte: endOfMonth(today),
         },
+      },
+    }),
+
+    prisma.appointment.count({
+      where: {
+        status: "NO_SHOW",
       },
     }),
 
@@ -112,11 +119,11 @@ export async function getDashboardData() {
 
     cancelledAppointments,
 
-    weeklyRevenue:
-      weeklyRevenue._sum.price ?? 0,
+    noShowAppointments,
 
-    monthlyRevenue:
-      monthlyRevenue._sum.price ?? 0,
+    weeklyRevenue: weeklyRevenue._sum.price ?? 0,
+
+    monthlyRevenue: monthlyRevenue._sum.price ?? 0,
 
     pendingList,
   };

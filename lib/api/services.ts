@@ -4,6 +4,7 @@ export interface Service {
   description: string | null;
   duration: number;
   price: number;
+  image: string | null;
 }
 
 export async function getServices(): Promise<Service[]> {

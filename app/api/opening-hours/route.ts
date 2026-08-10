@@ -13,7 +13,7 @@ export async function PATCH(request: Request) {
       openingHours.map((day) =>
         prisma.openingHour.update({
           where: {
-            id: day.id,
+            day: day.day,
           },
           data: {
             isOpen: day.isOpen,
