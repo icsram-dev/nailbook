@@ -31,7 +31,7 @@ export default async function SettingsPage() {
         description="A rendszer működésének konfigurálása."
       />
 
-      <div className="mt-8 space-y-8">
+      <div className="mt-10 grid gap-6 xl:grid-cols-2">
         <BookingSettings
           settings={{
             autoConfirmBookings:

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Clock3, Sparkles } from "lucide-react";
+import { getServiceImage } from "@/lib/service-images";
 
 type ServiceCardProps = {
   id: string;
@@ -11,6 +11,9 @@ type ServiceCardProps = {
   price: string;
   image?: string | null;
   description?: string | null;
+
+  selected?: boolean;
+  onSelect?: () => void;
 };
 
 export default function ServiceCard({
@@ -20,64 +23,99 @@ export default function ServiceCard({
   price,
   image,
   description,
+  selected = false,
+  onSelect,
 }: ServiceCardProps) {
+  const imageSource = getServiceImage(id, image);
+
+  const cardClassName = `
+    group flex h-full w-full flex-col overflow-hidden
+    rounded-2xl border p-0 text-left transition
+    ${
+      selected
+        ? "border-[#a97967] bg-[#f3e8e1] shadow-sm"
+        : "border-stone-200 bg-[#fffdfa] hover:border-[#c39a89] hover:bg-[#f8f5f1]"
+    }
+  `;
+
+  const content = (
+    <>
+      {/* KÉP */}
+      <div className="relative h-56 w-full shrink-0 overflow-hidden bg-[#f3e8e1] lg:h-52">
+        {/* Háttér */}
+        <Image
+          src={imageSource}
+          alt=""
+          fill
+          aria-hidden="true"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="object-cover object-center"
+        />
+
+        {/* Fő kép */}
+        <Image
+          src={imageSource}
+          alt={title}
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          className="scale-[0.94] object-cover object-center transition-transform duration-500 group-hover:scale-[0.97]"
+        />
+      </div>
+
+      {/* TARTALOM */}
+      <div className="flex w-full flex-1 flex-col p-4">
+        <p className="font-serif text-lg text-stone-800">
+          {title}
+        </p>
+
+        <div className="min-h-11">
+          {description && (
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-stone-600">
+              {description}
+            </p>
+          )}
+        </div>
+
+        {/* ÁR + IDŐ */}
+        <div className="mt-auto pt-4">
+          <div className="flex items-center justify-between border-t border-stone-200 pt-3 text-sm">
+            <span className="font-semibold text-[#8f6252]">
+              {price}
+            </span>
+
+            <span className="text-stone-500">
+              {duration}
+            </span>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  /*
+   * BookingForm esetén gombként működik.
+   */
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        onClick={onSelect}
+        className={cardClassName}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  /*
+   * Szolgáltatások részen normál link.
+   */
   return (
     <Link
       href={`/booking?service=${encodeURIComponent(id)}`}
-      className="group block overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      className={cardClassName}
     >
-      {/* Kép */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-pink-50">
-        {image ? (
-          <Image
-            src={image}
-            alt={title}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center">
-            <Sparkles className="h-10 w-10 text-pink-300" />
-          </div>
-        )}
-
-        {/* Finom overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-      </div>
-
-      {/* Tartalom */}
-      <div className="p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h3 className="text-xl font-semibold text-gray-900">
-              {title}
-            </h3>
-
-            {description && (
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">
-                {description}
-              </p>
-            )}
-          </div>
-
-          <div className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-pink-50 text-pink-600 transition-colors group-hover:bg-pink-600 group-hover:text-white">
-  <ArrowRight className="h-4 w-4" />
-</div>
-        </div>
-
-        {/* Ár + idő */}
-        <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4">
-          <span className="rounded-full bg-pink-50 px-3 py-1.5 text-sm font-semibold text-pink-700">
-            {price}
-          </span>
-
-          <span className="flex items-center gap-1.5 text-sm text-gray-500">
-            <Clock3 className="h-4 w-4" />
-            {duration}
-          </span>
-        </div>
-      </div>
+      {content}
     </Link>
   );
 }

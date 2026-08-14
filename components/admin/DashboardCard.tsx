@@ -16,32 +16,32 @@ export default function DashboardCard({
   title,
   value,
   icon,
-  color = "bg-pink-100 text-pink-600",
+  color = "bg-[#f3e8e1] text-[#8f6252]",
   href,
 }: DashboardCardProps) {
   const content = (
     <Card
       className={clsx(
-        "p-6 transition-all duration-300",
+        "min-h-30 border border-stone-200 bg-[#fffdfa] p-4 shadow-sm transition-all duration-300",
         href
-          ? "cursor-pointer hover:-translate-y-1 hover:shadow-lg"
+          ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#c39a89] hover:shadow-md"
           : ""
       )}
     >
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex-1">
-          <p className="text-sm font-medium uppercase tracking-wide text-gray-500">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.13em] text-stone-500">
             {title}
           </p>
 
-          <h2 className="mt-4 text-4xl font-bold text-gray-900">
+          <h2 className="mt-2 text-3xl text-stone-800">
             {value}
           </h2>
         </div>
 
         <div
           className={clsx(
-            "flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl",
+            "flex size-11 shrink-0 items-center justify-center rounded-xl",
             color
           )}
         >

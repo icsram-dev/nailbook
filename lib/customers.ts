@@ -47,14 +47,6 @@ export async function getCustomers() {
           appointment.status === "COMPLETED"
       );
 
-    const sortedAppointments = [
-      ...customer.appointments,
-    ].sort(
-      (a, b) =>
-        b.startTime.getTime() -
-        a.startTime.getTime()
-    );
-
     const lastCompletedAppointment =
       [...completedAppointments].sort(
         (a, b) =>

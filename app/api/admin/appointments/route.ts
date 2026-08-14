@@ -23,6 +23,10 @@ export async function GET() {
       );
     }
 
+    if (session.user.role !== "ADMIN") {
+      return NextResponse.json({ error: "Nincs jogosultság." }, { status: 403 });
+    }
+
     const appointments = await prisma.appointment.findMany({
       where: {
         status: {

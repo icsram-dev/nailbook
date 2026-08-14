@@ -16,28 +16,28 @@ export default async function AdminPage() {
 
   return (
     <>
-      <div className="mt-8 grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
+      <div className="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <DashboardCard
           title="Mai foglalások"
           value={dashboard.todayAppointments}
-          icon={<CalendarDays size={30} />}
-          color="bg-green-100 text-green-600"
+          icon={<CalendarDays size={22} />}
+          color="bg-[#e7f1e8] text-[#5d8364]"
           href="/admin/calendar"
         />
 
         <DashboardCard
           title="Holnapi foglalások"
           value={dashboard.tomorrowAppointments}
-          icon={<CalendarDays size={30} />}
-          color="bg-indigo-100 text-indigo-600"
+          icon={<CalendarDays size={22} />}
+          color="bg-[#e9edf5] text-[#64728f]"
           href="/admin/calendar"
         />
 
         <DashboardCard
           title="Jóváhagyásra vár"
           value={dashboard.pendingAppointments}
-          icon={<Clock3 size={30} />}
-          color="bg-amber-100 text-amber-600"
+          icon={<Clock3 size={22} />}
+          color="bg-[#f6edcf] text-[#9a7630]"
           href="/admin/calendar?status=pending"
         />
 
@@ -46,8 +46,8 @@ export default async function AdminPage() {
           value={`${dashboard.weeklyRevenue.toLocaleString(
             "hu-HU"
           )} Ft`}
-          icon={<Wallet size={30} />}
-          color="bg-emerald-100 text-emerald-600"
+          icon={<Wallet size={22} />}
+          color="bg-[#e4f0ea] text-[#5b826b]"
         />
 
         <DashboardCard
@@ -55,28 +55,28 @@ export default async function AdminPage() {
           value={`${dashboard.monthlyRevenue.toLocaleString(
             "hu-HU"
           )} Ft`}
-          icon={<Banknote size={30} />}
-          color="bg-yellow-100 text-yellow-600"
+          icon={<Banknote size={22} />}
+          color="bg-[#f7efdc] text-[#96713b]"
         />
 
         <DashboardCard
           title="Lemondások"
           value={dashboard.cancelledAppointments}
-          icon={<CircleX size={30} />}
-          color="bg-red-100 text-red-600"
+          icon={<CircleX size={22} />}
+          color="bg-[#f6e8e5] text-[#a36a5d]"
           href="/admin/calendar?status=CANCELLED"
         />
 
         <DashboardCard
           title="Nem jelentek meg"
           value={dashboard.noShowAppointments}
-          icon={<UserX size={30} />}
-          color="bg-orange-100 text-orange-600"
+          icon={<UserX size={22} />}
+          color="bg-[#f8eadf] text-[#a46c4f]"
           href="/admin/calendar?status=NO_SHOW"
         />
       </div>
 
-      <div className="mt-10">
+      <div className="mt-8">
         <PendingAppointments
           appointments={dashboard.pendingList}
         />

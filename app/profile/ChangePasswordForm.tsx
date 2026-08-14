@@ -31,7 +31,7 @@ function PasswordField({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
+        className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
       />
 
       <button
@@ -116,9 +116,9 @@ export default function ChangePasswordForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="mt-10 rounded-2xl border bg-white p-8 shadow-sm"
+      className="mt-6 rounded-[1.75rem] border border-stone-200 bg-[#fffdfa] p-7 shadow-sm"
     >
-      <h2 className="mb-6 text-2xl font-bold">
+      <h2 className="mb-6 font-serif text-2xl text-stone-800">
         Jelszó módosítása
       </h2>
 
@@ -177,7 +177,7 @@ export default function ChangePasswordForm() {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-pink-500 px-5 py-3 font-medium text-white transition hover:bg-pink-600 disabled:opacity-70"
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-[#a97967] px-5 py-3 font-medium text-white transition hover:bg-[#8f6252] disabled:opacity-70"
         >
           {loading ? (
             <>

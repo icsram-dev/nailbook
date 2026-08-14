@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { openingHoursSchema } from "@/lib/validations/opening-hour";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function PATCH(request: Request) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const body = await request.json();
 
     const openingHours = openingHoursSchema.parse(body);

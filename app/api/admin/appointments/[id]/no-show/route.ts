@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api/admin";
 
 type RouteContext = {
   params: Promise<{
@@ -13,6 +14,8 @@ export async function PATCH(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const appointment =

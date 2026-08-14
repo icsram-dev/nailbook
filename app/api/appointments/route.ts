@@ -5,33 +5,12 @@ import { prisma } from "@/lib/prisma";
 
 import { appointmentSchema } from "@/schemas/appointment";
 import { createAppointment } from "@/lib/appointments/service";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET() {
   try {
-    const session = await auth();
-
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        {
-          error: "Bejelentkezés szükséges.",
-        },
-        {
-          status: 401,
-        }
-      );
-    }
-
-    if (!session.user.isEmailVerified) {
-  return NextResponse.json(
-    {
-      error:
-        "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed.",
-    },
-    {
-      status: 403,
-    }
-  );
-}
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
 
     const appointments = await prisma.appointment.findMany({
       include: {
@@ -94,16 +73,8 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
-
     if (!session?.user?.id) {
-      return NextResponse.json(
-        {
-          error: "Bejelentkezés szükséges.",
-        },
-        {
-          status: 401,
-        }
-      );
+      return NextResponse.json({ error: "Bejelentkezés szükséges." }, { status: 401 });
     }
 
     const body = await request.json();
@@ -122,8 +93,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const customerId = session.user.role === "ADMIN" ? body.customerId : session.user.id;
+    if (!customerId || typeof customerId !== "string") {
+      return NextResponse.json({ error: "Válassz vendéget." }, { status: 400 });
+    }
+
+    if (session.user.role !== "ADMIN" && !session.user.isEmailVerified) {
+      return NextResponse.json({ error: "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed." }, { status: 403 });
+    }
+
     const appointment = await createAppointment({
-  customerId: session.user.id,
+  customerId,
   serviceId: result.data.serviceId,
   startTime: result.data.startTime,
   customerNote: result.data.note,

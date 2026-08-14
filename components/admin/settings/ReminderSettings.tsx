@@ -69,13 +69,13 @@ export default function ReminderSettings({
       description="Automatikus emlékeztető e-mailek beállítása."
     >
       <div className="space-y-6">
-        <label className="flex items-center justify-between">
+        <label className="flex items-start justify-between gap-6 rounded-2xl bg-[#f8f5f1] p-5">
           <div>
-            <h3 className="font-medium">
+            <h3 className="font-medium text-stone-800">
               Emlékeztető küldése
             </h3>
 
-            <p className="text-sm text-gray-500">
+            <p className="mt-1 text-sm leading-6 text-stone-600">
               A rendszer automatikusan
               emlékeztető e-mailt küld a
               vendégeknek a foglalás előtt.
@@ -91,7 +91,7 @@ export default function ReminderSettings({
               )
             }
             disabled={loading}
-            className="h-5 w-5 accent-pink-600 disabled:opacity-50"
+            className="mt-1 h-5 w-5 accent-[#a97967] disabled:opacity-50"
           />
         </label>
 
@@ -119,7 +119,7 @@ export default function ReminderSettings({
               );
             }}
             disabled={!reminderEnabled || loading}
-            className="w-32 rounded-xl border px-4 py-2 outline-none transition focus:border-pink-500 disabled:bg-gray-100 disabled:text-gray-500"
+            className="w-full max-w-40 rounded-xl border border-stone-200 bg-white px-4 py-3 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2] disabled:bg-stone-100 disabled:text-stone-500"
           />
         </div>
 
@@ -127,7 +127,7 @@ export default function ReminderSettings({
           type="button"
           onClick={handleSave}
           disabled={loading}
-          className="rounded-xl bg-pink-600 px-6 py-3 font-medium text-white transition hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-full bg-[#a97967] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#8f6252] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Mentés..." : "Mentés"}
         </button>

@@ -2,9 +2,12 @@ import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { serviceSchema } from "@/lib/validations/service";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET() {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const services = await prisma.service.findMany({
       orderBy: {
         createdAt: "desc",
@@ -30,6 +33,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const body = await request.json();
 
     const result = serviceSchema.safeParse(body);

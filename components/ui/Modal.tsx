@@ -19,21 +19,21 @@ export function Modal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-     <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
-        <div className="flex items-center justify-between border-b p-6">
-          <h2 className="text-4xl font-bold tracking-tight">
+     <div className="flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-[2rem] border border-stone-200 bg-[#fffdfa] shadow-[0_30px_80px_-35px_rgba(74,49,38,.65)]">
+        <div className="flex items-center justify-between border-b border-stone-200 px-7 py-6 sm:px-8">
+          <h2 className="text-4xl tracking-tight text-stone-800">
   {title}
 </h2>
 
           <button
             onClick={onClose}
-            className="text-2xl text-gray-500 transition hover:text-black"
+            className="grid size-9 place-items-center rounded-full text-xl text-stone-500 transition hover:bg-[#f3e8e1] hover:text-[#8f6252]"
           >
             ×
           </button>
         </div>
 
-        <div className="overflow-y-auto p-8">
+        <div className="overflow-y-auto p-7 sm:p-8">
           {children}
         </div>
       </div>

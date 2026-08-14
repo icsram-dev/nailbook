@@ -52,7 +52,6 @@ type Props = {
 
   onNoShow: () => void;
 
-  onConfirm?: () => void;
 };
 
 export function AppointmentDetailsModal({
@@ -62,7 +61,6 @@ export function AppointmentDetailsModal({
   onEdit,
   onDelete,
   onNoShow,
-  onConfirm,
 }: Props) {
   const [showCancellationForm, setShowCancellationForm] =
     useState(false);
@@ -81,6 +79,7 @@ export function AppointmentDetailsModal({
   );
 
   const isPast =
+    // eslint-disable-next-line react-hooks/purity
     appointmentStart.getTime() < Date.now();
 
   const canMarkAsNoShow =
@@ -220,12 +219,12 @@ export function AppointmentDetailsModal({
           <div className="flex flex-wrap justify-end gap-3">
 
             {/* Jóváhagyás */}
-            {appointment.status === "PENDING" &&
-              onConfirm && (
+            {/* Jóváhagyás kizárólag az Áttekintés oldalon érhető el. */}
+            {false && appointment?.status === "PENDING" && (
                 <Button
                   type="button"
                   className="bg-green-600 hover:bg-green-700"
-                  onClick={onConfirm}
+                  onClick={() => undefined}
                 >
                   ✓ Jóváhagyás
                 </Button>

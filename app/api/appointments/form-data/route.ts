@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET() {
+  const unauthorized = await requireAdmin();
+  if (unauthorized) return unauthorized;
+
   const [customers, services] = await Promise.all([
     prisma.user.findMany({
       where: {
@@ -36,16 +40,16 @@ export async function GET() {
   ]);
 
   return NextResponse.json({
-    customers: customers.map((customer) => ({
-      id: customer.id,
-      name: `${customer.lastName} ${customer.firstName}`,
-    })),
+    customers,
     services,
   });
 }
 
 export async function POST(request: Request) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
+
     const body = await request.json();
 
     const { customerId, serviceId, startTime } = body;

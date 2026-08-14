@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { appointmentSchema } from "@/schemas/appointment";
 import {
   updateAppointment,
-  cancelAppointment,
 } from "@/lib/appointments/service";
+import { requireAdmin } from "@/lib/api/admin";
 
 type RouteContext = {
   params: Promise<{
@@ -23,6 +23,8 @@ export async function GET(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const appointment =
@@ -65,6 +67,8 @@ export async function PUT(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const body = await request.json();
@@ -134,6 +138,8 @@ export async function DELETE(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const body = await request.json();

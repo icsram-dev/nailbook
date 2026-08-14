@@ -1,10 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import {
-  CalendarDays,
-  Users,
-  Wallet,
-  Clock,
-} from "lucide-react";
 
 import StatCard from "@/components/ui/StatCard";
 import { UpcomingAppointments } from "@/components/dashboard/UpcomingAppointments";

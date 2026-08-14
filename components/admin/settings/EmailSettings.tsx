@@ -64,13 +64,13 @@ export default function EmailSettings({
       description="Az automatikus e-mail értesítések kezelése."
     >
       <div className="space-y-6">
-        <label className="flex items-center justify-between">
+        <label className="flex items-start justify-between gap-6 rounded-2xl bg-[#f8f5f1] p-5">
           <div>
-            <h3 className="font-medium">
+            <h3 className="font-medium text-stone-800">
               E-mail értesítések
             </h3>
 
-            <p className="text-sm text-gray-500">
+            <p className="mt-1 text-sm leading-6 text-stone-600">
               Foglaláskor, módosításkor és
               lemondáskor küldjön a rendszer
               automatikus e-mailt.
@@ -86,7 +86,7 @@ export default function EmailSettings({
               )
             }
             disabled={loading}
-            className="h-5 w-5 accent-pink-600 disabled:opacity-50"
+            className="mt-1 h-5 w-5 accent-[#a97967] disabled:opacity-50"
           />
         </label>
 
@@ -94,7 +94,7 @@ export default function EmailSettings({
           type="button"
           onClick={handleSave}
           disabled={loading}
-          className="rounded-xl bg-pink-600 px-6 py-3 font-medium text-white transition hover:bg-pink-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-full bg-[#a97967] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#8f6252] disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? "Mentés..." : "Mentés"}
         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Mail, Phone } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 type AppointmentFormProps = {
@@ -8,6 +9,7 @@ type AppointmentFormProps = {
   appointmentId: string | null;
   onSuccess: () => void;
   onCancel: () => void;
+  customerPreview?: { name: string; phone?: string | null; email?: string | null } | null;
 };
 
 type Customer = {
@@ -29,6 +31,7 @@ export function AppointmentForm({
   appointmentId,
   onSuccess,
   onCancel,
+  customerPreview,
 }: AppointmentFormProps) {
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [services, setServices] = useState<Service[]>([]);
@@ -63,6 +66,7 @@ export function AppointmentForm({
 
     const start = new Date(selectedDate);
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDate(start.toISOString().split("T")[0]);
 
     setTime(
@@ -218,10 +222,20 @@ export function AppointmentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6"
+      className="appointment-form space-y-6"
     >
+      {isEditMode && (customer || customerPreview) && (
+        <div className="rounded-2xl border border-[#dcc7bb] bg-[#f3e8e1] p-5">
+          <p className="text-xs font-semibold uppercase tracking-[.16em] text-[#a97967]">Vendég</p>
+          <h3 className="mt-2 font-serif text-2xl text-stone-800">{customer ? `${customer.lastName} ${customer.firstName}` : customerPreview?.name}</h3>
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm text-stone-600">
+            {(customer?.phone ?? customerPreview?.phone) && <span className="flex items-center gap-2"><Phone className="size-4 text-[#8f6252]"/>{customer?.phone ?? customerPreview?.phone}</span>}
+            {(customer?.email ?? customerPreview?.email) && <span className="flex items-center gap-2"><Mail className="size-4 text-[#8f6252]"/>{customer?.email ?? customerPreview?.email}</span>}
+          </div>
+        </div>
+      )}
       {isEditMode && customer && (
-        <div className="rounded-2xl border border-pink-100 bg-pink-50 p-5">
+        <div className="hidden rounded-2xl border border-pink-100 bg-pink-50 p-5">
           <h3 className="text-lg font-semibold text-gray-900">
             {customer.lastName}{" "}
             {customer.firstName}
@@ -444,7 +458,7 @@ export function AppointmentForm({
         <Button
           type="button"
           onClick={onCancel}
-          className="bg-gray-500 hover:bg-gray-600"
+          className="border border-stone-300 bg-[#fffdfa] text-stone-600 hover:border-[#c39a89] hover:bg-[#f3e8e1] hover:text-[#8f6252]"
         >
           Mégse
         </Button>

@@ -1,7 +1,6 @@
 "use client";
 
 import ServiceCard from "@/components/ui/ServiceCard";
-import Container from "@/components/ui/Container";
 import LoadingState from "@/components/common/LoadingState";
 import { useServices } from "@/hooks/useServices";
 
@@ -13,10 +12,13 @@ export default function ServicesPage() {
   } = useServices();
 
   return (
-    <main>
-      <section className="py-16">
-        <Container>
-          <div className="text-center">
+    <main className="relative isolate overflow-hidden bg-[#fffdfa]">
+      <div aria-hidden className="pointer-events-none absolute -left-44 top-24 size-[34rem] rounded-full border border-[#dec7bc]/60" />
+      <div aria-hidden className="pointer-events-none absolute -right-36 top-1/3 size-[28rem] rounded-full bg-[#f3e8e1]/65 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute bottom-24 left-1/2 size-72 -translate-x-1/2 rounded-full border border-[#e3d0c5]" />
+      <section className="relative py-16 sm:py-20">
+        <div className="mx-auto w-full max-w-5xl px-4 sm:px-6">
+          <div className="rounded-[2rem] border border-white/80 bg-[#fffdfa]/75 px-6 py-10 text-center shadow-[0_20px_60px_-48px_rgba(74,49,38,.65)] backdrop-blur-sm sm:px-10">
             <h1 className="text-4xl font-semibold">
               Szolgáltatások
             </h1>
@@ -45,17 +47,17 @@ export default function ServicesPage() {
             !error &&
             services &&
             services.length > 0 && (
-              <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="mt-12 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {services.map((service) => (
                   <ServiceCard
-  key={service.id}
-  id={service.id}
-  title={service.name}
-  duration={`${service.duration} perc`}
-  price={`${service.price.toLocaleString("hu-HU")} Ft`}
-  image={service.image}
-  description={service.description}
-/>
+                    key={service.id}
+                    id={service.id}
+                    title={service.name}
+                    duration={`${service.duration} perc`}
+                    price={`${service.price.toLocaleString("hu-HU")} Ft`}
+                    image={service.image}
+                    description={service.description}
+                  />
                 ))}
               </div>
             )}
@@ -69,7 +71,7 @@ export default function ServicesPage() {
                 </p>
               </div>
             )}
-        </Container>
+        </div>
       </section>
     </main>
   );

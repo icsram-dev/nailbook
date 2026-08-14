@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 
-import { Card } from "@/components/ui/Card";
 
 type Props = {
   title: string;
@@ -14,14 +13,14 @@ export default function SettingsCard({
   children,
 }: Props) {
   return (
-    <Card className="p-6">
-      <div className="border-b pb-4">
-        <h2 className="text-lg font-semibold text-gray-900">
+    <section className="rounded-[1.75rem] border border-stone-200 bg-[#fffdfa] p-7 shadow-sm">
+      <div className="border-b border-stone-200 pb-5">
+        <h2 className="font-serif text-2xl text-stone-800">
           {title}
         </h2>
 
         {description && (
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-2 text-sm leading-6 text-stone-600">
             {description}
           </p>
         )}
@@ -30,6 +29,6 @@ export default function SettingsCard({
       <div className="mt-6">
         {children}
       </div>
-    </Card>
+    </section>
   );
 }

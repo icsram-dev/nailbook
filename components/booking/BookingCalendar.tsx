@@ -59,7 +59,7 @@ export default function BookingCalendar() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold">
-          1. Válassz napot
+          2. Válassz napot
         </h2>
 
         <p className="text-sm text-muted-foreground">
@@ -97,7 +97,7 @@ export default function BookingCalendar() {
             shouldValidate: true,
           });
         }}
-        className="rounded-lg border"
+        className="rounded-2xl border border-stone-200 bg-[#fffdfa] p-3"
       />
     </div>
   );

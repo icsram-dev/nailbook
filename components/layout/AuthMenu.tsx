@@ -19,14 +19,14 @@ export default function AuthMenu() {
       <div className="flex items-center gap-3">
         <Link
           href="/login"
-          className="rounded-lg border border-pink-500 px-4 py-2 text-pink-600 transition hover:bg-pink-50"
+          className="rounded-full border border-[#a97967] px-4 py-2 text-[#8f6252] transition hover:bg-[#f3e8e1]"
         >
           Bejelentkezés
         </Link>
 
         <Link
           href="/register"
-          className="rounded-lg bg-pink-500 px-4 py-2 text-white transition hover:bg-pink-600"
+          className="rounded-full bg-[#a97967] px-4 py-2 text-white transition hover:bg-[#8f6252]"
         >
           Regisztráció
         </Link>

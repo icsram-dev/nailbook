@@ -1,4 +1,4 @@
-import { isAfter, isBefore } from "date-fns";
+import { isBefore } from "date-fns";
 
 import type { TimeSlot } from "@/types/time-slot";
 

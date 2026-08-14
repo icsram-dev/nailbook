@@ -9,6 +9,7 @@ type Props = {
   appointmentId: string | null;
   onClose: () => void;
   onSuccess: () => void;
+  customerPreview?: { name: string; phone?: string | null; email?: string | null } | null;
 };
 
 export function AppointmentModal({
@@ -17,6 +18,7 @@ export function AppointmentModal({
   appointmentId,
   onClose,
   onSuccess,
+  customerPreview,
 }: Props) {
   const isEditMode = !!appointmentId;
 
@@ -31,6 +33,7 @@ export function AppointmentModal({
         appointmentId={appointmentId}
         onCancel={onClose}
         onSuccess={onSuccess}
+        customerPreview={customerPreview}
       />
     </Modal>
   );

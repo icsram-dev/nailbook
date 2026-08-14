@@ -1,62 +1,28 @@
+import Image from "next/image";
 import Link from "next/link";
-import { CalendarDays, Droplets, Heart, Image as ImageIcon, ShieldCheck, Sparkles } from "lucide-react";
+import { CalendarDays, Heart, ShieldCheck, Sparkles } from "lucide-react";
 import Container from "@/components/ui/Container";
-import { Button } from "@/components/ui/Button";
 import Hero from "./Hero";
 
 const reasons = [
-  { icon: Sparkles, title: "Prémium alapanyagok", text: "Tartós, igényes végeredmény kompromisszumok nélkül." },
-  { icon: Heart, title: "Egyedi körmök", text: "A stílusodhoz és alkalomhoz igazított, személyes megjelenés." },
-  { icon: CalendarDays, title: "Online időpontfoglalás", text: "Válassz szabad időpontot kényelmesen, néhány kattintással." },
-  { icon: ShieldCheck, title: "Higiénikus környezet", text: "Tiszta, nyugodt és gondosan előkészített vendégtér." },
+  [Sparkles, "Személyre szabott", "A hozzád, alkalomhoz és stílusodhoz igazított gondos munka."],
+  [Heart, "Énidő", "Nyugodt, kedves légkör, ahol megállhatsz egy pillanatra."],
+  [CalendarDays, "Egyszerű foglalás", "Válassz szabad időpontot kényelmesen, online."],
+  [ShieldCheck, "Tiszta környezet", "Higiénikus, igényes vendégtér és megbízható alapanyagok."],
+] as const;
+
+const gallery = [
+  { src: "/images/gallery-milky-nude.png", alt: "Tejes nude manikűr" },
+  { src: "/images/gallery-cherry-red.png", alt: "Cseresznyepiros manikűr" },
+  { src: "/images/gallery-blush-flower.png", alt: "Púderrózsaszín manikűr" },
+  { src: "/images/gallery-mocha.png", alt: "Mokka árnyalatú manikűr" },
 ];
 
 export default function HomePage() {
-  return (
-    <>
-      <Hero />
-      <section className="py-20 sm:py-24">
-        <Container>
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-pink-600">Miért engem válassz?</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Kényeztető élmény, gyönyörű végeredmény.</h2>
-          </div>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {reasons.map(({ icon: Icon, title, text }) => (
-              <article key={title} className="rounded-3xl border border-pink-100 bg-white p-6 shadow-sm">
-                <div className="grid size-11 place-items-center rounded-2xl bg-pink-100 text-pink-700"><Icon className="size-5" /></div>
-                <h3 className="mt-5 text-lg font-semibold text-gray-900">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">{text}</p>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-      <section className="bg-rose-50 py-20 sm:py-24">
-        <Container>
-          <div className="flex flex-wrap items-end justify-between gap-5">
-            <div><p className="text-sm font-semibold uppercase tracking-[0.2em] text-pink-600">Galéria</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">Inspiráció a következő körmeidhez.</h2></div>
-            <Link href="/gallery" className="font-medium text-pink-700 hover:text-pink-800">Teljes galéria →</Link>
-          </div>
-          <div className="mt-10 grid grid-cols-2 gap-4 md:grid-cols-4">
-            {Array.from({ length: 8 }, (_, index) => (
-              <div key={index} className="grid aspect-square place-items-center rounded-3xl bg-gradient-to-br from-pink-200 via-rose-100 to-white text-pink-500 shadow-sm">
-                <ImageIcon className="size-7" aria-label="Hamarosan érkezik referenciafotó" />
-              </div>
-            ))}
-          </div>
-        </Container>
-      </section>
-      <section className="py-20 sm:py-24">
-        <Container>
-          <div className="rounded-[2rem] bg-pink-600 px-7 py-12 text-center text-white shadow-xl sm:px-12 sm:py-16">
-            <Droplets className="mx-auto size-7 text-pink-100" />
-            <h2 className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl">Készen állsz az új körmeidre?</h2>
-            <p className="mx-auto mt-4 max-w-xl text-pink-100">Foglalj időpontot online néhány kattintással!</p>
-            <Link href="/booking" className="mt-8 inline-block"><Button size="lg" className="h-12 bg-white px-6 text-base text-pink-700 hover:bg-pink-50">Időpont foglalása</Button></Link>
-          </div>
-        </Container>
-      </section>
-    </>
-  );
+  return <>
+    <Hero />
+    <section className="relative py-22 sm:py-30"><div className="absolute right-0 top-0 h-full w-1/3 bg-[#f8f5f1]"/><Container><div className="relative grid gap-12 lg:grid-cols-[.7fr_1.3fr]"><div><p className="eyebrow">A NailBook élmény</p><h2 className="mt-4 font-serif text-4xl leading-tight text-stone-800 sm:text-5xl">Nem csak egy új szett. Egy új hangulat.</h2><p className="mt-6 max-w-sm leading-7 text-stone-600">A gondosan kiválasztott árnyalatok, finom formák és a rád figyelő idő teszi igazán különlegessé.</p></div><div className="grid gap-x-8 gap-y-10 sm:grid-cols-2">{reasons.map(([Icon, title, text], index) => <article key={title} className={index === 1 ? "sm:translate-y-10" : ""}><span className="font-serif text-5xl text-[#d9c1b5]">0{index + 1}</span><div className="mt-3 border-t border-[#c9ad9f] pt-5"><Icon className="size-5 text-[#a97967]"/><h3 className="mt-5 font-serif text-2xl text-stone-800">{title}</h3><p className="mt-3 text-sm leading-6 text-stone-600">{text}</p></div></article>)}</div></div></Container></section>
+    <section className="overflow-hidden bg-[#3e302b] py-20 text-[#fffdfa] sm:py-28"><Container><div><p className="text-xs font-semibold uppercase tracking-[.24em] text-[#d9b4a1]">Galéria</p><h2 className="mt-4 font-serif text-4xl sm:text-5xl">Hangulatok, amik megmaradnak.</h2></div><div className="mt-12 grid grid-cols-2 gap-4 md:grid-cols-4">{gallery.map(({ src, alt }, index) => <div key={src} className={`group relative aspect-[4/5] overflow-hidden rounded-[2rem] ${index % 2 ? "md:translate-y-8" : ""}`}><Image src={src} alt={alt} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover transition duration-700 group-hover:scale-105"/><div className="absolute inset-0 bg-black/0 transition group-hover:bg-black/10"/></div>)}</div></Container></section>
+    <section className="py-20 sm:py-28"><Container><div className="relative overflow-hidden rounded-[2.5rem] bg-[#a97967] px-7 py-14 text-center text-white sm:px-12 sm:py-20"><div className="absolute -left-15 top-1/2 size-60 -translate-y-1/2 rounded-full border border-white/20"/><div className="absolute -right-15 -top-20 size-60 rounded-full border border-white/20"/><div className="relative"><p className="eyebrow text-[#f8e9de]">A te időd</p><h2 className="mx-auto mt-4 max-w-2xl font-serif text-4xl sm:text-5xl">Készen állsz egy kis énidőre?</h2><p className="mx-auto mt-5 max-w-xl leading-7 text-white/80">Foglalj időpontot néhány kattintással, és várd a következő gyönyörű részletet.</p><Link href="/booking" className="mt-8 inline-block rounded-full bg-[#fffdfa] px-7 py-4 text-sm font-medium text-[#8f6252]">Időpontot foglalok</Link></div></div></Container></section>
+  </>;
 }

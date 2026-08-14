@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { vacationSchema } from "@/lib/validations/vacation";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET() {
   try {
@@ -27,6 +28,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const body = await request.json();
 
     const result = vacationSchema.safeParse(body);

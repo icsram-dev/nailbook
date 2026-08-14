@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { vacationSchema } from "@/lib/validations/vacation";
+import { requireAdmin } from "@/lib/api/admin";
 
 type RouteContext = {
   params: Promise<{
@@ -15,6 +16,8 @@ export async function PATCH(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const body = await request.json();
@@ -73,6 +76,8 @@ export async function DELETE(
   { params }: RouteContext
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     await prisma.vacation.delete({

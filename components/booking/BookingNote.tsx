@@ -25,7 +25,7 @@ export default function BookingNote() {
         rows={4}
         placeholder="Írj ide megjegyzést..."
         {...register("note")}
-        className="w-full rounded-lg border p-3 outline-none transition focus:border-pink-500"
+        className="w-full rounded-xl border border-stone-200 bg-[#fffdfa] p-3 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
       />
 
       {errors.note && (

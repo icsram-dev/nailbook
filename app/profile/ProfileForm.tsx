@@ -80,7 +80,7 @@ export default function ProfileForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-2xl border bg-white p-8 shadow-sm"
+      className="mt-6 rounded-[1.75rem] border border-stone-200 bg-[#fffdfa] p-7 shadow-sm"
     >
       {success && (
         <div className="rounded-lg border border-green-300 bg-green-50 p-3 text-sm text-green-700">
@@ -94,6 +94,7 @@ export default function ProfileForm({
         </div>
       )}
 
+      <div className="mt-5 grid gap-5 md:grid-cols-2">
       <div className="relative">
         <User
           size={18}
@@ -103,7 +104,7 @@ export default function ProfileForm({
         <input
           required
           placeholder="Vezetéknév"
-          className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+          className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
           value={form.lastName}
           onChange={(e) =>
             setForm({
@@ -123,7 +124,7 @@ export default function ProfileForm({
         <input
           required
           placeholder="Keresztnév"
-          className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+          className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
           value={form.firstName}
           onChange={(e) =>
             setForm({
@@ -142,7 +143,7 @@ export default function ProfileForm({
 
         <input
           disabled
-          className="w-full cursor-not-allowed rounded-lg border bg-gray-100 py-3 pl-11 pr-4 text-gray-500"
+          className="w-full cursor-not-allowed rounded-xl border border-stone-200 bg-stone-100 py-3 pl-11 pr-4 text-stone-500"
           value={form.email}
         />
       </div>
@@ -156,7 +157,7 @@ export default function ProfileForm({
         <input
           type="tel"
           placeholder="+36 30 358 0496"
-          className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+          className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
           value={form.phone}
           onChange={(e) =>
             setForm({
@@ -167,10 +168,12 @@ export default function ProfileForm({
         />
       </div>
 
+      </div>
+
       <button
         type="submit"
         disabled={loading}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-pink-500 px-5 py-3 font-medium text-white transition hover:bg-pink-600 disabled:opacity-70"
+        className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-[#a97967] px-5 py-3 font-medium text-white transition hover:bg-[#8f6252] disabled:opacity-70"
       >
         {loading ? (
           <>

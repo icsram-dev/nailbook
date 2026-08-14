@@ -36,7 +36,7 @@ export default function ForgotPasswordPage() {
         return;
       }
 
-      setMessage(data.message);
+      setMessage("Elküldtük a jelszó-visszaállító linket a megadott e-mail címre.");
     } catch (error) {
       console.error(error);
 
@@ -48,24 +48,24 @@ export default function ForgotPasswordPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md items-center justify-center px-6">
-      <div className="w-full rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">
+      <div className="w-full rounded-3xl border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
+        <h1 className="mb-2 text-center font-serif text-3xl text-stone-800">
           Elfelejtetted a jelszavad?
         </h1>
 
-        <p className="mb-8 text-center text-gray-500">
+        <p className="mb-8 text-center leading-7 text-stone-600">
           Add meg az e-mail címedet, és küldünk egy linket az új jelszó
           beállításához.
         </p>
 
         {error && (
-          <div className="mb-5 rounded-lg border border-red-300 bg-red-50 p-3 text-red-600">
+          <div className="mb-5 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
           </div>
         )}
 
         {message && (
-          <div className="mb-5 rounded-lg border border-green-300 bg-green-50 p-3 text-green-700">
+          <div className="mb-5 rounded-xl border border-[#dcc7bb] bg-[#f3e8e1] p-4 text-sm leading-6 text-[#6e4a3c]">
             {message}
           </div>
         )}
@@ -79,18 +79,18 @@ export default function ForgotPasswordPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border px-4 py-3 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-stone-800 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#e8d5cb]"
               placeholder="pelda@email.hu"
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="w-full">
+          <Button type="submit" disabled={loading} className="h-11 w-full rounded-full bg-[#a97967] text-white hover:bg-[#8f6252]">
             {loading ? "Küldés..." : "Jelszó-visszaállító e-mail küldése"}
           </Button>
         </form>
 
         <div className="mt-8 text-center">
-          <Link href="/login" className="text-pink-600 hover:underline">
+          <Link href="/login" className="text-sm font-medium text-[#8f6252] hover:underline">
             ← Vissza a bejelentkezéshez
           </Link>
         </div>

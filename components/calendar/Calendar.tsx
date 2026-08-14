@@ -14,7 +14,7 @@ import type {
   EventInput,
 } from "@fullcalendar/core";
 
-import { Card } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import SearchInput from "@/components/ui/SearchInput";
 
 import { AppointmentModal } from "./AppointmentModal";
@@ -124,6 +124,7 @@ export function Calendar() {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadAppointments();
   }, [loadAppointments]);
 
@@ -222,7 +223,7 @@ export function Calendar() {
     setEditOpen(true);
   }
 
-  async function handleConfirm() {
+  /* async function handleConfirm() {
     if (!selectedAppointmentId) return;
 
     try {
@@ -254,7 +255,7 @@ export function Calendar() {
           : "Nem sikerült jóváhagyni a foglalást."
       );
     }
-  }
+  } */
 
   async function handleDelete(
     reason: CancellationReason,
@@ -349,6 +350,7 @@ export function Calendar() {
   return (
     <>
       <Card>
+        <CardContent className="pt-1 sm:px-6">
         <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <SearchInput
             value={search}
@@ -361,7 +363,7 @@ export function Calendar() {
             onChange={(event) =>
               setStatusFilter(event.target.value)
             }
-            className="rounded-xl border bg-white px-4 py-2 text-sm outline-none focus:border-pink-500"
+            className="rounded-xl border border-stone-200 bg-[#fffdfa] px-4 py-2 text-sm text-stone-700 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
           >
             <option value="ALL">
               Összes státusz
@@ -389,6 +391,7 @@ export function Calendar() {
           </select>
         </div>
 
+        <div className="admin-calendar">
         <FullCalendar
           plugins={[
             dayGridPlugin,
@@ -401,7 +404,14 @@ export function Calendar() {
           select={handleSelect}
           eventClick={handleEventClick}
           events={filteredEvents}
-          height="auto"
+          height={720}
+          expandRows={true}
+          allDaySlot={false}
+          slotMinTime="08:00:00"
+          slotMaxTime="20:00:00"
+          slotDuration="00:30:00"
+          slotLabelInterval="01:00:00"
+          slotLabelFormat={{ hour: "2-digit", minute: "2-digit", hour12: false }}
           nowIndicator={true}
           headerToolbar={{
             left: "prev,next today",
@@ -433,6 +443,8 @@ export function Calendar() {
             );
           }}
         />
+        </div>
+        </CardContent>
       </Card>
 
       <AppointmentDetailsModal
@@ -442,7 +454,6 @@ export function Calendar() {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onNoShow={handleNoShow}
-        onConfirm={handleConfirm}
       />
 
       <AppointmentModal
@@ -451,6 +462,7 @@ export function Calendar() {
         appointmentId={selectedAppointmentId}
         onClose={handleClose}
         onSuccess={handleAppointmentCreated}
+        customerPreview={selectedAppointment ? { name: selectedAppointment.customerName, phone: selectedAppointment.customerPhone, email: selectedAppointment.customerEmail } : null}
       />
     </>
   );

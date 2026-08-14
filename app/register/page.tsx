@@ -154,9 +154,9 @@ export default function RegisterPage() {
   }
 
   return (
-        <main className="mx-auto max-w-md px-6 py-12">
-      <div className="rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">
+    <main className="mx-auto max-w-md px-6 py-16">
+      <div className="rounded-[2rem] border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
+        <p className="eyebrow text-center">NailBook</p><h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">
           Regisztráció
         </h1>
 
@@ -185,7 +185,7 @@ export default function RegisterPage() {
             <input
               required
               placeholder="Vezetéknév"
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.lastName}
               onChange={(e) =>
                 setForm({
@@ -207,7 +207,7 @@ export default function RegisterPage() {
             <input
               required
               placeholder="Keresztnév"
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.firstName}
               onChange={(e) =>
                 setForm({
@@ -230,7 +230,7 @@ export default function RegisterPage() {
               required
               type="email"
               placeholder="pelda@email.hu"
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.email}
               onChange={(e) =>
                 setForm({
@@ -252,7 +252,7 @@ export default function RegisterPage() {
             <input
               required
               type="tel"
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.phone}
               autoComplete="tel"
               maxLength={17}
@@ -316,7 +316,7 @@ export default function RegisterPage() {
                   : "password"
               }
               placeholder="Minimum 8 karakter"
-              className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.password}
               onChange={(e) =>
                 setForm({
@@ -359,7 +359,7 @@ export default function RegisterPage() {
                   : "password"
               }
               placeholder="Jelszó megerősítése"
-              className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.confirmPassword}
               onChange={(e) =>
                 setForm({
@@ -410,7 +410,7 @@ export default function RegisterPage() {
           Már van fiókod?{" "}
           <Link
             href="/login"
-            className="font-semibold text-pink-600 hover:underline"
+            className="font-semibold text-[#8f6252] hover:underline"
           >
             Bejelentkezés
           </Link>

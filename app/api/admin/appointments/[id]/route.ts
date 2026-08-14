@@ -8,12 +8,15 @@ import {
   getAppointmentById,
   updateAppointment,
 } from "@/lib/appointments/service";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const appointment = await getAppointmentById(id);
@@ -49,6 +52,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     const body = await request.json();
@@ -85,6 +90,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const { id } = await params;
 
     let body: {

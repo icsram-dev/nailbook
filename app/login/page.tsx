@@ -46,9 +46,9 @@ function LoginPageContent() {
   }
 
   return (
-    <main className="mx-auto max-w-md px-6 py-12">
-      <div className="rounded-2xl border bg-white p-8 shadow-sm">
-        <h1 className="mb-2 text-center text-3xl font-bold">Bejelentkezés</h1>
+    <main className="mx-auto max-w-md px-6 py-16">
+      <div className="rounded-[2rem] border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
+        <p className="eyebrow text-center">NailBook</p><h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">Bejelentkezés</h1>
 
         <p className="mb-8 text-center text-gray-500">
           Üdv újra a NailBookban!
@@ -79,7 +79,7 @@ function LoginPageContent() {
               placeholder="pelda@email.hu"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border py-3 pl-11 pr-4 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-4 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
             />
           </div>
 
@@ -95,7 +95,7 @@ function LoginPageContent() {
               placeholder="Jelszó"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border py-3 pl-11 pr-12 outline-none focus:border-pink-500"
+              className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
             />
 
             <button
@@ -110,7 +110,7 @@ function LoginPageContent() {
           <div className="flex justify-end">
             <Link
               href="/forgot-password"
-              className="text-sm font-medium text-pink-600 hover:text-pink-700 hover:underline"
+              className="text-sm font-medium text-[#8f6252] hover:underline"
             >
               Elfelejtetted a jelszavad?
             </Link>
@@ -132,7 +132,7 @@ function LoginPageContent() {
           Nincs még fiókod?{" "}
           <Link
             href="/register"
-            className="font-semibold text-pink-600 hover:underline"
+            className="font-semibold text-[#8f6252] hover:underline"
           >
             Regisztráció
           </Link>

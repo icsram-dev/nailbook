@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ImageUpload from "@/components/ui/ImageUpload";
 
@@ -28,8 +28,8 @@ export function ServiceForm({
   register,
   handleSubmit,
   reset,
-  watch,
   setValue,
+  control,
   formState: { errors, isSubmitting },
 } = useForm<ServiceInput, unknown, ServiceData>({
   resolver: zodResolver(serviceSchema),
@@ -49,7 +49,7 @@ export function ServiceForm({
     );
   }, [defaultValues, reset]);
 
-  const image = watch("image");
+  const image = useWatch({ control, name: "image" });
 
   return (
     <form

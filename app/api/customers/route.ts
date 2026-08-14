@@ -5,9 +5,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { customerSchema } from "@/lib/validations/customer";
+import { requireAdmin } from "@/lib/api/admin";
 
 export async function GET() {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const customers = await prisma.user.findMany({
       where: {
         role: "CUSTOMER",
@@ -60,6 +63,8 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
+    const unauthorized = await requireAdmin();
+    if (unauthorized) return unauthorized;
     const body = await request.json();
 
     const result = customerSchema.safeParse(body);

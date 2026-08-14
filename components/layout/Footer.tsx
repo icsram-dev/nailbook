@@ -1,4 +1,13 @@
-import { AtSign, Clock3, Globe2, Mail, MapPin, Phone } from "lucide-react";
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { AtSign, Mail, MapPin } from "lucide-react";
 import Container from "@/components/ui/Container";
-const contacts = [{ icon: MapPin, label: "Cím", value: "Hamarosan" }, { icon: Phone, label: "Telefonszám", value: "Hamarosan" }, { icon: Mail, label: "E-mail", value: "Hamarosan" }, { icon: AtSign, label: "Instagram", value: "Hamarosan" }, { icon: Globe2, label: "Facebook", value: "Hamarosan" }, { icon: Clock3, label: "Nyitvatartás", value: "Bejelentkezés alapján" }];
-export default function Footer() { return <footer className="border-t border-pink-100 bg-rose-50 py-12"><Container><div className="grid gap-10 lg:grid-cols-[1fr_2fr]"><div><p className="text-2xl font-semibold text-pink-700">✦ NailBook</p><p className="mt-3 max-w-sm text-sm leading-6 text-gray-600">Szépség, odafigyelés és egyszerű online időpontfoglalás.</p></div><div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">{contacts.map(({ icon: Icon, label, value }) => <div key={label} className="flex gap-3"><Icon className="mt-0.5 size-4 shrink-0 text-pink-600" /><div><p className="text-sm font-medium text-gray-900">{label}</p><p className="mt-1 text-sm text-gray-600">{value}</p></div></div>)}</div></div><p className="mt-10 border-t border-pink-100 pt-6 text-sm text-gray-500">© {new Date().getFullYear()} NailBook. Minden jog fenntartva.</p></Container></footer>; }
+
+export default function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith("/admin")) return null;
+
+  return <footer className="border-t border-stone-200 bg-[#f3eee8] py-14"><Container><div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]"><div><Link href="/" className="font-serif text-2xl tracking-[0.12em] text-stone-800">NAILBOOK</Link><p className="mt-4 max-w-sm leading-7 text-stone-600">Egy kis énidő, finom részletek és körmök, amelyek igazán téged tükröznek.</p></div><div><p className="eyebrow">Navigáció</p><div className="mt-4 flex flex-col gap-3 text-sm text-stone-600"><Link href="/services">Szolgáltatások</Link><Link href="/gallery">Galéria</Link><Link href="/about">Rólam</Link></div></div><div><p className="eyebrow">Kapcsolat</p><div className="mt-4 space-y-3 text-sm text-stone-600"><p className="flex items-center gap-2"><MapPin className="size-4 text-[#a97967]"/>Cím hamarosan</p><p className="flex items-center gap-2"><Mail className="size-4 text-[#a97967]"/>E-mail hamarosan</p><p className="flex items-center gap-2"><AtSign className="size-4 text-[#a97967]"/>Instagram hamarosan</p></div></div></div><p className="mt-12 border-t border-stone-200 pt-6 text-center text-xs text-stone-500">© {new Date().getFullYear()} NailBook. Minden jog fenntartva.</p></Container></footer>;
+}
