@@ -56,9 +56,9 @@ export default function BookingCalendar() {
   }
 
   return (
-    <div className="space-y-6">
+      <div className="space-y-5">
       <div>
-        <h2 className="text-lg font-semibold">
+        <h2 className="font-serif text-2xl text-stone-800">
           2. Válassz napot
         </h2>
 
@@ -67,6 +67,7 @@ export default function BookingCalendar() {
         </p>
       </div>
 
+      <div className="overflow-x-auto">
       <Calendar
         locale={hu}
         mode="single"
@@ -97,8 +98,9 @@ export default function BookingCalendar() {
             shouldValidate: true,
           });
         }}
-        className="rounded-2xl border border-stone-200 bg-[#fffdfa] p-3"
+        className="mx-auto w-fit rounded-2xl border border-stone-200 bg-[#fffdfa] p-2 sm:p-3"
       />
+      </div>
     </div>
   );
 }

@@ -192,3 +192,30 @@
     color: #57534e;
   }
 }
+
+@media (max-width: 767px) {
+  html {
+    overflow-x: hidden;
+  }
+
+  table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-calendar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-calendar .fc {
+    min-width: 42rem;
+  }
+
+  .admin-calendar .fc-toolbar-title {
+    font-size: 1.25rem;
+  }
+}

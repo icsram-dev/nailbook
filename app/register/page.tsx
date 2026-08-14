@@ -142,7 +142,7 @@ export default function RegisterPage() {
       }
 
       router.push(
-        "/login?registered=true"
+        `/login?registered=true&email=${encodeURIComponent(email)}`
       );
     } catch {
       setError(

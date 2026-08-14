@@ -6,15 +6,6 @@ export async function GET(request: NextRequest) {
     const date = request.nextUrl.searchParams.get("date");
     const serviceId = request.nextUrl.searchParams.get("serviceId");
 
-    console.log("=================================");
-    console.log("DATE:", date);
-    console.log("SERVICE:", serviceId);
-    console.log(
-      "REGEX:",
-      /^\d{4}-\d{2}-\d{2}$/.test(date ?? "")
-    );
-    console.log("=================================");
-
     if (!date || !serviceId) {
       return NextResponse.json(
         { error: "A dátum és a szolgáltatás megadása kötelező." },

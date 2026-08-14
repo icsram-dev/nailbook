@@ -6,6 +6,11 @@ import { requireAdmin } from "@/lib/api/admin";
 export async function GET() {
   try {
     const vacations = await prisma.vacation.findMany({
+      select: {
+        id: true,
+        startDate: true,
+        endDate: true,
+      },
       orderBy: {
         startDate: "asc",
       },

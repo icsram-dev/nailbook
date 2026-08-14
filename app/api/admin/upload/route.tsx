@@ -32,6 +32,26 @@ export async function POST(request: Request) {
       );
     }
 
+    const allowedTypes = new Set([
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ]);
+
+    if (!allowedTypes.has(file.type)) {
+      return NextResponse.json(
+        { message: "Csak JPG, PNG vagy WebP képfájl tölthető fel." },
+        { status: 400 }
+      );
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json(
+        { message: "A feltöltött kép legfeljebb 5 MB lehet." },
+        { status: 400 }
+      );
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
@@ -43,6 +63,8 @@ export async function POST(request: Request) {
         .upload_stream(
           {
             folder: "nailbook/services",
+            resource_type: "image",
+            allowed_formats: ["jpg", "jpeg", "png", "webp"],
           },
           (error, result) => {
             if (error || !result) {

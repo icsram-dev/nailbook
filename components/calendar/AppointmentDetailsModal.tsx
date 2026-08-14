@@ -234,7 +234,7 @@ export function AppointmentDetailsModal({
             {canMarkAsNoShow && (
               <Button
                 type="button"
-                className="bg-orange-500 hover:bg-orange-600"
+                className="border border-[#d9c3b8] bg-[#f3e8e1] text-[#6e4a3c] hover:bg-[#eadbd2]"
                 onClick={onNoShow}
               >
                 Nem jelent meg
@@ -269,19 +269,19 @@ export function AppointmentDetailsModal({
           </div>
         ) : (
           /* Lemondási űrlap */
-          <div className="rounded-xl border border-red-200 bg-red-50 p-5">
-            <h3 className="font-semibold text-gray-900">
+          <div className="rounded-2xl border border-[#e3d5cc] bg-[#f9f4f0] p-5">
+            <h3 className="font-serif text-xl font-normal text-stone-800">
               Foglalás lemondása
             </h3>
 
-            <p className="mt-1 text-sm text-gray-600">
+            <p className="mt-1 text-sm text-stone-600">
               Válaszd ki a lemondás okát.
             </p>
 
             <div className="mt-4 space-y-3">
 
               {/* Vendég lemondta */}
-              <label className="flex cursor-pointer items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-3 text-stone-700">
                 <input
                   type="radio"
                   name="cancellationReason"
@@ -303,7 +303,7 @@ export function AppointmentDetailsModal({
               </label>
 
               {/* Admin lemondta */}
-              <label className="flex cursor-pointer items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-3 text-stone-700">
                 <input
                   type="radio"
                   name="cancellationReason"
@@ -325,7 +325,7 @@ export function AppointmentDetailsModal({
               </label>
 
               {/* Egyéb */}
-              <label className="flex cursor-pointer items-center gap-3">
+              <label className="flex cursor-pointer items-center gap-3 text-stone-700">
                 <input
                   type="radio"
                   name="cancellationReason"
@@ -346,10 +346,10 @@ export function AppointmentDetailsModal({
             <div className="mt-4">
               <label
                 htmlFor="cancellation-note"
-                className="mb-2 block text-sm font-medium text-gray-700"
+                className="mb-2 block text-sm font-medium text-stone-700"
               >
                 Megjegyzés{" "}
-                <span className="font-normal text-gray-400">
+                <span className="font-normal text-stone-400">
                   (opcionális)
                 </span>
               </label>
@@ -362,7 +362,7 @@ export function AppointmentDetailsModal({
                 }
                 rows={3}
                 placeholder="Pl. betegség, technikai ok..."
-                className="w-full rounded-xl border bg-white px-3 py-2 text-sm outline-none transition focus:border-pink-500 focus:ring-2 focus:ring-pink-100"
+                className="w-full rounded-xl border border-stone-200 bg-[#fffdfa] px-3 py-2 text-sm text-stone-800 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               />
             </div>
 
@@ -383,7 +383,7 @@ export function AppointmentDetailsModal({
 
               <Button
                 type="button"
-                className="bg-red-600 text-white hover:bg-red-700"
+                className="bg-[#a97967] text-white hover:bg-[#8f6252]"
                 onClick={handleCancel}
               >
                 Lemondás megerősítése

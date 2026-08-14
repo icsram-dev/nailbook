@@ -3,10 +3,10 @@
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { Check, Loader2, TriangleAlert } from "lucide-react";
 
 function CancelBookingContent() {
   const searchParams = useSearchParams();
-
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [message, setMessage] = useState("");
@@ -14,88 +14,26 @@ function CancelBookingContent() {
   useEffect(() => {
     async function cancelAppointment() {
       const token = searchParams.get("token");
-
-      if (!token) {
-        setMessage("Érvénytelen lemondási link.");
-        setLoading(false);
-        return;
-      }
-
+      if (!token) { setMessage("Érvénytelen lemondási link."); setLoading(false); return; }
       try {
-        const response = await fetch("/api/booking/cancel", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            token,
-          }),
-        });
-
+        const response = await fetch("/api/booking/cancel", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ token }) });
         const result = await response.json();
-
-        if (!response.ok) {
-          throw new Error(result.error);
-        }
-
+        if (!response.ok) throw new Error(result.error);
         setSuccess(true);
-        setMessage("Az időpontot sikeresen lemondtad.");
+        setMessage("Köszönjük, hogy időben jelezted a lemondást. Várunk szeretettel egy következő alkalommal.");
       } catch (error) {
         setSuccess(false);
-
-        setMessage(
-          error instanceof Error
-            ? error.message
-            : "Nem sikerült lemondani az időpontot."
-        );
-      } finally {
-        setLoading(false);
-      }
+        setMessage(error instanceof Error ? error.message : "Nem sikerült lemondani az időpontot.");
+      } finally { setLoading(false); }
     }
-
-    cancelAppointment();
+    void cancelAppointment();
   }, [searchParams]);
 
-  return (
-    <main className="mx-auto flex min-h-[70vh] max-w-xl items-center justify-center px-6">
-      <div className="w-full rounded-2xl border bg-white p-8 text-center shadow-sm">
-        {loading ? (
-          <>
-            <h1 className="mb-4 text-2xl font-bold">
-              Lemondás...
-            </h1>
+  const icon = loading ? <Loader2 className="size-7 animate-spin"/> : success ? <Check className="size-7" strokeWidth={1.8}/> : <TriangleAlert className="size-7" strokeWidth={1.8}/>;
+  const eyebrow = loading ? "Lemondás folyamatban" : success ? "Foglalás lemondva" : "Lemondás sikertelen";
+  const title = loading ? "Egy pillanat türelmet kérünk." : success ? "A lemondásodat rögzítettük." : "Valami nem sikerült.";
 
-            <p className="text-muted-foreground">
-              Kérlek várj egy pillanatot.
-            </p>
-          </>
-        ) : (
-          <>
-            <h1 className="mb-4 text-2xl font-bold">
-              {success ? "Sikeres lemondás" : "Hiba"}
-            </h1>
-
-            <p className="mb-8 text-muted-foreground">
-              {message}
-            </p>
-
-            <Link
-              href="/"
-              className="inline-flex rounded-lg bg-pink-600 px-5 py-3 font-medium text-white transition hover:bg-pink-700"
-            >
-              Vissza a főoldalra
-            </Link>
-          </>
-        )}
-      </div>
-    </main>
-  );
+  return <main className="mx-auto flex min-h-[60vh] max-w-2xl items-center px-6 py-16"><div className="relative w-full overflow-hidden rounded-[2rem] border border-[#dcc7bb] bg-[#fffdfa] px-7 py-12 text-center shadow-[0_24px_60px_-40px_rgba(74,49,38,.55)] sm:px-12"><div className="absolute -left-16 -top-16 size-44 rounded-full border border-[#dcc7bb]"/><div className="absolute -bottom-20 -right-16 size-52 rounded-full bg-[#f3e8e1]"/><div className="relative"><div className={`mx-auto grid size-14 place-items-center rounded-full ${success || loading ? "bg-[#f3e8e1] text-[#8f6252]" : "bg-[#f8e9e4] text-[#9a6557]"}`}>{icon}</div><p className="mt-7 text-xs font-semibold uppercase tracking-[.22em] text-[#a97967]">{eyebrow}</p><h1 className="mt-3 font-serif text-4xl text-stone-800 sm:text-5xl">{title}</h1><p className="mx-auto mt-5 max-w-md leading-7 text-stone-600">{loading ? "Ellenőrizzük a lemondási kérésedet." : message}</p>{!loading && <Link href="/" className="mt-8 inline-flex rounded-full bg-[#a97967] px-6 py-3.5 text-sm font-medium text-white transition hover:bg-[#8f6252]">Vissza a kezdőlapra</Link>}</div></div></main>;
 }
 
-export default function CancelBookingPage() {
-  return (
-    <Suspense fallback={<main className="min-h-[70vh]" />}>
-      <CancelBookingContent />
-    </Suspense>
-  );
-}
+export default function CancelBookingPage() { return <Suspense fallback={<main className="min-h-[60vh]"/>}><CancelBookingContent /></Suspense>; }

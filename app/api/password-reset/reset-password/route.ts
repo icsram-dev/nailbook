@@ -6,6 +6,7 @@ import {
   deletePasswordResetToken,
   validatePasswordResetToken,
 } from "@/lib/password-reset";
+import { sendPasswordChangedEmail } from "@/lib/mail";
 
 export async function POST(request: NextRequest) {
   try {
@@ -69,6 +70,16 @@ export async function POST(request: NextRequest) {
     });
 
     await deletePasswordResetToken(token);
+
+    try {
+      await sendPasswordChangedEmail({
+        to: resetToken.user.email,
+        customerName: `${resetToken.user.lastName} ${resetToken.user.firstName}`,
+      });
+    } catch (emailError) {
+      // Az új jelszó ettől még érvényben marad, az e-mail hiba csak naplózásra kerül.
+      console.error("Password changed notification email failed:", emailError);
+    }
 
     return NextResponse.json({
       message:

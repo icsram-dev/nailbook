@@ -3,9 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createPasswordResetToken } from "@/lib/password-reset";
 import { sendPasswordResetEmail } from "@/lib/mail";
+import { isRateLimitAllowed, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    if (!(await isRateLimitAllowed({ request, namespace: "forgot-password", limit: 5, windowMs: 15 * 60 * 1000 }))) {
+      return rateLimitResponse();
+    }
+
     const body = await request.json();
 
     const email = body.email;

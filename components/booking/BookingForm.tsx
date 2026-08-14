@@ -113,7 +113,7 @@ export default function BookingForm() {
     <FormProvider {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-10"
+        className="space-y-8 sm:space-y-10"
       >
         {/* Fejléc */}
         <div>
@@ -121,7 +121,7 @@ export default function BookingForm() {
             Időpontfoglalás
           </p>
 
-          <h2 className="mt-2 font-serif text-4xl text-stone-800">
+          <h2 className="mt-2 font-serif text-3xl text-stone-800 sm:text-4xl">
             Válassz egy kis énidőt.
           </h2>
 
@@ -137,7 +137,7 @@ export default function BookingForm() {
             1. lépés
           </p>
 
-          <h3 className="mt-2 font-serif text-3xl text-stone-800">
+          <h3 className="mt-2 font-serif text-2xl text-stone-800 sm:text-3xl">
             Válassz szolgáltatást
           </h3>
 
@@ -170,7 +170,7 @@ export default function BookingForm() {
                     }`}
                   >
                     {/* Szolgáltatás képe */}
-                    <div className="relative h-56 w-full shrink-0 overflow-hidden bg-[#f3e8e1] lg:h-52">
+                    <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[#f3e8e1] sm:h-56 lg:h-52">
 
                       {/* Háttérkép - kitölti a teljes keretet */}
                       <Image

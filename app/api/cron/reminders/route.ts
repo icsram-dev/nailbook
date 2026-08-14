@@ -14,8 +14,21 @@ import {
   emailsEnabled,
 } from "@/lib/settings/helpers";
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    const cronSecret = process.env.CRON_SECRET;
+
+    if (!cronSecret) {
+      return NextResponse.json(
+        { error: "A cron végpont nincs konfigurálva." },
+        { status: 503 }
+      );
+    }
+
+    if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
+      return NextResponse.json({ error: "Nincs jogosultság." }, { status: 401 });
+    }
+
     if (!(await remindersEnabled())) {
       return NextResponse.json({
         success: true,

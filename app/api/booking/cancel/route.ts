@@ -3,6 +3,7 @@ import { AppointmentStatus } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getSettings } from "@/lib/settings";
+import { sendBookingCancelledByCustomer } from "@/lib/mail";
 
 export async function POST(request: NextRequest) {
   try {
@@ -22,6 +23,10 @@ export async function POST(request: NextRequest) {
     const appointment = await prisma.appointment.findUnique({
       where: {
         cancelToken: token,
+      },
+      include: {
+        customer: true,
+        service: true,
       },
     });
 
@@ -74,6 +79,21 @@ export async function POST(request: NextRequest) {
         cancelledAt: new Date(),
       },
     });
+
+    try {
+      await sendBookingCancelledByCustomer({
+        to: appointment.customer.email,
+        customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
+        serviceName: appointment.service.name,
+        appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      });
+    } catch (emailError) {
+      console.error("Nem sikerült elküldeni a lemondási visszaigazoló e-mailt:", emailError);
+    }
 
     return NextResponse.json({
       success: true,

@@ -12,11 +12,13 @@ function LoginPageContent() {
   const params = useSearchParams();
 
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendMessage, setResendMessage] = useState("");
   const [error, setError] = useState("");
 
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => params.get("email") ?? "");
   const [password, setPassword] = useState("");
 
   const registered = params.get("registered") === "true";
@@ -45,6 +47,40 @@ function LoginPageContent() {
     window.location.href = result?.url ?? callbackUrl;
   }
 
+  async function handleResendVerification() {
+    if (!email) {
+      setError("Add meg az e-mail címedet az újraküldéshez.");
+      return;
+    }
+
+    setResending(true);
+    setError("");
+    setResendMessage("");
+
+    try {
+      const response = await fetch("/api/verify-email/resend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      setResendMessage(data.message);
+    } catch (resendError) {
+      setError(
+        resendError instanceof Error
+          ? resendError.message
+          : "A megerősítő e-mail küldése nem sikerült."
+      );
+    } finally {
+      setResending(false);
+    }
+  }
+
   return (
     <main className="mx-auto max-w-md px-6 py-16">
       <div className="rounded-[2rem] border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
@@ -55,8 +91,23 @@ function LoginPageContent() {
         </p>
 
         {registered && (
-          <div className="mb-5 rounded-lg border border-green-300 bg-green-50 p-3 text-green-700">
+          <div className="mb-5 rounded-xl border border-[#dcc7bb] bg-[#f3e8e1] p-4 text-sm leading-6 text-[#6e4a3c]">
+            <p>Ellenőrizd az e-mail címedet a fiók aktiválásához.</p>
+            <button
+              type="button"
+              onClick={handleResendVerification}
+              disabled={resending}
+              className="mt-2 block font-semibold text-[#8f6252] underline underline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {resending ? "Küldés..." : "Megerősítő e-mail újraküldése"}
+            </button>
             A regisztráció sikeres volt.
+          </div>
+        )}
+
+        {resendMessage && (
+          <div className="mb-5 rounded-xl border border-[#dcc7bb] bg-[#f3e8e1] p-4 text-sm leading-6 text-[#6e4a3c]">
+            {resendMessage}
           </div>
         )}
 
@@ -127,6 +178,19 @@ function LoginPageContent() {
             )}
           </Button>
         </form>
+
+        {!registered && (
+          <button
+            type="button"
+            onClick={handleResendVerification}
+            disabled={resending}
+            className="mt-6 block w-full text-center text-sm font-medium text-[#8f6252] underline underline-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {resending
+              ? "Megerősítő e-mail küldése..."
+              : "Nem kaptad meg a megerősítő e-mailt? Küldd újra"}
+          </button>
+        )}
 
         <p className="mt-8 text-center text-sm text-gray-500">
           Nincs még fiókod?{" "}

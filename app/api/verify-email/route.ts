@@ -24,7 +24,14 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  if (!user) {
+  if (!user || !user.verifyTokenExpiresAt || user.verifyTokenExpiresAt <= new Date()) {
+    if (user) {
+      await prisma.user.update({
+        where: { id: user.id },
+        data: { verifyToken: null, verifyTokenExpiresAt: null },
+      });
+    }
+
     return NextResponse.json(
       {
         success: false,
@@ -41,8 +48,9 @@ export async function GET(request: NextRequest) {
       id: user.id,
     },
       data: {
-  isEmailVerified: true,
-  verifyToken: null,
+        isEmailVerified: true,
+        verifyToken: null,
+        verifyTokenExpiresAt: null,
     },
   });
 

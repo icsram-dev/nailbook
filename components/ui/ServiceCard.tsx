@@ -41,7 +41,7 @@ export default function ServiceCard({
   const content = (
     <>
       {/* KÉP */}
-      <div className="relative h-56 w-full shrink-0 overflow-hidden bg-[#f3e8e1] lg:h-52">
+      <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[#f3e8e1] sm:h-56 lg:h-52">
         {/* Háttér */}
         <Image
           src={imageSource}

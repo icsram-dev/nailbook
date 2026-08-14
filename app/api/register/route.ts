@@ -4,10 +4,15 @@ import { randomUUID } from "crypto";
 
 import { prisma } from "@/lib/prisma";
 import { sendVerificationEmail } from "@/lib/mail";
+import { isRateLimitAllowed, rateLimitResponse } from "@/lib/rate-limit";
 
 
 export async function POST(request: Request) {
   try {
+    if (!(await isRateLimitAllowed({ request, namespace: "register", limit: 5, windowMs: 60 * 60 * 1000 }))) {
+      return rateLimitResponse();
+    }
+
     const body = await request.json();
 
     const {
@@ -132,6 +137,7 @@ export async function POST(request: Request) {
       await bcrypt.hash(password, 10);
 
     const verifyToken = randomUUID();
+    const verifyTokenExpiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
 const user = await prisma.user.create({
   data: {
@@ -141,10 +147,17 @@ const user = await prisma.user.create({
     phone: trimmedPhone,
     password: passwordHash,
     verifyToken,
+    verifyTokenExpiresAt,
   },
 });
 
-const verifyUrl = `${process.env.NEXT_PUBLIC_APP_URL}/api/verify-email?token=${verifyToken}`;
+const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL;
+
+if (!appUrl) {
+  throw new Error("Hiányzik az alkalmazás nyilvános URL-je.");
+}
+
+const verifyUrl = `${appUrl}/api/verify-email?token=${verifyToken}`;
 
 try {
   await sendVerificationEmail({

@@ -263,9 +263,17 @@ export function Calendar() {
   ) {
     if (!selectedAppointmentId) return;
 
+    const appointmentId = selectedAppointmentId;
+
+    // Az admin azonnal visszakerül a naptárhoz; a háttérben mentjük a lemondást.
+    handleClose();
+    setEvents((currentEvents) =>
+      currentEvents.filter((event) => event.id !== appointmentId)
+    );
+
     try {
       const res = await fetch(
-        `/api/appointments/${selectedAppointmentId}`,
+        `/api/appointments/${appointmentId}`,
         {
           method: "DELETE",
           headers: {
@@ -287,11 +295,11 @@ export function Calendar() {
         );
       }
 
-      handleClose();
-
       await loadAppointments();
     } catch (error) {
       console.error(error);
+
+      void loadAppointments();
 
       alert(
         error instanceof Error
@@ -310,9 +318,16 @@ export function Calendar() {
 
     if (!confirmed) return;
 
+    const appointmentId = selectedAppointmentId;
+
+    handleClose();
+    setEvents((currentEvents) =>
+      currentEvents.filter((event) => event.id !== appointmentId)
+    );
+
     try {
       const res = await fetch(
-        `/api/appointments/${selectedAppointmentId}`,
+        `/api/appointments/${appointmentId}`,
         {
           method: "DELETE",
           headers: {
@@ -333,11 +348,11 @@ export function Calendar() {
         );
       }
 
-      handleClose();
-
       await loadAppointments();
     } catch (error) {
       console.error(error);
+
+      void loadAppointments();
 
       alert(
         error instanceof Error

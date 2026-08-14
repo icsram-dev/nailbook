@@ -31,14 +31,6 @@ export async function PATCH(
       },
     });
 
-    console.log({
-      id: appointment?.id,
-      status: appointment?.status,
-      startTime: appointment?.startTime,
-      customerId: appointment?.customerId,
-      sessionUserId: session.user.id,
-    });
-
     if (!appointment) {
       return NextResponse.json(
         { error: "A foglalás nem található." },

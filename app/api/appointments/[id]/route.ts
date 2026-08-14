@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { appointmentSchema } from "@/schemas/appointment";
 import {
+  cancelAppointment,
   updateAppointment,
 } from "@/lib/appointments/service";
 import { requireAdmin } from "@/lib/api/admin";
@@ -223,7 +224,9 @@ export async function DELETE(
     }
 
     const updatedAppointment =
-      await prisma.appointment.update({
+      status === "CANCELLED"
+        ? await cancelAppointment(id)
+        : await prisma.appointment.update({
         where: {
           id,
         },
@@ -236,6 +239,17 @@ export async function DELETE(
             : getReasonLabel(reason),
         },
       });
+
+    if (status === "CANCELLED") {
+      await prisma.appointment.update({
+        where: { id },
+        data: {
+          cancelReason: note
+            ? `${getReasonLabel(reason)} - ${note}`
+            : getReasonLabel(reason),
+        },
+      });
+    }
 
     return NextResponse.json({
       success: true,

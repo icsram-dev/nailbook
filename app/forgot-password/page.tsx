@@ -36,6 +36,7 @@ export default function ForgotPasswordPage() {
         return;
       }
 
+      setEmail("");
       setMessage("Elküldtük a jelszó-visszaállító linket a megadott e-mail címre.");
     } catch (error) {
       console.error(error);

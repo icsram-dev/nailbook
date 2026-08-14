@@ -6,6 +6,7 @@ import BookingRequest from "@/emails/BookingRequest";
 import { BookingConfirmation } from "@/emails/BookingConfirmation";
 import Reminder from "@/emails/Reminder";
 import PasswordResetEmail from "@/emails/PasswordResetEmail";
+import PasswordChangedEmail from "@/emails/PasswordChangedEmail";
 import BookingCancelledByAdmin from "@/emails/BookingCancelledByAdmin";
 import BookingCancelledByCustomer from "@/emails/BookingCancelledByCustomer";
 import BookingUpdated from "@/emails/BookingUpdated";
@@ -245,6 +246,25 @@ export async function sendVerificationEmail({
     to,
     subject:
       "Üdvözlünk a NailBookban! Erősítsd meg az e-mail címed",
+    html,
+  });
+}
+
+type SendPasswordChangedEmailParams = {
+  to: string;
+  customerName: string;
+};
+
+export async function sendPasswordChangedEmail({
+  to,
+  customerName,
+}: SendPasswordChangedEmailParams) {
+  const html = await render(<PasswordChangedEmail customerName={customerName} />);
+
+  return resend.emails.send({
+    from: "NailBook <onboarding@resend.dev>",
+    to,
+    subject: "A jelszavad sikeresen megváltozott",
     html,
   });
 }
