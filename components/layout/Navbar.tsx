@@ -6,6 +6,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 
 import AuthMenu from "./AuthMenu";
+import BrandLogo from "./BrandLogo";
 
 const links = [
   { href: "/", label: "Kezdőlap" },
@@ -26,12 +27,8 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-[#fffdfa]/90 backdrop-blur">
       <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-6">
-        <Link
-          href="/"
-          className="font-serif text-2xl tracking-[0.12em] text-stone-800"
-          onClick={() => setOpen(false)}
-        >
-          NAILBOOK
+        <Link href="/" className="inline-flex" onClick={() => setOpen(false)}>
+          <BrandLogo />
         </Link>
 
         <nav className="hidden items-center gap-5 text-[11px] font-medium uppercase tracking-[0.12em] text-stone-600 xl:gap-6 xl:text-xs lg:flex">

@@ -15,6 +15,7 @@ import {
   UserRound,
 } from "lucide-react";
 import { signOut } from "next-auth/react";
+import BrandLogo from "@/components/layout/BrandLogo";
 
 const menu = [
   { href: "/admin", label: "Áttekintés", icon: LayoutDashboard },
@@ -30,8 +31,8 @@ export default function AdminSidebar() {
 
   return (
     <aside className="sticky top-0 flex h-screen w-72 shrink-0 flex-col border-r border-stone-200 bg-[#fffdfa] px-5 py-7">
-      <Link href="/admin" className="px-3 font-serif text-2xl tracking-[.12em] text-stone-800">
-        NAILBOOK
+      <Link href="/admin" className="px-3">
+        <BrandLogo />
         <span className="mt-1 block font-sans text-[10px] font-semibold uppercase tracking-[.22em] text-[#a97967]">
           Adminisztráció
         </span>

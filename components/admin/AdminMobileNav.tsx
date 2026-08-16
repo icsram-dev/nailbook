@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import BrandLogo from "@/components/layout/BrandLogo";
 
 const menu = [
   { href: "/admin", label: "Áttekintés", icon: LayoutDashboard },
@@ -37,8 +38,8 @@ export default function AdminMobileNav() {
   return (
     <div className="sticky top-0 z-40 border-b border-stone-200 bg-[#fffdfa]/95 backdrop-blur lg:hidden">
       <div className="flex min-h-16 items-center justify-between gap-4 px-4">
-        <Link href="/admin" className="font-serif text-lg tracking-[.12em] text-stone-800">
-          NAILBOOK
+        <Link href="/admin" className="inline-flex">
+          <BrandLogo compact />
         </Link>
         <button
           type="button"

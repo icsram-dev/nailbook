@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { AtSign, Mail, MapPin } from "lucide-react";
 
 import Container from "@/components/ui/Container";
+import BrandLogo from "./BrandLogo";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -15,8 +16,8 @@ export default function Footer() {
       <Container>
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Link href="/" className="font-serif text-2xl tracking-[0.12em] text-stone-800">
-              NAILBOOK
+            <Link href="/" className="inline-flex">
+              <BrandLogo />
             </Link>
             <p className="mt-4 max-w-sm leading-7 text-stone-600">
               Egy kis énidő, finom részletek és körmök, amelyek igazán téged tükröznek.
