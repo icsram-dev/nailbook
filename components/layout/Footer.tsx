@@ -12,9 +12,9 @@ export default function Footer() {
   if (pathname.startsWith("/admin")) return null;
 
   return (
-    <footer className="border-t border-stone-200 bg-[#f3eee8] py-14">
+    <footer className="border-t border-stone-200 bg-[#f3eee8] py-9 sm:py-10">
       <Container>
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="grid gap-7 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
             <Link href="/" className="inline-flex">
               <BrandLogo />
@@ -53,7 +53,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <p className="mt-12 border-t border-stone-200 pt-6 text-center text-xs text-stone-500">
+        <p className="mt-8 border-t border-stone-200 pt-5 text-center text-xs text-stone-500">
           © {new Date().getFullYear()} NailBook. Minden jog fenntartva.
         </p>
       </Container>
