@@ -23,9 +23,7 @@ type Props = {
   appointmentId: string;
 };
 
-export default function DeleteAppointmentButton({
-  appointmentId,
-}: Props) {
+export default function DeleteAppointmentButton({ appointmentId }: Props) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -34,12 +32,9 @@ export default function DeleteAppointmentButton({
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `/api/admin/appointments/${appointmentId}`,
-        {
-          method: "DELETE",
-        }
-      );
+      const response = await fetch(`/api/admin/appointments/${appointmentId}`, {
+        method: "DELETE",
+      });
 
       if (!response.ok) {
         throw new Error();
@@ -58,35 +53,21 @@ export default function DeleteAppointmentButton({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger
-  render={
-    <Button variant="destructive">
-      Törlés
-    </Button>
-  }
-/>
+      <AlertDialogTrigger render={<Button variant="destructive">Törlés</Button>} />
 
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>
-            Foglalás törlése
-          </AlertDialogTitle>
+          <AlertDialogTitle>Foglalás törlése</AlertDialogTitle>
 
           <AlertDialogDescription>
-            Biztosan törölni szeretnéd ezt a foglalást?
-            Ez a művelet nem vonható vissza.
+            Biztosan törölni szeretnéd ezt a foglalást? Ez a művelet nem vonható vissza.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>
-            Mégse
-          </AlertDialogCancel>
+          <AlertDialogCancel>Mégse</AlertDialogCancel>
 
-          <AlertDialogAction
-            onClick={handleDelete}
-            disabled={loading}
-          >
+          <AlertDialogAction onClick={handleDelete} disabled={loading}>
             {loading ? "Törlés..." : "Törlés"}
           </AlertDialogAction>
         </AlertDialogFooter>

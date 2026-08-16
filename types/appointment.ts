@@ -1,7 +1,4 @@
-import {
-  AppointmentStatus,
-  Service,
-} from "@prisma/client";
+import { AppointmentStatus, Service } from "@prisma/client";
 
 export type AppointmentWithService = {
   id: string;
@@ -12,8 +9,5 @@ export type AppointmentWithService = {
   customerNote: string | null;
   createdAt: string;
   updatedAt: string;
-  service: Pick<
-    Service,
-    "id" | "name" | "description" | "duration" | "price"
-  >;
+  service: Pick<Service, "id" | "name" | "description" | "duration" | "price">;
 };

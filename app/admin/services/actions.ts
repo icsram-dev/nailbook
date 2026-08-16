@@ -3,11 +3,7 @@
 import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
-import {
-  createService,
-  updateService,
-  deleteService,
-} from "@/lib/services";
+import { createService, updateService, deleteService } from "@/lib/services";
 
 import { serviceSchema } from "@/lib/validations/service";
 
@@ -19,10 +15,7 @@ export async function createServiceAction(data: unknown) {
   revalidatePath("/admin/services");
 }
 
-export async function updateServiceAction(
-  id: string,
-  data: unknown,
-) {
+export async function updateServiceAction(id: string, data: unknown) {
   const validatedData = serviceSchema.parse(data);
 
   await updateService(id, validatedData);
@@ -40,14 +33,10 @@ export async function deleteServiceAction(id: string) {
       success: true,
     };
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2003"
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2003") {
       return {
         success: false,
-        message:
-          "Ez a szolgáltatás nem törölhető, mert már tartoznak hozzá időpontok.",
+        message: "Ez a szolgáltatás nem törölhető, mert már tartoznak hozzá időpontok.",
       };
     }
 

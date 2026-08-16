@@ -11,10 +11,7 @@ type RouteContext = {
   }>;
 };
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function PATCH(request: NextRequest, { params }: RouteContext) {
   try {
     const session = await auth();
 
@@ -70,15 +67,14 @@ export async function PATCH(
       );
     }
 
-    const updatedAppointment =
-      await prisma.appointment.update({
-        where: {
-          id,
-        },
-        data: {
-          status: AppointmentStatus.CANCELLED,
-        },
-      });
+    const updatedAppointment = await prisma.appointment.update({
+      where: {
+        id,
+      },
+      data: {
+        status: AppointmentStatus.CANCELLED,
+      },
+    });
 
     return NextResponse.json(updatedAppointment);
   } catch {

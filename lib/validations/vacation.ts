@@ -17,13 +17,10 @@ export const vacationSchema = z
       .optional()
       .or(z.literal("")),
   })
-  .refine(
-    (data) => data.endDate >= data.startDate,
-    {
-      path: ["endDate"],
-      message: "A záró dátum nem lehet korábbi a kezdő dátumnál.",
-    },
-  );
+  .refine((data) => data.endDate >= data.startDate, {
+    path: ["endDate"],
+    message: "A záró dátum nem lehet korábbi a kezdő dátumnál.",
+  });
 
 export type VacationInput = z.input<typeof vacationSchema>;
 export type VacationData = z.output<typeof vacationSchema>;

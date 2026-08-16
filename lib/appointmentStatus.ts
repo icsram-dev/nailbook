@@ -28,14 +28,10 @@ export const APPOINTMENT_STATUS = {
   },
 } as const;
 
-export function getAppointmentStatusLabel(
-  status: AppointmentStatus
-) {
+export function getAppointmentStatusLabel(status: AppointmentStatus) {
   return APPOINTMENT_STATUS[status].label;
 }
 
-export function getAppointmentStatusClasses(
-  status: AppointmentStatus
-) {
+export function getAppointmentStatusClasses(status: AppointmentStatus) {
   return APPOINTMENT_STATUS[status].classes;
 }

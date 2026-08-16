@@ -65,9 +65,7 @@ export default async function MyBookingsPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold">
-          Foglalásaim
-        </h1>
+        <h1 className="text-3xl font-semibold">Foglalásaim</h1>
 
         <p className="mt-2 text-muted-foreground">
           Itt találod a korábbi és a közelgő időpontjaidat.
@@ -76,21 +74,14 @@ export default async function MyBookingsPage() {
 
       {appointmentsForCards.length === 0 ? (
         <div className="rounded-2xl border bg-white p-8 text-center shadow-sm">
-          <h2 className="text-xl font-semibold">
-            Még nincs foglalásod
-          </h2>
+          <h2 className="text-xl font-semibold">Még nincs foglalásod</h2>
 
-          <p className="mt-2 text-gray-500">
-            Foglalj időpontot a szolgáltatások közül.
-          </p>
+          <p className="mt-2 text-gray-500">Foglalj időpontot a szolgáltatások közül.</p>
         </div>
       ) : (
         <div className="space-y-6">
           {appointmentsForCards.map((appointment) => (
-            <AppointmentCard
-              key={appointment.id}
-              appointment={appointment}
-            />
+            <AppointmentCard key={appointment.id} appointment={appointment} />
           ))}
         </div>
       )}

@@ -10,11 +10,8 @@ type Props = {
   };
 };
 
-export default function EmailSettings({
-  settings,
-}: Props) {
-  const [emailNotifications, setEmailNotifications] =
-    useState(settings.emailNotifications);
+export default function EmailSettings({ settings }: Props) {
+  const [emailNotifications, setEmailNotifications] = useState(settings.emailNotifications);
 
   const [loading, setLoading] = useState(false);
 
@@ -22,37 +19,27 @@ export default function EmailSettings({
     try {
       setLoading(true);
 
-      const res = await fetch(
-        "/api/admin/settings/email",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            emailNotifications,
-          }),
-        }
-      );
+      const res = await fetch("/api/admin/settings/email", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          emailNotifications,
+        }),
+      });
 
       if (!res.ok) {
         const data = await res.json();
 
-        throw new Error(
-          data.error ??
-            "Nem sikerült menteni a beállításokat."
-        );
+        throw new Error(data.error ?? "Nem sikerült menteni a beállításokat.");
       }
 
       alert("Beállítások sikeresen mentve.");
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Hiba történt a mentés során."
-      );
+      alert(error instanceof Error ? error.message : "Hiba történt a mentés során.");
     } finally {
       setLoading(false);
     }
@@ -66,25 +53,17 @@ export default function EmailSettings({
       <div className="space-y-6">
         <label className="flex items-start justify-between gap-6 rounded-2xl bg-[#f8f5f1] p-5">
           <div>
-            <h3 className="font-medium text-stone-800">
-              E-mail értesítések
-            </h3>
+            <h3 className="font-medium text-stone-800">E-mail értesítések</h3>
 
             <p className="mt-1 text-sm leading-6 text-stone-600">
-              Foglaláskor, módosításkor és
-              lemondáskor küldjön a rendszer
-              automatikus e-mailt.
+              Foglaláskor, módosításkor és lemondáskor küldjön a rendszer automatikus e-mailt.
             </p>
           </div>
 
           <input
             type="checkbox"
             checked={emailNotifications}
-            onChange={(e) =>
-              setEmailNotifications(
-                e.target.checked
-              )
-            }
+            onChange={(e) => setEmailNotifications(e.target.checked)}
             disabled={loading}
             className="mt-1 h-5 w-5 accent-[#a97967] disabled:opacity-50"
           />

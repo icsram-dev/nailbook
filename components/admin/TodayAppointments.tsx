@@ -31,9 +31,7 @@ export default async function TodayAppointments() {
   return (
     <div className="mt-10 rounded-2xl border bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">
-          Mai foglalások
-        </h2>
+        <h2 className="text-2xl font-bold">Mai foglalások</h2>
 
         <Link
           href="/admin/appointments"
@@ -44,9 +42,7 @@ export default async function TodayAppointments() {
       </div>
 
       {appointments.length === 0 ? (
-        <p className="text-gray-500">
-          Ma nincs foglalás.
-        </p>
+        <p className="text-gray-500">Ma nincs foglalás.</p>
       ) : (
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -62,31 +58,19 @@ export default async function TodayAppointments() {
 
             <tbody>
               {appointments.map((appointment) => (
-                <tr
-                  key={appointment.id}
-                  className="border-b last:border-0 hover:bg-gray-50"
-                >
-                  <td className="py-4 font-medium">
-                    {formatTime(appointment.startTime)}
-                  </td>
+                <tr key={appointment.id} className="border-b last:border-0 hover:bg-gray-50">
+                  <td className="py-4 font-medium">{formatTime(appointment.startTime)}</td>
 
                   <td className="py-4">
-                    {appointment.customer.lastName}{" "}
-                    {appointment.customer.firstName}
+                    {appointment.customer.lastName} {appointment.customer.firstName}
                   </td>
 
-                  <td className="py-4">
-                    {appointment.service.name}
-                  </td>
+                  <td className="py-4">{appointment.service.name}</td>
+
+                  <td className="py-4">{appointment.price.toLocaleString("hu-HU")} Ft</td>
 
                   <td className="py-4">
-                    {appointment.price.toLocaleString("hu-HU")} Ft
-                  </td>
-
-                  <td className="py-4">
-                    <AppointmentStatusBadge
-                      status={appointment.status}
-                    />
+                    <AppointmentStatusBadge status={appointment.status} />
                   </td>
                 </tr>
               ))}

@@ -23,9 +23,7 @@ const dayLabels: Record<WeekDay, string> = {
   SUNDAY: "Vasárnap",
 };
 
-export default function OpeningHoursForm({
-  openingHours,
-}: OpeningHoursFormProps) {
+export default function OpeningHoursForm({ openingHours }: OpeningHoursFormProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -35,13 +33,13 @@ export default function OpeningHoursForm({
       isOpen: item.isOpen,
       opensAt: item.opensAt,
       closesAt: item.closesAt,
-    })),
+    }))
   );
 
   function updateRow(
     index: number,
     field: "isOpen" | "opensAt" | "closesAt",
-    value: boolean | string | null,
+    value: boolean | string | null
   ) {
     setRows((prev) =>
       prev.map((row, i) =>
@@ -50,26 +48,26 @@ export default function OpeningHoursForm({
               ...row,
               [field]: value,
             }
-          : row,
-      ),
+          : row
+      )
     );
   }
 
- function handleSubmit() {
-  startTransition(async () => {
-    try {
-      await updateOpeningHours(rows);
+  function handleSubmit() {
+    startTransition(async () => {
+      try {
+        await updateOpeningHours(rows);
 
-      router.refresh();
+        router.refresh();
 
-      alert("A nyitvatartás sikeresen mentve.");
-    } catch (error) {
-      console.error(error);
+        alert("A nyitvatartás sikeresen mentve.");
+      } catch (error) {
+        console.error(error);
 
-      alert("Nem sikerült elmenteni a nyitvatartást.");
-    }
-  });
-}
+        alert("Nem sikerült elmenteni a nyitvatartást.");
+      }
+    });
+  }
 
   return (
     <div className="space-y-6 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
@@ -94,9 +92,7 @@ export default function OpeningHoursForm({
                     type="time"
                     value={row.opensAt ?? ""}
                     disabled={!row.isOpen}
-                    onChange={(e) =>
-                      updateRow(index, "opensAt", e.target.value || null)
-                    }
+                    onChange={(e) => updateRow(index, "opensAt", e.target.value || null)}
                   />
                 </td>
 
@@ -105,9 +101,7 @@ export default function OpeningHoursForm({
                     type="time"
                     value={row.closesAt ?? ""}
                     disabled={!row.isOpen}
-                    onChange={(e) =>
-                      updateRow(index, "closesAt", e.target.value || null)
-                    }
+                    onChange={(e) => updateRow(index, "closesAt", e.target.value || null)}
                   />
                 </td>
 
@@ -115,9 +109,7 @@ export default function OpeningHoursForm({
                   <input
                     type="checkbox"
                     checked={row.isOpen}
-                    onChange={(e) =>
-                      updateRow(index, "isOpen", e.target.checked)
-                    }
+                    onChange={(e) => updateRow(index, "isOpen", e.target.checked)}
                   />
                 </td>
               </tr>

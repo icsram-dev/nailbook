@@ -9,10 +9,7 @@ type Params = {
   }>;
 };
 
-export async function DELETE(
-  _request: NextRequest,
-  { params }: Params
-) {
+export async function DELETE(_request: NextRequest, { params }: Params) {
   try {
     const session = await auth();
 
@@ -57,14 +54,10 @@ export async function DELETE(
       );
     }
 
-    if (
-      appointment.status !== "CANCELLED" &&
-      appointment.status !== "NO_SHOW"
-    ) {
+    if (appointment.status !== "CANCELLED" && appointment.status !== "NO_SHOW") {
       return NextResponse.json(
         {
-          error:
-            "Csak lemondott vagy meg nem jelent foglalás törölhető végleg.",
+          error: "Csak lemondott vagy meg nem jelent foglalás törölhető végleg.",
         },
         {
           status: 400,

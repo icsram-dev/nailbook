@@ -14,9 +14,7 @@ export default function PasswordChangedEmail({ customerName }: Props) {
       title="A jelszavad megváltozott."
     >
       <Text style={emailText}>Szia {customerName}!</Text>
-      <Text style={emailText}>
-        Sikeresen beállítottál egy új jelszót a NailBook-fiókodhoz.
-      </Text>
+      <Text style={emailText}>Sikeresen beállítottál egy új jelszót a NailBook-fiókodhoz.</Text>
       <Text style={emailText}>
         Ha nem te végezted ezt a módosítást, kérjük, azonnal vedd fel velünk a kapcsolatot.
       </Text>

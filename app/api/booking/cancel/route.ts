@@ -50,12 +50,9 @@ export async function POST(request: NextRequest) {
 
     const settings = await getSettings();
 
-    const cancellationHours =
-      settings?.cancellationHours ?? 24;
+    const cancellationHours = settings?.cancellationHours ?? 24;
 
-    const hoursUntilAppointment =
-      (appointment.startTime.getTime() - Date.now()) /
-      (1000 * 60 * 60);
+    const hoursUntilAppointment = (appointment.startTime.getTime() - Date.now()) / (1000 * 60 * 60);
 
     if (hoursUntilAppointment < cancellationHours) {
       return NextResponse.json(

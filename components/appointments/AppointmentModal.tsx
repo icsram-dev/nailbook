@@ -28,11 +28,7 @@ export function AppointmentModal({
   return (
     <Modal
       open={open}
-      title={
-        appointment
-          ? "Foglalás szerkesztése"
-          : "Új foglalás"
-      }
+      title={appointment ? "Foglalás szerkesztése" : "Új foglalás"}
       onClose={onClose}
     >
       <AppointmentForm

@@ -8,19 +8,12 @@ export default async function OpeningHoursPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">
-          Nyitvatartás
-        </h1>
+        <h1 className="text-2xl font-bold">Nyitvatartás</h1>
 
-        <p className="text-muted-foreground">
-          Állítsd be, mely napokon fogadsz
-          vendégeket.
-        </p>
+        <p className="text-muted-foreground">Állítsd be, mely napokon fogadsz vendégeket.</p>
       </div>
 
-      <OpeningHoursTable
-        openingHours={openingHours}
-      />
+      <OpeningHoursTable openingHours={openingHours} />
     </div>
   );
 }

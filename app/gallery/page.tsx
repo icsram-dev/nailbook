@@ -6,9 +6,17 @@ import Container from "@/components/ui/Container";
 const works = [
   { src: "/images/gallery-milky-nude.png", alt: "Tejes nude manikűr", title: "Milky nude" },
   { src: "/images/gallery-cherry-red.png", alt: "Cseresznyepiros manikűr", title: "Cherry moment" },
-  { src: "/images/gallery-blush-flower.png", alt: "Púderrózsaszín, virágos manikűr", title: "Soft blush" },
+  {
+    src: "/images/gallery-blush-flower.png",
+    alt: "Púderrózsaszín, virágos manikűr",
+    title: "Soft blush",
+  },
   { src: "/images/gallery-mocha.png", alt: "Mokka árnyalatú manikűr", title: "Mocha muse" },
-  { src: "/images/nailbook-hero-salon.png", alt: "Elegáns nude manikűr szalonhangulatban", title: "Quiet luxury" },
+  {
+    src: "/images/nailbook-hero-salon.png",
+    alt: "Elegáns nude manikűr szalonhangulatban",
+    title: "Quiet luxury",
+  },
 ];
 
 export default function GalleryPage() {
@@ -23,7 +31,8 @@ export default function GalleryPage() {
               A legfrissebb kedvenceim.
             </h1>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-stone-600 sm:text-base">
-              Finom árnyalatok, apró részletek és személyes hangulatok — inspiráció a következő szettedhez.
+              Finom árnyalatok, apró részletek és személyes hangulatok — inspiráció a következő
+              szettedhez.
             </p>
           </div>
         </Container>
@@ -33,7 +42,10 @@ export default function GalleryPage() {
         <Container>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-4">
             {works.map(({ src, alt, title }) => (
-              <figure key={src} className="group relative overflow-hidden rounded-[1.5rem] bg-[#eadbd2]">
+              <figure
+                key={src}
+                className="group relative overflow-hidden rounded-[1.5rem] bg-[#eadbd2]"
+              >
                 <div className="aspect-[5/4]">
                   <Image
                     src={src}
@@ -51,9 +63,16 @@ export default function GalleryPage() {
           </div>
 
           <div className="mt-10 rounded-[2rem] bg-[#3e302b] px-7 py-9 text-center text-white sm:px-12 sm:py-10">
-            <p className="text-xs font-semibold uppercase tracking-[.24em] text-[#d9b4a1]">A következő szetted</p>
-            <h2 className="mx-auto mt-3 max-w-2xl font-serif text-2xl sm:text-3xl">Találjuk meg a hozzád illő árnyalatot.</h2>
-            <Link href="/booking" className="mt-6 inline-block rounded-full bg-[#fffdfa] px-6 py-3 text-sm font-medium text-[#8f6252]">
+            <p className="text-xs font-semibold uppercase tracking-[.24em] text-[#d9b4a1]">
+              A következő szetted
+            </p>
+            <h2 className="mx-auto mt-3 max-w-2xl font-serif text-2xl sm:text-3xl">
+              Találjuk meg a hozzád illő árnyalatot.
+            </h2>
+            <Link
+              href="/booking"
+              className="mt-6 inline-block rounded-full bg-[#fffdfa] px-6 py-3 text-sm font-medium text-[#8f6252]"
+            >
               Időpontot foglalok
             </Link>
           </div>

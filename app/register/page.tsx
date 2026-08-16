@@ -3,15 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  User,
-  Mail,
-  Phone,
-  Lock,
-  Eye,
-  EyeOff,
-  Loader2,
-} from "lucide-react";
+import { User, Mail, Phone, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/Button";
 
@@ -20,13 +12,9 @@ export default function RegisterPage() {
 
   const [loading, setLoading] = useState(false);
 
-  const [showPassword, setShowPassword] =
-    useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
-  const [
-    showConfirmPassword,
-    setShowConfirmPassword,
-  ] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [error, setError] = useState("");
 
@@ -39,115 +27,78 @@ export default function RegisterPage() {
     confirmPassword: "",
   });
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setError("");
 
-    const firstName =
-      form.firstName.trim();
+    const firstName = form.firstName.trim();
 
-    const lastName =
-      form.lastName.trim();
+    const lastName = form.lastName.trim();
 
-    const email =
-      form.email.trim().toLowerCase();
+    const email = form.email.trim().toLowerCase();
 
-    if (
-      firstName.length < 2 ||
-      firstName.length > 30
-    ) {
-      setError(
-        "A keresztnév 2 és 30 karakter között lehet."
-      );
+    if (firstName.length < 2 || firstName.length > 30) {
+      setError("A keresztnév 2 és 30 karakter között lehet.");
       return;
     }
 
-    if (
-      lastName.length < 2 ||
-      lastName.length > 30
-    ) {
-      setError(
-        "A vezetéknév 2 és 30 karakter között lehet."
-      );
+    if (lastName.length < 2 || lastName.length > 30) {
+      setError("A vezetéknév 2 és 30 karakter között lehet.");
       return;
     }
 
-    const emailRegex =
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
       setError("Érvénytelen e-mail cím.");
       return;
     }
 
-    const phoneRegex =
-      /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
+    const phoneRegex = /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
 
     if (!phoneRegex.test(form.phone)) {
-      setError(
-        "A telefonszám formátuma: +36 30 358 0496"
-      );
+      setError("A telefonszám formátuma: +36 30 358 0496");
       return;
     }
 
-    if (
-      form.password !==
-      form.confirmPassword
-    ) {
-      setError(
-        "A két jelszó nem egyezik."
-      );
+    if (form.password !== form.confirmPassword) {
+      setError("A két jelszó nem egyezik.");
       return;
     }
 
     if (form.password.length < 8) {
-      setError(
-        "A jelszónak legalább 8 karakter hosszúnak kell lennie."
-      );
+      setError("A jelszónak legalább 8 karakter hosszúnak kell lennie.");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch(
-        "/api/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-          body: JSON.stringify({
-            firstName,
-            lastName,
-            email,
-            phone: form.phone
-              .replace(/\s+/g, " ")
-              .trim(),
-            password: form.password,
-          }),
-        }
-      );
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          phone: form.phone.replace(/\s+/g, " ").trim(),
+          password: form.password,
+        }),
+      });
 
-      const data =
-        await response.json();
+      const data = await response.json();
 
       if (!response.ok) {
         setError(data.message);
         return;
       }
 
-      router.push(
-        `/login?registered=true&email=${encodeURIComponent(email)}`
-      );
+      router.push(`/login?registered=true&email=${encodeURIComponent(email)}`);
     } catch {
-      setError(
-        "Váratlan hiba történt."
-      );
+      setError("Váratlan hiba történt.");
     } finally {
       setLoading(false);
     }
@@ -156,13 +107,10 @@ export default function RegisterPage() {
   return (
     <main className="mx-auto max-w-md px-6 py-16">
       <div className="rounded-[2rem] border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
-        <p className="eyebrow text-center">NailBook</p><h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">
-          Regisztráció
-        </h1>
+        <p className="eyebrow text-center">NailBook</p>
+        <h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">Regisztráció</h1>
 
-        <p className="mb-8 text-center text-gray-500">
-          Hozd létre a NailBook fiókodat.
-        </p>
+        <p className="mb-8 text-center text-gray-500">Hozd létre a NailBook fiókodat.</p>
 
         {error && (
           <div className="mb-6 rounded-lg border border-red-300 bg-red-50 p-3 text-sm text-red-600">
@@ -170,17 +118,11 @@ export default function RegisterPage() {
           </div>
         )}
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-5"
-        >
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Vezetéknév */}
 
           <div className="relative">
-            <User
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
@@ -199,10 +141,7 @@ export default function RegisterPage() {
           {/* Keresztnév */}
 
           <div className="relative">
-            <User
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <User size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
@@ -221,10 +160,7 @@ export default function RegisterPage() {
           {/* Email */}
 
           <div className="relative">
-            <Mail
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
@@ -244,10 +180,7 @@ export default function RegisterPage() {
           {/* Telefonszám */}
 
           <div className="relative">
-            <Phone
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Phone size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
@@ -271,10 +204,7 @@ export default function RegisterPage() {
                   value = "+36 ";
                 }
 
-                const digits = value
-                  .replace("+36", "")
-                  .replace(/\D/g, "")
-                  .slice(0, 9);
+                const digits = value.replace("+36", "").replace(/\D/g, "").slice(0, 9);
 
                 let formatted = "+36 ";
 
@@ -283,13 +213,11 @@ export default function RegisterPage() {
                 }
 
                 if (digits.length > 2) {
-                  formatted +=
-                    " " + digits.slice(2, 5);
+                  formatted += " " + digits.slice(2, 5);
                 }
 
                 if (digits.length > 5) {
-                  formatted +=
-                    " " + digits.slice(5, 9);
+                  formatted += " " + digits.slice(5, 9);
                 }
 
                 setForm((prev) => ({
@@ -303,18 +231,11 @@ export default function RegisterPage() {
           {/* Jelszó */}
 
           <div className="relative">
-            <Lock
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
-              type={
-                showPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showPassword ? "text" : "password"}
               placeholder="Minimum 8 karakter"
               className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.password}
@@ -328,76 +249,45 @@ export default function RegisterPage() {
 
             <button
               type="button"
-              onClick={() =>
-                setShowPassword(
-                  !showPassword
-                )
-              }
+              onClick={() => setShowPassword(!showPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
             >
-              {showPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
           {/* Jelszó megerősítése */}
 
           <div className="relative">
-            <Lock
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
-              type={
-                showConfirmPassword
-                  ? "text"
-                  : "password"
-              }
+              type={showConfirmPassword ? "text" : "password"}
               placeholder="Jelszó megerősítése"
               className="w-full rounded-xl border border-stone-200 bg-white py-3 pl-11 pr-12 outline-none focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
               value={form.confirmPassword}
               onChange={(e) =>
                 setForm({
                   ...form,
-                  confirmPassword:
-                    e.target.value,
+                  confirmPassword: e.target.value,
                 })
               }
             />
 
             <button
               type="button"
-              onClick={() =>
-                setShowConfirmPassword(
-                  !showConfirmPassword
-                )
-              }
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
               className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
             >
-              {showConfirmPassword ? (
-                <EyeOff size={18} />
-              ) : (
-                <Eye size={18} />
-              )}
+              {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
           </div>
 
-          <Button
-            type="submit"
-            disabled={loading}
-            className="w-full"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <Loader2
-                  size={18}
-                  className="animate-spin"
-                />
+                <Loader2 size={18} className="animate-spin" />
                 Regisztráció...
               </span>
             ) : (
@@ -408,10 +298,7 @@ export default function RegisterPage() {
 
         <p className="mt-8 text-center text-sm text-gray-500">
           Már van fiókod?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-[#8f6252] hover:underline"
-          >
+          <Link href="/login" className="font-semibold text-[#8f6252] hover:underline">
             Bejelentkezés
           </Link>
         </p>

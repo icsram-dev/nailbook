@@ -11,10 +11,7 @@ export default async function VacationsPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Szabadságok"
-        description="A szabadságok kezelése."
-      />
+      <AdminPageHeader title="Szabadságok" description="A szabadságok kezelése." />
 
       <VacationManager vacations={vacations} />
     </>

@@ -25,9 +25,7 @@ export async function updateBookingSettings(
   });
 }
 
-export async function updateEmailSettings(
-  emailNotifications: boolean
-) {
+export async function updateEmailSettings(emailNotifications: boolean) {
   return prisma.settings.update({
     where: {
       id: SETTINGS_ID,
@@ -38,10 +36,7 @@ export async function updateEmailSettings(
   });
 }
 
-export async function updateReminderSettings(
-  reminderEnabled: boolean,
-  reminderDaysBefore: number
-) {
+export async function updateReminderSettings(reminderEnabled: boolean, reminderDaysBefore: number) {
   return prisma.settings.update({
     where: {
       id: SETTINGS_ID,

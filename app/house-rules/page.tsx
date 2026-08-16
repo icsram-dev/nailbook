@@ -35,7 +35,8 @@ export default function HouseRulesPage() {
             <p className="eyebrow">Vendégtájékoztató</p>
             <h1 className="mt-3 font-serif text-3xl text-stone-800 sm:text-4xl">Házirend</h1>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-stone-600 sm:text-base">
-              Néhány egyszerű irányelv azért, hogy minden alkalom nyugodt, kényelmes és igazán feltöltő legyen.
+              Néhány egyszerű irányelv azért, hogy minden alkalom nyugodt, kényelmes és igazán
+              feltöltő legyen.
             </p>
           </div>
         </Container>
@@ -45,13 +46,18 @@ export default function HouseRulesPage() {
         <Container>
           <div className="mx-auto grid max-w-5xl gap-4 md:grid-cols-2">
             {rules.map(({ icon: Icon, title, text }, index) => (
-              <article key={title} className="rounded-[1.5rem] border border-stone-200 bg-[#fffdfa] p-6 sm:p-7">
+              <article
+                key={title}
+                className="rounded-[1.5rem] border border-stone-200 bg-[#fffdfa] p-6 sm:p-7"
+              >
                 <div className="flex items-start gap-4">
                   <div className="grid size-10 shrink-0 place-items-center rounded-full bg-[#f3e8e1] text-[#8f6252]">
                     <Icon className="size-5" />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold tracking-[.18em] text-[#a97967]">0{index + 1}</p>
+                    <p className="text-xs font-semibold tracking-[.18em] text-[#a97967]">
+                      0{index + 1}
+                    </p>
                     <h2 className="mt-1 font-serif text-2xl text-stone-800">{title}</h2>
                     <p className="mt-2 text-sm leading-6 text-stone-600">{text}</p>
                   </div>
@@ -61,7 +67,8 @@ export default function HouseRulesPage() {
           </div>
 
           <p className="mx-auto mt-8 max-w-3xl text-center text-sm leading-6 text-stone-500">
-            Köszönjük, hogy figyelsz ezekre a közös keretekre — így a NailBook-élmény minden vendég számára harmonikus marad.
+            Köszönjük, hogy figyelsz ezekre a közös keretekre — így a NailBook-élmény minden vendég
+            számára harmonikus marad.
           </p>
         </Container>
       </section>

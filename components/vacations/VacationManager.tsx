@@ -17,9 +17,7 @@ type VacationManagerProps = {
 
 export function VacationManager({ vacations }: VacationManagerProps) {
   const [open, setOpen] = useState(false);
-  const [selectedVacation, setSelectedVacation] = useState<Vacation | null>(
-    null,
-  );
+  const [selectedVacation, setSelectedVacation] = useState<Vacation | null>(null);
 
   const router = useRouter();
 
@@ -35,17 +33,14 @@ export function VacationManager({ vacations }: VacationManagerProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        },
+        }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
         alert(
-          result.message ??
-            `Nem sikerült ${
-              isEditing ? "frissíteni" : "létrehozni"
-            } a szabadságot.`,
+          result.message ?? `Nem sikerült ${isEditing ? "frissíteni" : "létrehozni"} a szabadságot.`
         );
         return;
       }
@@ -61,9 +56,7 @@ export function VacationManager({ vacations }: VacationManagerProps) {
   }
 
   async function deleteVacation(id: string) {
-    const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szabadságot?",
-    );
+    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt a szabadságot?");
 
     if (!confirmed) {
       return;
@@ -109,11 +102,7 @@ export function VacationManager({ vacations }: VacationManagerProps) {
         <Button onClick={createVacation}>+ Új szabadság</Button>
       </div>
 
-      <VacationTable
-        vacations={vacations}
-        onDelete={deleteVacation}
-        onEdit={editVacation}
-      />
+      <VacationTable vacations={vacations} onDelete={deleteVacation} onEdit={editVacation} />
 
       <VacationModal
         open={open}

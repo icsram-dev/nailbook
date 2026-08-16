@@ -19,12 +19,7 @@ type ApplyAvailabilityOptions = {
   now?: Date;
 };
 
-function overlaps(
-  slotStart: Date,
-  slotEnd: Date,
-  rangeStart: Date,
-  rangeEnd: Date
-) {
+function overlaps(slotStart: Date, slotEnd: Date, rangeStart: Date, rangeEnd: Date) {
   return slotStart < rangeEnd && slotEnd > rangeStart;
 }
 
@@ -46,12 +41,7 @@ export function applyAvailability({
 
     // szabadság
     const onVacation = vacations.some((vacation) =>
-      overlaps(
-        slot.start,
-        slot.end,
-        vacation.startDate,
-        vacation.endDate
-      )
+      overlaps(slot.start, slot.end, vacation.startDate, vacation.endDate)
     );
 
     if (onVacation) {
@@ -64,12 +54,7 @@ export function applyAvailability({
 
     // meglévő foglalás
     const booked = appointments.some((appointment) =>
-      overlaps(
-        slot.start,
-        slot.end,
-        appointment.startTime,
-        appointment.endTime
-      )
+      overlaps(slot.start, slot.end, appointment.startTime, appointment.endTime)
     );
 
     if (booked) {

@@ -14,12 +14,7 @@ type VacationModalProps = {
   onSubmit: (data: VacationData) => Promise<void>;
 };
 
-export function VacationModal({
-  open,
-  onClose,
-  vacation,
-  onSubmit,
-}: VacationModalProps) {
+export function VacationModal({ open, onClose, vacation, onSubmit }: VacationModalProps) {
   const defaultValues = vacation
     ? {
         startDate: vacation.startDate.toISOString().slice(0, 10),
@@ -31,17 +26,10 @@ export function VacationModal({
   return (
     <Modal
       open={open}
-      title={
-        vacation
-          ? "Szabadság szerkesztése"
-          : "Új szabadság"
-      }
+      title={vacation ? "Szabadság szerkesztése" : "Új szabadság"}
       onClose={onClose}
     >
-      <VacationForm
-        defaultValues={defaultValues}
-        onSubmit={onSubmit}
-      />
+      <VacationForm defaultValues={defaultValues} onSubmit={onSubmit} />
     </Modal>
   );
 }

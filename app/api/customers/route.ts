@@ -42,8 +42,7 @@ export async function GET() {
 
       appointmentsCount: customer.appointments.length,
 
-      lastAppointment:
-        customer.appointments[0]?.startTime ?? null,
+      lastAppointment: customer.appointments[0]?.startTime ?? null,
     }));
 
     return NextResponse.json(result);
@@ -100,10 +99,7 @@ export async function POST(request: NextRequest) {
 
     const temporaryPassword = randomUUID();
 
-    const hashedPassword = await bcrypt.hash(
-      temporaryPassword,
-      12
-    );
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
 
     const customer = await prisma.user.create({
       data: {

@@ -14,10 +14,7 @@ export async function GET(request: NextRequest) {
     }
 
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return NextResponse.json(
-        { error: "Érvénytelen dátum." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Érvénytelen dátum." }, { status: 400 });
     }
 
     const slots = await getAvailableTimeSlots({
@@ -31,10 +28,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Ismeretlen hiba történt.",
+        error: error instanceof Error ? error.message : "Ismeretlen hiba történt.",
       },
       {
         status: 500,

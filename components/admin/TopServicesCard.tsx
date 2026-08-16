@@ -11,9 +11,7 @@ type TopServicesCardProps = {
   services: TopService[];
 };
 
-export default function TopServicesCard({
-  services,
-}: TopServicesCardProps) {
+export default function TopServicesCard({ services }: TopServicesCardProps) {
   return (
     <Card>
       <h2 className="mb-6 flex items-center gap-2 text-lg font-semibold">
@@ -22,9 +20,7 @@ export default function TopServicesCard({
       </h2>
 
       {services.length === 0 ? (
-        <p className="text-sm text-gray-500">
-          Még nincs teljesített foglalás.
-        </p>
+        <p className="text-sm text-gray-500">Még nincs teljesített foglalás.</p>
       ) : (
         <div className="space-y-4">
           {services.map((service, index) => (
@@ -39,9 +35,7 @@ export default function TopServicesCard({
 
                 <div>
                   <p className="font-medium">{service.name}</p>
-                  <p className="text-sm text-gray-500">
-                    {service.bookings} foglalás
-                  </p>
+                  <p className="text-sm text-gray-500">{service.bookings} foglalás</p>
                 </div>
               </div>
 

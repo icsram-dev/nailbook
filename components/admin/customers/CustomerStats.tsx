@@ -8,9 +8,7 @@ type Props = {
   customer: Customer;
 };
 
-export default function CustomerStats({
-  customer,
-}: Props) {
+export default function CustomerStats({ customer }: Props) {
   const stats = [
     {
       label: "Foglalások",
@@ -29,17 +27,10 @@ export default function CustomerStats({
   return (
     <div className="grid gap-6 md:grid-cols-3">
       {stats.map((stat) => (
-        <div
-          key={stat.label}
-          className="rounded-2xl border bg-white p-6 shadow-sm"
-        >
-          <p className="text-sm text-gray-500">
-            {stat.label}
-          </p>
+        <div key={stat.label} className="rounded-2xl border bg-white p-6 shadow-sm">
+          <p className="text-sm text-gray-500">{stat.label}</p>
 
-          <p className="mt-2 text-2xl font-semibold">
-            {stat.value}
-          </p>
+          <p className="mt-2 text-2xl font-semibold">{stat.value}</p>
         </div>
       ))}
     </div>

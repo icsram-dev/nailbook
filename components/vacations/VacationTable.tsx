@@ -8,11 +8,7 @@ type VacationTableProps = {
   onEdit: (vacation: Vacation) => void;
 };
 
-export function VacationTable({
-  vacations,
-  onDelete,
-  onEdit,
-}: VacationTableProps) {
+export function VacationTable({ vacations, onDelete, onEdit }: VacationTableProps) {
   return (
     <Card className="overflow-hidden">
       <table className="w-full">
@@ -35,13 +31,9 @@ export function VacationTable({
           ) : (
             vacations.map((vacation) => (
               <tr key={vacation.id} className="border-t">
-                <td className="px-4 py-3">
-                  {vacation.startDate.toLocaleDateString("hu-HU")}
-                </td>
+                <td className="px-4 py-3">{vacation.startDate.toLocaleDateString("hu-HU")}</td>
 
-                <td className="px-4 py-3">
-                  {vacation.endDate.toLocaleDateString("hu-HU")}
-                </td>
+                <td className="px-4 py-3">{vacation.endDate.toLocaleDateString("hu-HU")}</td>
 
                 <td className="px-4 py-3">{vacation.reason || "-"}</td>
 
@@ -50,10 +42,7 @@ export function VacationTable({
                     Szerkesztés
                   </Button>
 
-                  <Button
-                    variant="destructive"
-                    onClick={() => onDelete(vacation.id)}
-                  >
+                  <Button variant="destructive" onClick={() => onDelete(vacation.id)}>
                     Törlés
                   </Button>
                 </td>

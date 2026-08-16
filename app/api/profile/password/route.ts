@@ -20,17 +20,9 @@ export async function PATCH(request: Request) {
 
   const body = await request.json();
 
-  const {
-    currentPassword,
-    newPassword,
-    confirmPassword,
-  } = body;
+  const { currentPassword, newPassword, confirmPassword } = body;
 
-  if (
-    !currentPassword ||
-    !newPassword ||
-    !confirmPassword
-  ) {
+  if (!currentPassword || !newPassword || !confirmPassword) {
     return NextResponse.json(
       {
         success: false,
@@ -46,8 +38,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "Az új jelszónak legalább 8 karakter hosszúnak kell lennie.",
+        message: "Az új jelszónak legalább 8 karakter hosszúnak kell lennie.",
       },
       {
         status: 400,
@@ -85,10 +76,7 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const passwordCorrect = await bcrypt.compare(
-    currentPassword,
-    user.password
-  );
+  const passwordCorrect = await bcrypt.compare(currentPassword, user.password);
 
   if (!passwordCorrect) {
     return NextResponse.json(
@@ -102,10 +90,7 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const hashedPassword = await bcrypt.hash(
-    newPassword,
-    12
-  );
+  const hashedPassword = await bcrypt.hash(newPassword, 12);
 
   await prisma.user.update({
     where: {

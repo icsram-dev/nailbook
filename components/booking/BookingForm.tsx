@@ -4,20 +4,13 @@ import Image from "next/image";
 import { useEffect } from "react";
 import { Clock3 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import {
-  FormProvider,
-  useForm,
-  useWatch,
-} from "react-hook-form";
+import { FormProvider, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { useCreateAppointment } from "@/hooks/useCreateAppointment";
 import { useServices } from "@/hooks/useServices";
-import {
-  bookingSchema,
-  type BookingFormValues,
-} from "@/schemas/booking";
+import { bookingSchema, type BookingFormValues } from "@/schemas/booking";
 import { getServiceImage } from "@/lib/service-images";
 
 import DatePicker from "./BookingCalendar";
@@ -31,10 +24,7 @@ export default function BookingForm() {
 
   const createAppointment = useCreateAppointment();
 
-  const {
-    data: services,
-    isPending: servicesLoading,
-  } = useServices();
+  const { data: services, isPending: servicesLoading } = useServices();
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(bookingSchema),
@@ -53,9 +43,7 @@ export default function BookingForm() {
     name: "serviceId",
   });
 
-  const selectedService = services?.find(
-    (service) => service.id === activeServiceId
-  );
+  const selectedService = services?.find((service) => service.id === activeServiceId);
 
   useEffect(() => {
     if (selectedServiceId) {
@@ -78,12 +66,9 @@ export default function BookingForm() {
       shouldDirty: true,
     });
 
-    router.replace(
-      `/booking?service=${encodeURIComponent(id)}`,
-      {
-        scroll: false,
-      }
-    );
+    router.replace(`/booking?service=${encodeURIComponent(id)}`, {
+      scroll: false,
+    });
   }
 
   async function onSubmit(data: BookingFormValues) {
@@ -94,48 +79,34 @@ export default function BookingForm() {
         note: data.note,
       });
 
-      toast.success(
-        "Sikeresen lefoglaltad az időpontot."
-      );
+      toast.success("Sikeresen lefoglaltad az időpontot.");
 
       router.push("/booking/success");
       router.refresh();
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : "Nem sikerült lefoglalni az időpontot."
-      );
+      toast.error(error instanceof Error ? error.message : "Nem sikerült lefoglalni az időpontot.");
     }
   }
 
   return (
     <FormProvider {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 sm:space-y-10"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 sm:space-y-10">
         {/* Fejléc */}
         <div>
-          <p className="hidden">
-            Időpontfoglalás
-          </p>
+          <p className="hidden">Időpontfoglalás</p>
 
           <h2 className="mt-2 font-serif text-3xl text-stone-800 sm:text-4xl">
             Válassz egy kis énidőt.
           </h2>
 
           <p className="mt-3 text-stone-600">
-            Néhány lépés, és máris megtaláljuk a neked
-            megfelelő időpontot.
+            Néhány lépés, és máris megtaláljuk a neked megfelelő időpontot.
           </p>
         </div>
 
         {/* 1. lépés */}
         <section>
-          <p className="eyebrow">
-            1. lépés
-          </p>
+          <p className="eyebrow">1. lépés</p>
 
           <h3 className="mt-2 font-serif text-2xl text-stone-800 sm:text-3xl">
             Válassz szolgáltatást
@@ -143,60 +114,40 @@ export default function BookingForm() {
 
           <div className="mt-6 grid items-stretch gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {servicesLoading ? (
-              <p className="text-sm text-stone-500">
-                Szolgáltatások betöltése...
-              </p>
+              <p className="text-sm text-stone-500">Szolgáltatások betöltése...</p>
             ) : (
               services?.map((service) => {
-                const selected =
-                  activeServiceId === service.id;
+                const selected = activeServiceId === service.id;
 
-                const imageSource = getServiceImage(
-                  service.id,
-                  service.image
-                );
+                const imageSource = getServiceImage(service.id, service.image);
 
                 return (
                   <button
                     key={service.id}
                     type="button"
-                    onClick={() =>
-                      selectService(service.id)
-                    }
-                    className={`group flex h-full flex-col overflow-hidden rounded-2xl border p-0 text-left align-top transition ${
+                    onClick={() => selectService(service.id)}
+                    className={`group flex h-full flex-col overflow-hidden rounded-[1.75rem] border p-0 text-left align-top shadow-[0_18px_42px_-34px_rgba(74,49,38,.7)] transition-all duration-500 ${
                       selected
-                        ? "border-[#a97967] bg-[#f3e8e1] shadow-sm"
-                        : "border-stone-200 bg-[#fffdfa] hover:border-[#c39a89] hover:bg-[#f8f5f1]"
+                        ? "border-[#a97967] bg-[#f3e8e1] shadow-[0_20px_45px_-32px_rgba(111,69,50,.8)]"
+                        : "border-stone-200/90 bg-[#fffdfa] hover:-translate-y-1 hover:border-[#c39a89] hover:bg-[#fdfaf7] hover:shadow-[0_24px_52px_-32px_rgba(74,49,38,.5)]"
                     }`}
                   >
                     {/* Szolgáltatás képe */}
-                    <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[#f3e8e1] sm:h-56 lg:h-52">
-
+                    <div className="relative h-48 w-full shrink-0 overflow-hidden bg-[#efe4dc] sm:h-56 lg:h-52">
                       {/* Háttérkép - kitölti a teljes keretet */}
-                      <Image
-                        src={imageSource}
-                        alt=""
-                        fill
-                        aria-hidden="true"
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="object-cover object-center"
-                      />
-
                       {/* Fő kép - enyhén távolabb */}
                       <Image
                         src={imageSource}
                         alt={service.name}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className="scale-[0.94] object-cover object-center transition-transform duration-500 group-hover:scale-[0.97]"
+                        className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                       />
                     </div>
 
                     {/* Kártya tartalma */}
-                    <div className="flex w-full flex-1 flex-col p-4">
-                      <p className="font-serif text-lg text-stone-800">
-                        {service.name}
-                      </p>
+                    <div className="flex w-full flex-1 flex-col p-5">
+                      <p className="font-serif text-xl text-stone-800">{service.name}</p>
 
                       {/* Egységes hely a leírásnak */}
                       <div className="min-h-11">
@@ -209,17 +160,12 @@ export default function BookingForm() {
 
                       {/* Ár + idő */}
                       <div className="mt-auto pt-4">
-                        <div className="flex items-center justify-between border-t border-stone-200 pt-3 text-sm">
+                        <div className="flex items-center justify-between border-t border-stone-200/80 pt-3 text-sm">
                           <span className="font-semibold text-[#8f6252]">
-                            {service.price.toLocaleString(
-                              "hu-HU"
-                            )}{" "}
-                            Ft
+                            {service.price.toLocaleString("hu-HU")} Ft
                           </span>
 
-                          <span className="text-stone-500">
-                            {service.duration} perc
-                          </span>
+                          <span className="text-stone-500">{service.duration} perc</span>
                         </div>
                       </div>
                     </div>
@@ -236,10 +182,7 @@ export default function BookingForm() {
             <div className="flex items-center gap-4">
               <div className="relative h-20 w-24 shrink-0 overflow-hidden rounded-xl">
                 <Image
-                  src={getServiceImage(
-                    selectedService.id,
-                    selectedService.image
-                  )}
+                  src={getServiceImage(selectedService.id, selectedService.image)}
                   alt={selectedService.name}
                   fill
                   sizes="96px"
@@ -257,12 +200,7 @@ export default function BookingForm() {
                 </h3>
 
                 <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-stone-600">
-                  <span>
-                    {selectedService.price.toLocaleString(
-                      "hu-HU"
-                    )}{" "}
-                    Ft
-                  </span>
+                  <span>{selectedService.price.toLocaleString("hu-HU")} Ft</span>
 
                   <span className="flex items-center gap-1">
                     <Clock3 className="h-4 w-4" />
@@ -280,9 +218,7 @@ export default function BookingForm() {
 
         <BookingNote />
 
-        <BookingSummary
-          isPending={createAppointment.isPending}
-        />
+        <BookingSummary isPending={createAppointment.isPending} />
       </form>
     </FormProvider>
   );

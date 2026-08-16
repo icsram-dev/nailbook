@@ -34,15 +34,11 @@ const statusConfig: Record<
   },
 };
 
-export default function AppointmentStatusBadge({
-  status,
-}: AppointmentStatusBadgeProps) {
+export default function AppointmentStatusBadge({ status }: AppointmentStatusBadgeProps) {
   const config = statusConfig[status];
 
   return (
-    <span
-      className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${config.className}`}
-    >
+    <span className={`inline-flex rounded-full px-3 py-1 text-sm font-medium ${config.className}`}>
       {config.label}
     </span>
   );

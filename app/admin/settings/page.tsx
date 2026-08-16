@@ -12,48 +12,35 @@ export default async function SettingsPage() {
   if (!settings) {
     return (
       <>
-        <AdminPageHeader
-          title="Beállítások"
-          description="A rendszer működésének konfigurálása."
-        />
+        <AdminPageHeader title="Beállítások" description="A rendszer működésének konfigurálása." />
 
-        <p className="mt-8 text-gray-500">
-          Nem sikerült betölteni a beállításokat.
-        </p>
+        <p className="mt-8 text-gray-500">Nem sikerült betölteni a beállításokat.</p>
       </>
     );
   }
 
   return (
     <>
-      <AdminPageHeader
-        title="Beállítások"
-        description="A rendszer működésének konfigurálása."
-      />
+      <AdminPageHeader title="Beállítások" description="A rendszer működésének konfigurálása." />
 
       <div className="mt-10 grid gap-6 xl:grid-cols-2">
         <BookingSettings
           settings={{
-            autoConfirmBookings:
-              settings.autoConfirmBookings,
-            cancellationHours:
-              settings.cancellationHours,
+            autoConfirmBookings: settings.autoConfirmBookings,
+            cancellationHours: settings.cancellationHours,
           }}
         />
 
         <EmailSettings
           settings={{
-            emailNotifications:
-              settings.emailNotifications,
+            emailNotifications: settings.emailNotifications,
           }}
         />
 
         <ReminderSettings
           settings={{
-            reminderEnabled:
-              settings.reminderEnabled,
-            reminderDaysBefore:
-              settings.reminderDaysBefore,
+            reminderEnabled: settings.reminderEnabled,
+            reminderDaysBefore: settings.reminderDaysBefore,
           }}
         />
       </div>

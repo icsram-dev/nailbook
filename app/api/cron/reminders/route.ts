@@ -1,28 +1,17 @@
-import {
-  addDays,
-  endOfDay,
-  startOfDay,
-} from "date-fns";
+import { addDays, endOfDay, startOfDay } from "date-fns";
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
 import { sendReminderEmail } from "@/lib/mail";
 
-import {
-  remindersEnabled,
-  reminderDaysBefore,
-  emailsEnabled,
-} from "@/lib/settings/helpers";
+import { remindersEnabled, reminderDaysBefore, emailsEnabled } from "@/lib/settings/helpers";
 
 export async function GET(request: Request) {
   try {
     const cronSecret = process.env.CRON_SECRET;
 
     if (!cronSecret) {
-      return NextResponse.json(
-        { error: "A cron végpont nincs konfigurálva." },
-        { status: 503 }
-      );
+      return NextResponse.json({ error: "A cron végpont nincs konfigurálva." }, { status: 503 });
     }
 
     if (request.headers.get("authorization") !== `Bearer ${cronSecret}`) {
@@ -47,10 +36,7 @@ export async function GET(request: Request) {
 
     const daysBefore = await reminderDaysBefore();
 
-    const targetDate = addDays(
-      new Date(),
-      daysBefore
-    );
+    const targetDate = addDays(new Date(), daysBefore);
 
     const appointments = await prisma.appointment.findMany({
       where: {
@@ -77,18 +63,11 @@ export async function GET(request: Request) {
           to: appointment.customer.email,
           customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
           serviceName: appointment.service.name,
-          appointmentDate:
-            appointment.startTime.toLocaleDateString(
-              "hu-HU"
-            ),
-          appointmentTime:
-            appointment.startTime.toLocaleTimeString(
-              "hu-HU",
-              {
-                hour: "2-digit",
-                minute: "2-digit",
-              }
-            ),
+          appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+          appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
           cancelUrl,
         });
 
@@ -120,8 +99,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         success: false,
-        error:
-          "Hiba történt az emlékeztetők küldése közben.",
+        error: "Hiba történt az emlékeztetők küldése közben.",
       },
       {
         status: 500,

@@ -27,23 +27,15 @@ export const openingHourSchema = z
       });
     }
 
-    if (
-      data.opensAt &&
-      data.closesAt &&
-      data.opensAt >= data.closesAt
-    ) {
+    if (data.opensAt && data.closesAt && data.opensAt >= data.closesAt) {
       ctx.addIssue({
         code: "custom",
         path: ["closesAt"],
-        message:
-          "A zárási időnek későbbinek kell lennie.",
+        message: "A zárási időnek későbbinek kell lennie.",
       });
     }
   });
 
-export const openingHoursSchema = z.array(
-  openingHourSchema
-);
+export const openingHoursSchema = z.array(openingHourSchema);
 
-export type OpeningHoursFormValues =
-  z.infer<typeof openingHoursSchema>;
+export type OpeningHoursFormValues = z.infer<typeof openingHoursSchema>;

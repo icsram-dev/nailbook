@@ -17,10 +17,7 @@ export async function GET() {
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: "Bejelentkezés szükséges." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Bejelentkezés szükséges." }, { status: 401 });
     }
 
     if (session.user.role !== "ADMIN") {
@@ -30,11 +27,7 @@ export async function GET() {
     const appointments = await prisma.appointment.findMany({
       where: {
         status: {
-          in: [
-            AppointmentStatus.PENDING,
-            AppointmentStatus.CONFIRMED,
-            AppointmentStatus.COMPLETED,
-          ],
+          in: [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED, AppointmentStatus.COMPLETED],
         },
       },
       include: {
@@ -55,10 +48,8 @@ export async function GET() {
         start: appointment.startTime,
         end: appointment.endTime,
 
-        backgroundColor:
-          STATUS_COLORS[appointment.status],
-        borderColor:
-          STATUS_COLORS[appointment.status],
+        backgroundColor: STATUS_COLORS[appointment.status],
+        borderColor: STATUS_COLORS[appointment.status],
         textColor: "#ffffff",
 
         extendedProps: {
@@ -86,9 +77,6 @@ export async function GET() {
   } catch (error) {
     console.error(error);
 
-    return NextResponse.json(
-      { error: "Hiba történt." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Hiba történt." }, { status: 500 });
   }
 }

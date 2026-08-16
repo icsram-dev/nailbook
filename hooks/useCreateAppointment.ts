@@ -10,8 +10,7 @@ export function useCreateAppointment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: AppointmentSchema) =>
-      createAppointment(data),
+    mutationFn: (data: AppointmentSchema) => createAppointment(data),
 
     onSuccess: () => {
       queryClient.invalidateQueries({

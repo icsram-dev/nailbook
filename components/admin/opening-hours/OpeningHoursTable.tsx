@@ -29,9 +29,7 @@ const DAY_NAMES: Record<WeekDay, string> = {
   SUNDAY: "Vasárnap",
 };
 
-export default function OpeningHoursTable({
-  openingHours,
-}: OpeningHoursTableProps) {
+export default function OpeningHoursTable({ openingHours }: OpeningHoursTableProps) {
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
@@ -55,16 +53,13 @@ export default function OpeningHoursTable({
           isOpen: day.isOpen,
           opensAt: day.opensAt,
           closesAt: day.closesAt,
-        })),
+        }))
       );
     });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="rounded-xl border bg-white shadow-sm"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="rounded-xl border bg-white shadow-sm">
       <table className="w-full">
         <thead className="border-b bg-muted/40">
           <tr>
@@ -90,26 +85,18 @@ export default function OpeningHoursTable({
                   render={({ field }) => (
                     <Checkbox
                       checked={field.value}
-                      onCheckedChange={(checked) =>
-                        field.onChange(Boolean(checked))
-                      }
+                      onCheckedChange={(checked) => field.onChange(Boolean(checked))}
                     />
                   )}
                 />
               </td>
 
               <td className="px-6 py-4">
-                <Input
-                  type="time"
-                  {...register(`openingHours.${index}.opensAt`)}
-                />
+                <Input type="time" {...register(`openingHours.${index}.opensAt`)} />
               </td>
 
               <td className="px-6 py-4">
-                <Input
-                  type="time"
-                  {...register(`openingHours.${index}.closesAt`)}
-                />
+                <Input type="time" {...register(`openingHours.${index}.closesAt`)} />
               </td>
             </tr>
           ))}

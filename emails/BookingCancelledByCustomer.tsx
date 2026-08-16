@@ -1,4 +1,32 @@
 import { Text } from "@react-email/components";
 import { AppointmentDetails, emailText, NailBookEmail } from "./components/NailBookEmail";
-type Props = { customerName: string; serviceName: string; appointmentDate: string; appointmentTime: string };
-export default function BookingCancelledByCustomer({ customerName, serviceName, appointmentDate, appointmentTime }: Props) { return <NailBookEmail preview="Az időpontodat sikeresen lemondtad" eyebrow="Foglalás lemondva" title="A lemondásodat rögzítettük."><Text style={emailText}>Szia {customerName}!</Text><Text style={emailText}>Köszönjük, hogy időben jelezted a lemondást. Várunk szeretettel egy következő alkalommal.</Text><AppointmentDetails serviceName={serviceName} appointmentDate={appointmentDate} appointmentTime={appointmentTime}/></NailBookEmail>; }
+type Props = {
+  customerName: string;
+  serviceName: string;
+  appointmentDate: string;
+  appointmentTime: string;
+};
+export default function BookingCancelledByCustomer({
+  customerName,
+  serviceName,
+  appointmentDate,
+  appointmentTime,
+}: Props) {
+  return (
+    <NailBookEmail
+      preview="Az időpontodat sikeresen lemondtad"
+      eyebrow="Foglalás lemondva"
+      title="A lemondásodat rögzítettük."
+    >
+      <Text style={emailText}>Szia {customerName}!</Text>
+      <Text style={emailText}>
+        Köszönjük, hogy időben jelezted a lemondást. Várunk szeretettel egy következő alkalommal.
+      </Text>
+      <AppointmentDetails
+        serviceName={serviceName}
+        appointmentDate={appointmentDate}
+        appointmentTime={appointmentTime}
+      />
+    </NailBookEmail>
+  );
+}

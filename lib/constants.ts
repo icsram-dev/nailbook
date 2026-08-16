@@ -1,7 +1,6 @@
 export const APP_NAME = "NailBook";
 
-export const APP_DESCRIPTION =
-  "Online időpontfoglalás körmösöknek.";
+export const APP_DESCRIPTION = "Online időpontfoglalás körmösöknek.";
 
 export const COMPANY = {
   name: "NailBook",

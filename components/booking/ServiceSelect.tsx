@@ -17,30 +17,18 @@ export default function ServiceSelect() {
 
   const selectedService = searchParams.get("service");
 
-  const {
-    data: services,
-    isPending,
-    error,
-  } = useServices();
+  const { data: services, isPending, error } = useServices();
 
   if (isPending) {
     return <LoadingState rows={2} />;
   }
 
   if (error) {
-    return (
-      <p className="text-sm text-red-500">
-        Nem sikerült betölteni a szolgáltatásokat.
-      </p>
-    );
+    return <p className="text-sm text-red-500">Nem sikerült betölteni a szolgáltatásokat.</p>;
   }
 
   if (!services || services.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Jelenleg nincs elérhető szolgáltatás.
-      </p>
-    );
+    return <p className="text-sm text-muted-foreground">Jelenleg nincs elérhető szolgáltatás.</p>;
   }
 
   return (
@@ -52,17 +40,13 @@ export default function ServiceSelect() {
           <Card
             key={service.id}
             onClick={() => {
-              router.push(
-                `/booking?service=${encodeURIComponent(service.id)}`
-              );
+              router.push(`/booking?service=${encodeURIComponent(service.id)}`);
             }}
             className={[
               "group cursor-pointer overflow-hidden rounded-3xl",
               "transition-all duration-300",
               "hover:-translate-y-1 hover:shadow-xl",
-              selected
-                ? "border-primary ring-2 ring-primary/20"
-                : "border-gray-100",
+              selected ? "border-primary ring-2 ring-primary/20" : "border-gray-100",
             ]
               .filter(Boolean)
               .join(" ")}
@@ -90,9 +74,7 @@ export default function ServiceSelect() {
             <div className="px-5 pb-5">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {service.name}
-                  </h3>
+                  <h3 className="text-xl font-semibold text-gray-900">{service.name}</h3>
 
                   {service.description && (
                     <p className="mt-2 line-clamp-2 text-sm leading-6 text-gray-500">
@@ -117,9 +99,7 @@ export default function ServiceSelect() {
 
               {/* Ár + idő */}
               <div className="mt-5 flex items-center justify-between gap-3 border-t border-gray-100 pt-4">
-                <Badge variant="secondary">
-                  {service.price.toLocaleString("hu-HU")} Ft
-                </Badge>
+                <Badge variant="secondary">{service.price.toLocaleString("hu-HU")} Ft</Badge>
 
                 <div className="flex items-center gap-1.5 text-sm text-gray-500">
                   <Clock3 className="h-4 w-4" />

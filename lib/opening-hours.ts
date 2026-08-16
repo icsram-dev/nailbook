@@ -17,15 +17,10 @@ const dayOrder: WeekDay[] = [
 export async function getOpeningHours() {
   const openingHours = await prisma.openingHour.findMany();
 
-  return openingHours.sort(
-    (a, b) =>
-      dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day),
-  );
+  return openingHours.sort((a, b) => dayOrder.indexOf(a.day) - dayOrder.indexOf(b.day));
 }
 
-export async function updateOpeningHours(
-  openingHours: OpeningHourFormValues[],
-) {
+export async function updateOpeningHours(openingHours: OpeningHourFormValues[]) {
   return prisma.$transaction(
     openingHours.map((openingHour) =>
       prisma.openingHour.update({
@@ -34,14 +29,10 @@ export async function updateOpeningHours(
         },
         data: {
           isOpen: openingHour.isOpen,
-          opensAt: openingHour.isOpen
-            ? openingHour.opensAt
-            : null,
-          closesAt: openingHour.isOpen
-            ? openingHour.closesAt
-            : null,
+          opensAt: openingHour.isOpen ? openingHour.opensAt : null,
+          closesAt: openingHour.isOpen ? openingHour.closesAt : null,
         },
-      }),
-    ),
+      })
+    )
   );
 }

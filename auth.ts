@@ -14,16 +14,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: {},
       },
 
-      
-
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        const email = String(credentials.email)
-          .trim()
-          .toLowerCase();
+        const email = String(credentials.email).trim().toLowerCase();
 
         const password = String(credentials.password);
 
@@ -37,10 +33,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const passwordMatches = await bcrypt.compare(
-          password,
-          user.password
-        );
+        const passwordMatches = await bcrypt.compare(password, user.password);
 
         if (!passwordMatches) {
           return null;
@@ -95,8 +88,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.email = dbUser.email;
           token.phone = dbUser.phone;
           token.role = dbUser.role;
-          token.isEmailVerified =
-            dbUser.isEmailVerified;
+          token.isEmailVerified = dbUser.isEmailVerified;
         }
       }
 
@@ -107,26 +99,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
 
-        session.user.firstName =
-          token.firstName as string;
+        session.user.firstName = token.firstName as string;
 
-        session.user.lastName =
-          token.lastName as string;
+        session.user.lastName = token.lastName as string;
 
-        session.user.name =
-          token.name as string;
+        session.user.name = token.name as string;
 
-        session.user.email =
-          token.email as string;
+        session.user.email = token.email as string;
 
-        session.user.phone =
-          token.phone as string;
+        session.user.phone = token.phone as string;
 
-        session.user.role =
-          token.role as string;
+        session.user.role = token.role as string;
 
-        session.user.isEmailVerified =
-          token.isEmailVerified as boolean;
+        session.user.isEmailVerified = token.isEmailVerified as boolean;
       }
 
       return session;

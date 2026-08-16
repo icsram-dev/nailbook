@@ -12,13 +12,10 @@ export default function BookingNote() {
 
   return (
     <div className="rounded-xl border p-5">
-      <h3 className="mb-6 font-semibold">
-        3. Megjegyzés
-      </h3>
+      <h3 className="mb-6 font-semibold">3. Megjegyzés</h3>
 
       <p className="mb-4 text-sm text-muted-foreground">
-        Ha szeretnél valamit előre jelezni (pl. javítás, díszítés vagy egyéb kérés),
-        itt megteheted.
+        Ha szeretnél valamit előre jelezni (pl. javítás, díszítés vagy egyéb kérés), itt megteheted.
       </p>
 
       <textarea
@@ -28,11 +25,7 @@ export default function BookingNote() {
         className="w-full rounded-xl border border-stone-200 bg-[#fffdfa] p-3 outline-none transition focus:border-[#a97967] focus:ring-2 focus:ring-[#eadbd2]"
       />
 
-      {errors.note && (
-        <p className="mt-1 text-sm text-red-500">
-          {errors.note.message}
-        </p>
-      )}
+      {errors.note && <p className="mt-1 text-sm text-red-500">{errors.note.message}</p>}
     </div>
   );
 }

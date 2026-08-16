@@ -72,9 +72,7 @@ export async function createAppointment({
 
   const appointmentStatus =
     status ??
-    (settings?.autoConfirmBookings
-      ? AppointmentStatus.CONFIRMED
-      : AppointmentStatus.PENDING);
+    (settings?.autoConfirmBookings ? AppointmentStatus.CONFIRMED : AppointmentStatus.PENDING);
 
   const appointment = await prisma.appointment.create({
     data: {
@@ -101,13 +99,11 @@ export async function createAppointment({
         to: appointment.customer.email,
         customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
-        appointmentDate:
-          appointment.startTime.toLocaleDateString("hu-HU"),
-        appointmentTime:
-          appointment.startTime.toLocaleTimeString("hu-HU", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+        appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         cancelUrl,
       });
     } else {
@@ -115,21 +111,16 @@ export async function createAppointment({
         to: appointment.customer.email,
         customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
-        appointmentDate:
-          appointment.startTime.toLocaleDateString("hu-HU"),
-        appointmentTime:
-          appointment.startTime.toLocaleTimeString("hu-HU", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+        appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         cancelUrl,
       });
     }
   } catch (error) {
-    console.error(
-      "Nem sikerült elküldeni a foglalási e-mailt:",
-      error
-    );
+    console.error("Nem sikerült elküldeni a foglalási e-mailt:", error);
   }
 
   return appointment;
@@ -208,42 +199,34 @@ export async function updateAppointment({
         to: appointment.customer.email,
         customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
-        appointmentDate:
-          appointment.startTime.toLocaleDateString("hu-HU"),
-        appointmentTime:
-          appointment.startTime.toLocaleTimeString("hu-HU", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+        appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         cancelUrl,
       });
     }
 
     // Admin módosította az időpontot
     else if (
-      currentAppointment.startTime.getTime() !==
-        appointment.startTime.getTime() ||
+      currentAppointment.startTime.getTime() !== appointment.startTime.getTime() ||
       currentAppointment.serviceId !== appointment.serviceId
     ) {
       await sendBookingUpdated({
         to: appointment.customer.email,
         customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
         serviceName: appointment.service.name,
-        appointmentDate:
-          appointment.startTime.toLocaleDateString("hu-HU"),
-        appointmentTime:
-          appointment.startTime.toLocaleTimeString("hu-HU", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
+        appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+        appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
         cancelUrl,
       });
     }
   } catch (error) {
-    console.error(
-      "Nem sikerült elküldeni az értesítő e-mailt:",
-      error
-    );
+    console.error("Nem sikerült elküldeni az értesítő e-mailt:", error);
   }
 
   return appointment;
@@ -271,19 +254,14 @@ export async function cancelAppointment(id: string) {
       to: appointment.customer.email,
       customerName: `${appointment.customer.lastName} ${appointment.customer.firstName}`,
       serviceName: appointment.service.name,
-      appointmentDate:
-        appointment.startTime.toLocaleDateString("hu-HU"),
-      appointmentTime:
-        appointment.startTime.toLocaleTimeString("hu-HU", {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
+      appointmentDate: appointment.startTime.toLocaleDateString("hu-HU"),
+      appointmentTime: appointment.startTime.toLocaleTimeString("hu-HU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     });
   } catch (error) {
-    console.error(
-      "Nem sikerült elküldeni a törlési e-mailt:",
-      error
-    );
+    console.error("Nem sikerült elküldeni a törlési e-mailt:", error);
   }
 
   return appointment;

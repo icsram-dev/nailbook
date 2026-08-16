@@ -1,10 +1,7 @@
 import { isBefore } from "date-fns";
 
 import { BOOKING_CONFIG } from "@/config/booking";
-import {
-  addMinutesToDate,
-  combineDateAndTime,
-} from "@/lib/booking/date-utils";
+import { addMinutesToDate, combineDateAndTime } from "@/lib/booking/date-utils";
 
 import type { TimeSlot } from "@/types/time-slot";
 
@@ -23,23 +20,14 @@ export function generateTimeSlots({
 }: GenerateTimeSlotsOptions): TimeSlot[] {
   const slots: TimeSlot[] = [];
 
-  const opening = combineDateAndTime(
-    date,
-    openingTime
-  );
+  const opening = combineDateAndTime(date, openingTime);
 
-  const closing = combineDateAndTime(
-    date,
-    closingTime
-  );
+  const closing = combineDateAndTime(date, closingTime);
 
   let current = opening;
 
   while (true) {
-    const end = addMinutesToDate(
-      current,
-      serviceDuration
-    );
+    const end = addMinutesToDate(current, serviceDuration);
 
     if (end > closing) {
       break;
@@ -51,10 +39,7 @@ export function generateTimeSlots({
       available: true,
     });
 
-    current = addMinutesToDate(
-      current,
-      BOOKING_CONFIG.SLOT_INTERVAL_MINUTES
-    );
+    current = addMinutesToDate(current, BOOKING_CONFIG.SLOT_INTERVAL_MINUTES);
 
     if (!isBefore(current, closing)) {
       break;

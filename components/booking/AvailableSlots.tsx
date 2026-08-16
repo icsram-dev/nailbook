@@ -24,9 +24,7 @@ export default function AvailableSlots({ serviceId }: Props) {
       setLoading(true);
 
       try {
-        const response = await fetch(
-          `/api/availability?date=${date}&serviceId=${serviceId}`,
-        );
+        const response = await fetch(`/api/availability?date=${date}&serviceId=${serviceId}`);
 
         const data = await response.json();
 
@@ -84,9 +82,7 @@ export default function AvailableSlots({ serviceId }: Props) {
 
         setSelectedSlot(null);
 
-        const slotsResponse = await fetch(
-          `/api/availability?date=${date}&serviceId=${serviceId}`,
-        );
+        const slotsResponse = await fetch(`/api/availability?date=${date}&serviceId=${serviceId}`);
 
         const slotsData = await slotsResponse.json();
 

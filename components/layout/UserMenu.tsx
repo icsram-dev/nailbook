@@ -1,19 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
-} from "@headlessui/react";
-import {
-  User,
-  CalendarDays,
-  LogOut,
-  ChevronDown,
-  Shield,
-} from "lucide-react";
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { User, CalendarDays, LogOut, ChevronDown, Shield } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
 
 export default function UserMenu() {
@@ -25,11 +14,9 @@ export default function UserMenu() {
 
   return (
     <Menu as="div" className="relative">
-      <MenuButton className="flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-2 transition hover:bg-gray-50">
+      <MenuButton className="inline-flex h-12 items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 text-stone-700 transition hover:bg-[#f8f5f1]">
         <User size={18} />
-        <span className="font-medium">
-          {session.user.name}
-        </span>
+        <span className="font-medium">{session.user.name}</span>
         <ChevronDown size={16} />
       </MenuButton>
 

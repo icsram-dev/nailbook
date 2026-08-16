@@ -1,10 +1,5 @@
 import Link from "next/link";
-import {
-  CalendarPlus,
-  Users,
-  Sparkles,
-  CalendarDays,
-} from "lucide-react";
+import { CalendarPlus, Users, Sparkles, CalendarDays } from "lucide-react";
 
 const actions = [
   {
@@ -32,9 +27,7 @@ const actions = [
 export function QuickActions() {
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-      <h2 className="mb-6 text-xl font-semibold">
-        Gyors műveletek
-      </h2>
+      <h2 className="mb-6 text-xl font-semibold">Gyors műveletek</h2>
 
       <div className="grid gap-4 sm:grid-cols-2">
         {actions.map((action) => {
@@ -50,9 +43,7 @@ export function QuickActions() {
                 <Icon size={22} />
               </div>
 
-              <span className="font-medium">
-                {action.title}
-              </span>
+              <span className="font-medium">{action.title}</span>
             </Link>
           );
         })}

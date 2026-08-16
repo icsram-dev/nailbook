@@ -1,0 +1,10 @@
+node_modules
+.next
+coverage
+build
+package-lock.json
+public
+prisma/migrations
+next-env.d.ts
+tsconfig.tsbuildinfo
+AGENTS.md

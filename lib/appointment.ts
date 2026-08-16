@@ -1,14 +1,9 @@
 import { prisma } from "@/lib/prisma";
 
-export function calculateEndTime(
-  startTime: Date,
-  duration: number
-) {
+export function calculateEndTime(startTime: Date, duration: number) {
   const endTime = new Date(startTime);
 
-  endTime.setMinutes(
-    endTime.getMinutes() + duration
-  );
+  endTime.setMinutes(endTime.getMinutes() + duration);
 
   return endTime;
 }

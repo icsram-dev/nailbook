@@ -19,39 +19,21 @@ export function minutesToTime(minutes: number): string {
   const hour = Math.floor(minutes / 60);
   const minute = minutes % 60;
 
-  return `${hour.toString().padStart(2, "0")}:${minute
-    .toString()
-    .padStart(2, "0")}`;
+  return `${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`;
 }
 
-export function generateTimeSlots(
-  startHour: number,
-  endHour: number,
-  interval: number
-) {
+export function generateTimeSlots(startHour: number, endHour: number, interval: number) {
   const slots: string[] = [];
 
-  for (
-    let current = startHour * 60;
-    current < endHour * 60;
-    current += interval
-  ) {
+  for (let current = startHour * 60; current < endHour * 60; current += interval) {
     slots.push(minutesToTime(current));
   }
 
   return slots;
 }
 
-export function hasOverlap(
-  start: number,
-  end: number,
-  appointments: BookingAppointment[]
-) {
-  return appointments.some(
-    (appointment) =>
-      start < appointment.end &&
-      end > appointment.start
-  );
+export function hasOverlap(start: number, end: number, appointments: BookingAppointment[]) {
+  return appointments.some((appointment) => start < appointment.end && end > appointment.start);
 }
 
 export function isTimeSlotAvailable(

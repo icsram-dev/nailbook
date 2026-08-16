@@ -9,9 +9,7 @@ type PageProps = {
   }>;
 };
 
-export default async function BookingServicePage({
-  params,
-}: PageProps) {
+export default async function BookingServicePage({ params }: PageProps) {
   const session = await auth();
 
   if (session?.user?.role === "ADMIN") {
@@ -32,20 +30,12 @@ export default async function BookingServicePage({
 
   return (
     <main className="mx-auto max-w-3xl p-8">
-      <h1 className="mb-8 text-3xl font-bold">
-        Időpontfoglalás
-      </h1>
+      <h1 className="mb-8 text-3xl font-bold">Időpontfoglalás</h1>
 
       <div className="rounded-xl border bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold">
-          {service.name}
-        </h2>
+        <h2 className="text-2xl font-semibold">{service.name}</h2>
 
-        {service.description && (
-          <p className="mt-3 text-gray-600">
-            {service.description}
-          </p>
-        )}
+        {service.description && <p className="mt-3 text-gray-600">{service.description}</p>}
 
         <div className="mt-6 flex justify-between">
           <span>⏱ {service.duration} perc</span>

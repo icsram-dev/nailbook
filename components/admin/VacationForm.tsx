@@ -4,11 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  vacationSchema,
-  type VacationData,
-  type VacationInput,
-} from "@/lib/validations/vacation";
+import { vacationSchema, type VacationData, type VacationInput } from "@/lib/validations/vacation";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -36,7 +32,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
         startDate: new Date(),
         endDate: new Date(),
         reason: "",
-      },
+      }
     );
   }, [defaultValues, reset]);
 
@@ -53,9 +49,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
         />
 
         {errors.startDate && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.startDate.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
         )}
       </div>
 
@@ -69,9 +63,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
           })}
         />
 
-        {errors.endDate && (
-          <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
-        )}
+        {errors.endDate && <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>}
       </div>
 
       <div>
@@ -79,9 +71,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
 
         <Textarea rows={3} {...register("reason")} />
 
-        {errors.reason && (
-          <p className="mt-1 text-sm text-red-600">{errors.reason.message}</p>
-        )}
+        {errors.reason && <p className="mt-1 text-sm text-red-600">{errors.reason.message}</p>}
       </div>
 
       <Button type="submit" disabled={isSubmitting}>

@@ -31,7 +31,8 @@ export default function Hero() {
             </h1>
 
             <p className="mt-5 max-w-md text-base leading-7 text-stone-600 sm:text-lg">
-              Különleges körmök, nyugodt figyelem és a jól megérdemelt énidő — a mindennapok finom luxusa.
+              Különleges körmök, nyugodt figyelem és a jól megérdemelt énidő — a mindennapok finom
+              luxusa.
             </p>
 
             {!isAdmin && status !== "loading" && (
@@ -51,7 +52,7 @@ export default function Hero() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-xl lg:translate-x-6">
+          <div className="relative mx-auto w-full max-w-xl lg:-translate-y-5 lg:translate-x-6">
             <div className="relative aspect-[5/6] overflow-hidden rounded-[46%_46%_2.5rem_2.5rem] shadow-[0_35px_70px_-35px_rgba(74,49,38,.65)]">
               <Image
                 src="/images/nailbook-hero-salon.png"

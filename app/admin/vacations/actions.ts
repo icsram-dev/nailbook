@@ -2,10 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
-import {
-  createVacation,
-  deleteVacation,
-} from "@/lib/vacations";
+import { createVacation, deleteVacation } from "@/lib/vacations";
 
 import { vacationSchema } from "@/lib/validations/vacation";
 

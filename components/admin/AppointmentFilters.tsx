@@ -23,10 +23,7 @@ export default function AppointmentFilters() {
   return (
     <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="relative w-full max-w-sm">
-        <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-          size={18}
-        />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
 
         <input
           type="text"
@@ -38,42 +35,32 @@ export default function AppointmentFilters() {
       </div>
 
       <select
-  defaultValue={searchParams.get("status") ?? ""}
-  onChange={(e) => {
-    const params = new URLSearchParams(searchParams);
+        defaultValue={searchParams.get("status") ?? ""}
+        onChange={(e) => {
+          const params = new URLSearchParams(searchParams);
 
-    if (e.target.value) {
-      params.set("status", e.target.value);
-    } else {
-      params.delete("status");
-    }
+          if (e.target.value) {
+            params.set("status", e.target.value);
+          } else {
+            params.delete("status");
+          }
 
-    router.push(`/admin/appointments?${params.toString()}`);
-  }}
-  className="rounded-xl border border-gray-300 px-4 py-2"
->
-  <option value="">Összes státusz</option>
+          router.push(`/admin/appointments?${params.toString()}`);
+        }}
+        className="rounded-xl border border-gray-300 px-4 py-2"
+      >
+        <option value="">Összes státusz</option>
 
-  <option value={AppointmentStatus.PENDING}>
-    Függő
-  </option>
+        <option value={AppointmentStatus.PENDING}>Függő</option>
 
-  <option value={AppointmentStatus.CONFIRMED}>
-    Megerősítve
-  </option>
+        <option value={AppointmentStatus.CONFIRMED}>Megerősítve</option>
 
-  <option value={AppointmentStatus.COMPLETED}>
-    Befejezve
-  </option>
+        <option value={AppointmentStatus.COMPLETED}>Befejezve</option>
 
-  <option value={AppointmentStatus.CANCELLED}>
-    Lemondva
-  </option>
+        <option value={AppointmentStatus.CANCELLED}>Lemondva</option>
 
-  <option value={AppointmentStatus.NO_SHOW}>
-    Nem jelent meg
-  </option>
-</select>
+        <option value={AppointmentStatus.NO_SHOW}>Nem jelent meg</option>
+      </select>
     </div>
   );
 }

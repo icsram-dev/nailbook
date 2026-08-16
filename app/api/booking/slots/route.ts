@@ -18,10 +18,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json(
-        { message: "Érvénytelen kérés." },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Érvénytelen kérés." }, { status: 400 });
     }
 
     const slots = await getAvailableTimeSlots({

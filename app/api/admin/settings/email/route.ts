@@ -6,7 +6,8 @@ export async function PATCH(request: NextRequest) {
   const unauthorized = await requireAdmin();
   if (unauthorized) return unauthorized;
   const { emailNotifications } = await request.json();
-  if (typeof emailNotifications !== "boolean") return NextResponse.json({ error: "Érvénytelen adat." }, { status: 400 });
+  if (typeof emailNotifications !== "boolean")
+    return NextResponse.json({ error: "Érvénytelen adat." }, { status: 400 });
   await updateEmailSettings(emailNotifications);
   return NextResponse.json({ success: true });
 }

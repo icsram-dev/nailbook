@@ -7,17 +7,11 @@ export async function requireAdmin() {
   const session = await auth();
 
   if (!session?.user) {
-    return NextResponse.json(
-      { error: "Bejelentkezés szükséges." },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Bejelentkezés szükséges." }, { status: 401 });
   }
 
   if (session.user.role !== "ADMIN") {
-    return NextResponse.json(
-      { error: "Nincs jogosultság." },
-      { status: 403 }
-    );
+    return NextResponse.json({ error: "Nincs jogosultság." }, { status: 403 });
   }
 
   return null;

@@ -7,10 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
-import {
-  APP_DESCRIPTION,
-  APP_NAME,
-} from "@/lib/constants";
+import { APP_DESCRIPTION, APP_NAME } from "@/lib/constants";
 
 import "./globals.css";
 
@@ -25,10 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="hu"
-      className="h-full"
-    >
+    <html lang="hu" className="h-full">
       <body className="min-h-screen bg-[#fffdfa] text-stone-800 antialiased">
         <AuthSessionProvider>
           <QueryProvider>
@@ -38,11 +32,7 @@ export default function RootLayout({
 
             <Footer />
 
-            <Toaster
-              position="top-right"
-              richColors
-              closeButton
-            />
+            <Toaster position="top-right" richColors closeButton />
           </QueryProvider>
         </AuthSessionProvider>
       </body>

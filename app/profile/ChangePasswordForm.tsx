@@ -11,19 +11,10 @@ type PasswordFieldProps = {
   toggle: () => void;
 };
 
-function PasswordField({
-  value,
-  onChange,
-  placeholder,
-  visible,
-  toggle,
-}: PasswordFieldProps) {
+function PasswordField({ value, onChange, placeholder, visible, toggle }: PasswordFieldProps) {
   return (
     <div className="relative">
-      <Lock
-        size={18}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-      />
+      <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
       <input
         required
@@ -61,18 +52,14 @@ export default function ChangePasswordForm() {
     confirmPassword: "",
   });
 
-  async function handleSubmit(
-    e: React.FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
     setError("");
     setSuccess("");
 
     if (form.newPassword.length < 8) {
-      setError(
-        "Az új jelszónak legalább 8 karakter hosszúnak kell lennie."
-      );
+      setError("Az új jelszónak legalább 8 karakter hosszúnak kell lennie.");
       return;
     }
 
@@ -118,9 +105,7 @@ export default function ChangePasswordForm() {
       onSubmit={handleSubmit}
       className="mt-6 rounded-[1.75rem] border border-stone-200 bg-[#fffdfa] p-7 shadow-sm"
     >
-      <h2 className="mb-6 font-serif text-2xl text-stone-800">
-        Jelszó módosítása
-      </h2>
+      <h2 className="mb-6 font-serif text-2xl text-stone-800">Jelszó módosítása</h2>
 
       {success && (
         <div className="mb-5 rounded-lg border border-green-300 bg-green-50 p-3 text-sm text-green-700">
@@ -181,10 +166,7 @@ export default function ChangePasswordForm() {
         >
           {loading ? (
             <>
-              <Loader2
-                size={18}
-                className="animate-spin"
-              />
+              <Loader2 size={18} className="animate-spin" />
               Mentés...
             </>
           ) : (

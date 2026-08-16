@@ -23,8 +23,8 @@ export async function PATCH(request: Request) {
             opensAt: day.opensAt,
             closesAt: day.closesAt,
           },
-        }),
-      ),
+        })
+      )
     );
 
     return NextResponse.json({
@@ -40,7 +40,7 @@ export async function PATCH(request: Request) {
       },
       {
         status: 500,
-      },
+      }
     );
   }
 }

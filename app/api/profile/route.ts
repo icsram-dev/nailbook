@@ -19,11 +19,7 @@ export async function PATCH(request: Request) {
 
   const body = await request.json();
 
-  const {
-    firstName,
-    lastName,
-    phone,
-  } = body;
+  const { firstName, lastName, phone } = body;
 
   if (!firstName || firstName.trim().length < 2) {
     return NextResponse.json(
@@ -49,15 +45,13 @@ export async function PATCH(request: Request) {
     );
   }
 
-  const phoneRegex =
-    /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
+  const phoneRegex = /^\+36\s(20|30|31|50|70)\s\d{3}\s\d{4}$/;
 
   if (phone && !phoneRegex.test(phone)) {
     return NextResponse.json(
       {
         success: false,
-        message:
-          "A telefonszám formátuma: +36 30 358 0496",
+        message: "A telefonszám formátuma: +36 30 358 0496",
       },
       {
         status: 400,

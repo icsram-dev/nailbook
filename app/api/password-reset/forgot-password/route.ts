@@ -7,7 +7,14 @@ import { isRateLimitAllowed, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
-    if (!(await isRateLimitAllowed({ request, namespace: "forgot-password", limit: 5, windowMs: 15 * 60 * 1000 }))) {
+    if (
+      !(await isRateLimitAllowed({
+        request,
+        namespace: "forgot-password",
+        limit: 5,
+        windowMs: 15 * 60 * 1000,
+      }))
+    ) {
       return rateLimitResponse();
     }
 
@@ -35,8 +42,7 @@ export async function POST(request: NextRequest) {
     // Biztonság miatt mindig ugyanazt válaszoljuk
     if (!user) {
       return NextResponse.json({
-        message:
-          "Ha létezik ilyen e-mail cím, elküldtük a jelszó-visszaállító linket.",
+        message: "Ha létezik ilyen e-mail cím, elküldtük a jelszó-visszaállító linket.",
       });
     }
 
@@ -51,8 +57,7 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json({
-      message:
-        "Ha létezik ilyen e-mail cím, elküldtük a jelszó-visszaállító linket.",
+      message: "Ha létezik ilyen e-mail cím, elküldtük a jelszó-visszaállító linket.",
     });
   } catch (error) {
     console.error(error);

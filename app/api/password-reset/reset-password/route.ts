@@ -2,10 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 
 import { prisma } from "@/lib/prisma";
-import {
-  deletePasswordResetToken,
-  validatePasswordResetToken,
-} from "@/lib/password-reset";
+import { deletePasswordResetToken, validatePasswordResetToken } from "@/lib/password-reset";
 import { sendPasswordChangedEmail } from "@/lib/mail";
 
 export async function POST(request: NextRequest) {
@@ -15,12 +12,7 @@ export async function POST(request: NextRequest) {
     const token = body.token;
     const password = body.password;
 
-    if (
-      !token ||
-      typeof token !== "string" ||
-      !password ||
-      typeof password !== "string"
-    ) {
+    if (!token || typeof token !== "string" || !password || typeof password !== "string") {
       return NextResponse.json(
         {
           message: "Érvénytelen kérés.",
@@ -34,8 +26,7 @@ export async function POST(request: NextRequest) {
     if (password.length < 8) {
       return NextResponse.json(
         {
-          message:
-            "A jelszónak legalább 8 karakter hosszúnak kell lennie.",
+          message: "A jelszónak legalább 8 karakter hosszúnak kell lennie.",
         },
         {
           status: 400,
@@ -43,14 +34,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const resetToken =
-      await validatePasswordResetToken(token);
+    const resetToken = await validatePasswordResetToken(token);
 
     if (!resetToken) {
       return NextResponse.json(
         {
-          message:
-            "A jelszó-visszaállító link érvénytelen vagy lejárt.",
+          message: "A jelszó-visszaállító link érvénytelen vagy lejárt.",
         },
         {
           status: 400,
@@ -82,8 +71,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json({
-      message:
-        "A jelszavad sikeresen megváltozott.",
+      message: "A jelszavad sikeresen megváltozott.",
     });
   } catch (error) {
     console.error(error);

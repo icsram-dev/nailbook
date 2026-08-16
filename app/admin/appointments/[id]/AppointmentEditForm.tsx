@@ -4,10 +4,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  appointmentSchema,
-  AppointmentFormValues,
-} from "@/lib/validations/appointment";
+import { appointmentSchema, AppointmentFormValues } from "@/lib/validations/appointment";
 
 type Props = {
   appointment: {
@@ -35,10 +32,7 @@ type Props = {
   }[];
 };
 
-export default function AppointmentEditForm({
-  appointment,
-  services,
-}: Props) {
+export default function AppointmentEditForm({ appointment, services }: Props) {
   const router = useRouter();
 
   const {
@@ -64,16 +58,13 @@ export default function AppointmentEditForm({
     };
 
     try {
-      const response = await fetch(
-        `/api/admin/appointments/${appointment.id}`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch(`/api/admin/appointments/${appointment.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
 
       const result = await response.json();
 
@@ -91,106 +82,60 @@ export default function AppointmentEditForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="rounded-2xl border bg-white p-8 shadow-sm"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="rounded-2xl border bg-white p-8 shadow-sm">
       <div className="space-y-6">
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Vendég
-          </label>
+          <label className="mb-2 block text-sm font-medium">Vendég</label>
 
           <div className="rounded-xl border bg-gray-50 p-4">
             <p className="font-semibold text-gray-900">
-              👤 {appointment.customer.lastName}{" "}
-              {appointment.customer.firstName}
+              👤 {appointment.customer.lastName} {appointment.customer.firstName}
             </p>
 
-            <p className="mt-2 text-sm text-gray-600">
-              📧 {appointment.customer.email}
-            </p>
+            <p className="mt-2 text-sm text-gray-600">📧 {appointment.customer.email}</p>
 
             {appointment.customer.phone && (
-              <p className="mt-1 text-sm text-gray-600">
-                📞 {appointment.customer.phone}
-              </p>
+              <p className="mt-1 text-sm text-gray-600">📞 {appointment.customer.phone}</p>
             )}
           </div>
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Szolgáltatás
-          </label>
+          <label className="mb-2 block text-sm font-medium">Szolgáltatás</label>
 
-          <select
-            {...register("serviceId")}
-            className="w-full rounded-xl border p-3"
-          >
+          <select {...register("serviceId")} className="w-full rounded-xl border p-3">
             {services.map((service) => (
-              <option
-                key={service.id}
-                value={service.id}
-              >
+              <option key={service.id} value={service.id}>
                 {service.name}
               </option>
             ))}
           </select>
 
           {errors.serviceId && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.serviceId.message}
-            </p>
+            <p className="mt-1 text-sm text-red-500">{errors.serviceId.message}</p>
           )}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Dátum
-          </label>
+          <label className="mb-2 block text-sm font-medium">Dátum</label>
 
-          <input
-            type="date"
-            {...register("date")}
-            className="w-full rounded-xl border p-3"
-          />
+          <input type="date" {...register("date")} className="w-full rounded-xl border p-3" />
 
-          {errors.date && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.date.message}
-            </p>
-          )}
+          {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date.message}</p>}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Időpont
-          </label>
+          <label className="mb-2 block text-sm font-medium">Időpont</label>
 
-          <input
-            type="time"
-            {...register("time")}
-            className="w-full rounded-xl border p-3"
-          />
+          <input type="time" {...register("time")} className="w-full rounded-xl border p-3" />
 
-          {errors.time && (
-            <p className="mt-1 text-sm text-red-500">
-              {errors.time.message}
-            </p>
-          )}
+          {errors.time && <p className="mt-1 text-sm text-red-500">{errors.time.message}</p>}
         </div>
 
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Megjegyzés
-          </label>
+          <label className="mb-2 block text-sm font-medium">Megjegyzés</label>
 
-          <textarea
-            {...register("note")}
-            rows={4}
-            className="w-full rounded-xl border p-3"
-          />
+          <textarea {...register("note")} rows={4} className="w-full rounded-xl border p-3" />
         </div>
 
         <button

@@ -1,7 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import {
-  AppointmentStatus,
-} from "@prisma/client";
+import { AppointmentStatus } from "@prisma/client";
 
 import AdminPageHeader from "@/components/admin/AdminPageHeader";
 import AppointmentFilters from "@/components/admin/AppointmentFilters";
@@ -19,31 +17,29 @@ type Props = {
   }>;
 };
 
-export default async function AppointmentsPage({
-  searchParams,
-}: Props) {
+export default async function AppointmentsPage({ searchParams }: Props) {
   const { search, status } = await searchParams;
 
   const appointments = await prisma.appointment.findMany({
     where: {
       ...(search && {
-  customer: {
-    OR: [
-      {
-        firstName: {
-          contains: search,
-          mode: "insensitive",
+        customer: {
+          OR: [
+            {
+              firstName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+            {
+              lastName: {
+                contains: search,
+                mode: "insensitive",
+              },
+            },
+          ],
         },
-      },
-      {
-        lastName: {
-          contains: search,
-          mode: "insensitive",
-        },
-      },
-    ],
-  },
-}),
+      }),
 
       ...(status && {
         status: status as AppointmentStatus,
@@ -62,10 +58,7 @@ export default async function AppointmentsPage({
 
   return (
     <>
-      <AdminPageHeader
-        title="Foglalások"
-        description="Az összes időpont áttekintése."
-      />
+      <AdminPageHeader title="Foglalások" description="Az összes időpont áttekintése." />
 
       <AppointmentFilters />
 
@@ -89,21 +82,12 @@ export default async function AppointmentsPage({
                 className="border-b transition hover:bg-pink-50 last:border-0"
               >
                 <td className="px-6 py-4">
-                  {format(
-                    appointment.startTime,
-                    "yyyy.MM.dd",
-                    {
-                      locale: hu,
-                    }
-                  )}
+                  {format(appointment.startTime, "yyyy.MM.dd", {
+                    locale: hu,
+                  })}
                 </td>
 
-                <td className="px-6 py-4">
-                  {format(
-                    appointment.startTime,
-                    "HH:mm"
-                  )}
-                </td>
+                <td className="px-6 py-4">{format(appointment.startTime, "HH:mm")}</td>
 
                 <td className="px-6 py-4 font-medium">
                   <Link
@@ -114,18 +98,12 @@ export default async function AppointmentsPage({
                   </Link>
                 </td>
 
-                <td className="px-6 py-4">
-                  {appointment.service.name}
-                </td>
+                <td className="px-6 py-4">{appointment.service.name}</td>
+
+                <td className="px-6 py-4">{appointment.price.toLocaleString("hu-HU")} Ft</td>
 
                 <td className="px-6 py-4">
-                  {appointment.price.toLocaleString("hu-HU")} Ft
-                </td>
-
-                <td className="px-6 py-4">
-                  <AppointmentStatusBadge
-                    status={appointment.status}
-                  />
+                  <AppointmentStatusBadge status={appointment.status} />
                 </td>
               </tr>
             ))}

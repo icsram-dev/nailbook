@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ServiceManager } from "@/components/admin/ServiceManager";
 
-
 export default async function ServicesPage() {
   const services = await prisma.service.findMany({
     orderBy: {
@@ -9,7 +8,5 @@ export default async function ServicesPage() {
     },
   });
 
-  return (
-    <ServiceManager services={services} />
-  );
+  return <ServiceManager services={services} />;
 }

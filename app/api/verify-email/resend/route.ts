@@ -8,17 +8,21 @@ import { isRateLimitAllowed, rateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   try {
-    if (!(await isRateLimitAllowed({ request, namespace: "verify-email-resend", limit: 3, windowMs: 15 * 60 * 1000 }))) {
+    if (
+      !(await isRateLimitAllowed({
+        request,
+        namespace: "verify-email-resend",
+        limit: 3,
+        windowMs: 15 * 60 * 1000,
+      }))
+    ) {
       return rateLimitResponse();
     }
 
     const { email } = await request.json();
 
     if (!email || typeof email !== "string") {
-      return NextResponse.json(
-        { message: "Adj meg egy érvényes e-mail címet." },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Adj meg egy érvényes e-mail címet." }, { status: 400 });
     }
 
     const user = await prisma.user.findUnique({
@@ -27,7 +31,8 @@ export async function POST(request: Request) {
 
     if (!user || user.isEmailVerified) {
       return NextResponse.json({
-        message: "Ha ehhez a címhez megerősítésre váró fiók tartozik, elküldtük a megerősítő linket.",
+        message:
+          "Ha ehhez a címhez megerősítésre váró fiók tartozik, elküldtük a megerősítő linket.",
       });
     }
 
@@ -50,7 +55,8 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json({
-      message: "Elküldtük a megerősítő e-mailt. Kérjük, nézd meg a beérkező levelek és a spam mappát is.",
+      message:
+        "Elküldtük a megerősítő e-mailt. Kérjük, nézd meg a beérkező levelek és a spam mappát is.",
     });
   } catch (error) {
     console.error("Verification e-mail resend failed:", error);

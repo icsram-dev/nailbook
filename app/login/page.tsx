@@ -31,11 +31,11 @@ function LoginPageContent() {
     setError("");
 
     const result = await signIn("credentials", {
-  email,
-  password,
-  redirect: false,
-  callbackUrl,
-});
+      email,
+      password,
+      redirect: false,
+      callbackUrl,
+    });
 
     setLoading(false);
 
@@ -84,11 +84,10 @@ function LoginPageContent() {
   return (
     <main className="mx-auto max-w-md px-6 py-16">
       <div className="rounded-[2rem] border border-stone-200 bg-[#fffdfa] p-8 shadow-sm">
-        <p className="eyebrow text-center">NailBook</p><h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">Bejelentkezés</h1>
+        <p className="eyebrow text-center">NailBook</p>
+        <h1 className="mb-2 mt-3 text-center font-serif text-4xl text-stone-800">Bejelentkezés</h1>
 
-        <p className="mb-8 text-center text-gray-500">
-          Üdv újra a NailBookban!
-        </p>
+        <p className="mb-8 text-center text-gray-500">Üdv újra a NailBookban!</p>
 
         {registered && (
           <div className="mb-5 rounded-xl border border-[#dcc7bb] bg-[#f3e8e1] p-4 text-sm leading-6 text-[#6e4a3c]">
@@ -119,10 +118,7 @@ function LoginPageContent() {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div className="relative">
-            <Mail
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               type="email"
@@ -135,10 +131,7 @@ function LoginPageContent() {
           </div>
 
           <div className="relative">
-            <Lock
-              size={18}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-            />
+            <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
             <input
               required
@@ -194,10 +187,7 @@ function LoginPageContent() {
 
         <p className="mt-8 text-center text-sm text-gray-500">
           Nincs még fiókod?{" "}
-          <Link
-            href="/register"
-            className="font-semibold text-[#8f6252] hover:underline"
-          >
+          <Link href="/register" className="font-semibold text-[#8f6252] hover:underline">
             Regisztráció
           </Link>
         </p>
@@ -207,5 +197,9 @@ function LoginPageContent() {
 }
 
 export default function LoginPage() {
-  return <Suspense fallback={<main className="min-h-screen" />}><LoginPageContent /></Suspense>;
+  return (
+    <Suspense fallback={<main className="min-h-screen" />}>
+      <LoginPageContent />
+    </Suspense>
+  );
 }

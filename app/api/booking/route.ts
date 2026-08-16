@@ -17,11 +17,17 @@ export async function POST(request: Request) {
     }
 
     if (session.user.role === "ADMIN") {
-      return NextResponse.json({ error: "Az admin ezen a felületen nem foglalhat." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Az admin ezen a felületen nem foglalhat." },
+        { status: 403 }
+      );
     }
 
     if (!session.user.isEmailVerified) {
-      return NextResponse.json({ error: "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed." },
+        { status: 403 }
+      );
     }
 
     const result = bookingSchema.safeParse(await request.json());

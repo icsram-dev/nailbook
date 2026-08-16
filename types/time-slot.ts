@@ -1,7 +1,4 @@
-export type TimeSlotReason =
-  | "BOOKED"
-  | "VACATION"
-  | "PAST";
+export type TimeSlotReason = "BOOKED" | "VACATION" | "PAST";
 
 export type TimeSlot = {
   start: Date;

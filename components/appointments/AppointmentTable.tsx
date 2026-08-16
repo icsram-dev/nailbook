@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Appointment,
-  AppointmentStatus,
-  Service,
-  User,
-} from "@prisma/client";
+import { Appointment, AppointmentStatus, Service, User } from "@prisma/client";
 
 import { Button } from "@/components/ui/Button";
 
@@ -28,11 +23,7 @@ const statusLabels: Record<AppointmentStatus, string> = {
   NO_SHOW: "Nem jelent meg",
 };
 
-export function AppointmentTable({
-  appointments,
-  onEdit,
-  onDelete,
-}: AppointmentTableProps) {
+export function AppointmentTable({ appointments, onEdit, onDelete }: AppointmentTableProps) {
   if (appointments.length === 0) {
     return (
       <div className="rounded-xl border bg-white p-8 text-center text-gray-500">
@@ -58,48 +49,26 @@ export function AppointmentTable({
 
         <tbody>
           {appointments.map((appointment) => (
-            <tr
-              key={appointment.id}
-              className="border-b last:border-0"
-            >
+            <tr key={appointment.id} className="border-b last:border-0">
               <td className="p-4">
-                {appointment.customer.lastName}{" "}
-                {appointment.customer.firstName}
+                {appointment.customer.lastName} {appointment.customer.firstName}
               </td>
 
-              <td className="p-4">
-                {appointment.service.name}
-              </td>
+              <td className="p-4">{appointment.service.name}</td>
 
-              <td className="p-4">
-                {appointment.startTime.toLocaleString("hu-HU")}
-              </td>
+              <td className="p-4">{appointment.startTime.toLocaleString("hu-HU")}</td>
 
-              <td className="p-4">
-                {appointment.endTime.toLocaleString("hu-HU")}
-              </td>
+              <td className="p-4">{appointment.endTime.toLocaleString("hu-HU")}</td>
 
-              <td className="p-4">
-                {appointment.price.toLocaleString("hu-HU")} Ft
-              </td>
+              <td className="p-4">{appointment.price.toLocaleString("hu-HU")} Ft</td>
 
-              <td className="p-4">
-                {statusLabels[appointment.status]}
-              </td>
+              <td className="p-4">{statusLabels[appointment.status]}</td>
 
               <td className="p-4">
                 <div className="flex justify-end gap-2">
-                  <Button
-                    onClick={() => onEdit(appointment)}
-                  >
-                    Szerkesztés
-                  </Button>
+                  <Button onClick={() => onEdit(appointment)}>Szerkesztés</Button>
 
-                  <Button
-                    onClick={() => onDelete(appointment.id)}
-                  >
-                    Törlés
-                  </Button>
+                  <Button onClick={() => onDelete(appointment.id)}>Törlés</Button>
                 </div>
               </td>
             </tr>

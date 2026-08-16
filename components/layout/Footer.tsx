@@ -15,7 +15,9 @@ export default function Footer() {
       <Container>
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <Link href="/" className="font-serif text-2xl tracking-[0.12em] text-stone-800">NAILBOOK</Link>
+            <Link href="/" className="font-serif text-2xl tracking-[0.12em] text-stone-800">
+              NAILBOOK
+            </Link>
             <p className="mt-4 max-w-sm leading-7 text-stone-600">
               Egy kis énidő, finom részletek és körmök, amelyek igazán téged tükröznek.
             </p>
@@ -34,9 +36,18 @@ export default function Footer() {
           <div>
             <p className="eyebrow">Kapcsolat</p>
             <div className="mt-4 space-y-3 text-sm text-stone-600">
-              <p className="flex items-center gap-2"><MapPin className="size-4 text-[#a97967]" />Cím hamarosan</p>
-              <p className="flex items-center gap-2"><Mail className="size-4 text-[#a97967]" />E-mail hamarosan</p>
-              <p className="flex items-center gap-2"><AtSign className="size-4 text-[#a97967]" />Instagram hamarosan</p>
+              <p className="flex items-center gap-2">
+                <MapPin className="size-4 text-[#a97967]" />
+                Cím hamarosan
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="size-4 text-[#a97967]" />
+                E-mail hamarosan
+              </p>
+              <p className="flex items-center gap-2">
+                <AtSign className="size-4 text-[#a97967]" />
+                Instagram hamarosan
+              </p>
             </div>
           </div>
         </div>

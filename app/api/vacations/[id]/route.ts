@@ -11,10 +11,7 @@ type RouteContext = {
   }>;
 };
 
-export async function PATCH(
-  request: Request,
-  { params }: RouteContext
-) {
+export async function PATCH(request: Request, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -46,10 +43,7 @@ export async function PATCH(
   } catch (error) {
     console.error(error);
 
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
       return NextResponse.json(
         {
           message: "A szabadság nem található.",
@@ -71,10 +65,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: Request,
-  { params }: RouteContext
-) {
+export async function DELETE(request: Request, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -92,10 +83,7 @@ export async function DELETE(
   } catch (error) {
     console.error(error);
 
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
       return NextResponse.json(
         {
           message: "A szabadság nem található.",

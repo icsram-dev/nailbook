@@ -41,30 +41,19 @@ export async function getCustomers() {
   });
 
   return customers.map((customer) => {
-    const completedAppointments =
-      customer.appointments.filter(
-        (appointment) =>
-          appointment.status === "COMPLETED"
-      );
+    const completedAppointments = customer.appointments.filter(
+      (appointment) => appointment.status === "COMPLETED"
+    );
 
-    const lastCompletedAppointment =
-      [...completedAppointments].sort(
-        (a, b) =>
-          b.startTime.getTime() -
-          a.startTime.getTime()
-      )[0];
+    const lastCompletedAppointment = [...completedAppointments].sort(
+      (a, b) => b.startTime.getTime() - a.startTime.getTime()
+    )[0];
 
     const nextAppointment = customer.appointments
       .filter(
-        (appointment) =>
-          appointment.status === "CONFIRMED" &&
-          appointment.startTime > new Date()
+        (appointment) => appointment.status === "CONFIRMED" && appointment.startTime > new Date()
       )
-      .sort(
-        (a, b) =>
-          a.startTime.getTime() -
-          b.startTime.getTime()
-      )[0];
+      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0];
 
     return {
       id: customer.id,
@@ -75,22 +64,13 @@ export async function getCustomers() {
       phone: customer.phone,
       role: customer.role,
 
-      appointmentCount:
-        customer._count.appointments,
+      appointmentCount: customer._count.appointments,
 
-      totalSpent:
-        completedAppointments.reduce(
-          (sum, appointment) =>
-            sum + appointment.price,
-          0
-        ),
+      totalSpent: completedAppointments.reduce((sum, appointment) => sum + appointment.price, 0),
 
-      lastAppointment:
-        lastCompletedAppointment?.startTime ??
-        null,
+      lastAppointment: lastCompletedAppointment?.startTime ?? null,
 
-      nextAppointment:
-        nextAppointment?.startTime ?? null,
+      nextAppointment: nextAppointment?.startTime ?? null,
     };
   });
 }
@@ -124,43 +104,25 @@ export async function getCustomerById(id: string) {
     return null;
   }
 
-  const completedAppointments =
-    customer.appointments.filter(
-      (appointment) =>
-        appointment.status === "COMPLETED"
-    );
+  const completedAppointments = customer.appointments.filter(
+    (appointment) => appointment.status === "COMPLETED"
+  );
 
-  const cancelledAppointments =
-    customer.appointments.filter(
-      (appointment) =>
-        appointment.status === "CANCELLED"
-    ).length;
+  const cancelledAppointments = customer.appointments.filter(
+    (appointment) => appointment.status === "CANCELLED"
+  ).length;
 
-  const totalSpent =
-    completedAppointments.reduce(
-      (sum, appointment) =>
-        sum + appointment.price,
-      0
-    );
+  const totalSpent = completedAppointments.reduce((sum, appointment) => sum + appointment.price, 0);
 
-  const lastCompletedAppointment =
-    [...completedAppointments].sort(
-      (a, b) =>
-        b.startTime.getTime() -
-        a.startTime.getTime()
-    )[0];
+  const lastCompletedAppointment = [...completedAppointments].sort(
+    (a, b) => b.startTime.getTime() - a.startTime.getTime()
+  )[0];
 
   const nextAppointment = customer.appointments
     .filter(
-      (appointment) =>
-        appointment.status === "CONFIRMED" &&
-        appointment.startTime > new Date()
+      (appointment) => appointment.status === "CONFIRMED" && appointment.startTime > new Date()
     )
-    .sort(
-      (a, b) =>
-        a.startTime.getTime() -
-        b.startTime.getTime()
-    )[0];
+    .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())[0];
 
   return {
     id: customer.id,
@@ -170,19 +132,15 @@ export async function getCustomerById(id: string) {
     email: customer.email,
     phone: customer.phone,
 
-    appointmentCount:
-      customer.appointments.length,
+    appointmentCount: customer.appointments.length,
 
     totalSpent,
 
     cancelledAppointments,
 
-    lastAppointment:
-      lastCompletedAppointment?.startTime ??
-      null,
+    lastAppointment: lastCompletedAppointment?.startTime ?? null,
 
-    nextAppointment:
-      nextAppointment?.startTime ?? null,
+    nextAppointment: nextAppointment?.startTime ?? null,
 
     appointments: customer.appointments,
   };

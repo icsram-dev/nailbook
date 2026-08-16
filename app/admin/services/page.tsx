@@ -7,10 +7,7 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Szolgáltatások"
-        description="A szolgáltatások kezelése."
-      />
+      <AdminPageHeader title="Szolgáltatások" description="A szolgáltatások kezelése." />
 
       <ServiceManager services={services} />
     </>

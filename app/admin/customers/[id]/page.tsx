@@ -10,9 +10,7 @@ type Props = {
   }>;
 };
 
-export default async function CustomerPage({
-  params,
-}: Props) {
+export default async function CustomerPage({ params }: Props) {
   const { id } = await params;
 
   const customer = await getCustomerById(id);

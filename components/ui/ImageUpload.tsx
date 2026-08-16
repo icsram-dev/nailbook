@@ -8,10 +8,7 @@ type Props = {
   onChange: (url: string) => void;
 };
 
-export default function ImageUpload({
-  value,
-  onChange,
-}: Props) {
+export default function ImageUpload({ value, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [uploading, setUploading] = useState(false);
@@ -31,20 +28,14 @@ export default function ImageUpload({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(
-          data.message ?? "Nem sikerült feltölteni."
-        );
+        throw new Error(data.message ?? "Nem sikerült feltölteni.");
       }
 
       onChange(data.imageUrl);
     } catch (error) {
       console.error(error);
 
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Nem sikerült feltölteni a képet."
-      );
+      alert(error instanceof Error ? error.message : "Nem sikerült feltölteni a képet.");
     } finally {
       setUploading(false);
     }
@@ -57,9 +48,7 @@ export default function ImageUpload({
         className="flex h-56 cursor-pointer items-center justify-center overflow-hidden rounded-2xl border-2 border-dashed border-gray-300 bg-gray-50 transition hover:border-pink-500 hover:bg-pink-50"
       >
         {uploading ? (
-          <p className="text-gray-500">
-            Feltöltés...
-          </p>
+          <p className="text-gray-500">Feltöltés...</p>
         ) : value ? (
           <Image
             src={value}
@@ -70,13 +59,9 @@ export default function ImageUpload({
           />
         ) : (
           <div className="text-center">
-            <p className="text-lg font-medium">
-              Kattints a kép kiválasztásához
-            </p>
+            <p className="text-lg font-medium">Kattints a kép kiválasztásához</p>
 
-            <p className="mt-2 text-sm text-gray-500">
-              JPG, PNG vagy WEBP
-            </p>
+            <p className="mt-2 text-sm text-gray-500">JPG, PNG vagy WEBP</p>
           </div>
         )}
       </div>

@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { appointmentSchema } from "@/schemas/appointment";
-import {
-  cancelAppointment,
-  updateAppointment,
-} from "@/lib/appointments/service";
+import { cancelAppointment, updateAppointment } from "@/lib/appointments/service";
 import { requireAdmin } from "@/lib/api/admin";
 
 type RouteContext = {
@@ -13,31 +10,23 @@ type RouteContext = {
   }>;
 };
 
-type CancellationReason =
-  | "CUSTOMER_CANCELLED"
-  | "ADMIN_CANCELLED"
-  | "NO_SHOW"
-  | "OTHER";
+type CancellationReason = "CUSTOMER_CANCELLED" | "ADMIN_CANCELLED" | "NO_SHOW" | "OTHER";
 
-export async function GET(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
     const { id } = await params;
 
-    const appointment =
-      await prisma.appointment.findUnique({
-        where: {
-          id,
-        },
-        include: {
-          customer: true,
-          service: true,
-        },
-      });
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        customer: true,
+        service: true,
+      },
+    });
 
     if (!appointment) {
       return NextResponse.json(
@@ -63,10 +52,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -88,15 +74,14 @@ export async function PUT(
       );
     }
 
-    const existingAppointment =
-      await prisma.appointment.findUnique({
-        where: {
-          id,
-        },
-        select: {
-          customerId: true,
-        },
-      });
+    const existingAppointment = await prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        customerId: true,
+      },
+    });
 
     if (!existingAppointment) {
       return NextResponse.json(
@@ -122,10 +107,7 @@ export async function PUT(
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Ismeretlen hiba történt.",
+        error: error instanceof Error ? error.message : "Ismeretlen hiba történt.",
       },
       {
         status: 500,
@@ -134,10 +116,7 @@ export async function PUT(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -145,13 +124,9 @@ export async function DELETE(
 
     const body = await request.json();
 
-    const reason =
-      body.reason as CancellationReason | undefined;
+    const reason = body.reason as CancellationReason | undefined;
 
-    const note =
-      typeof body.note === "string"
-        ? body.note.trim()
-        : null;
+    const note = typeof body.note === "string" ? body.note.trim() : null;
 
     const validReasons: CancellationReason[] = [
       "CUSTOMER_CANCELLED",
@@ -160,14 +135,10 @@ export async function DELETE(
       "OTHER",
     ];
 
-    if (
-      !reason ||
-      !validReasons.includes(reason)
-    ) {
+    if (!reason || !validReasons.includes(reason)) {
       return NextResponse.json(
         {
-          error:
-            "Érvénytelen lemondási ok.",
+          error: "Érvénytelen lemondási ok.",
         },
         {
           status: 400,
@@ -175,13 +146,9 @@ export async function DELETE(
       );
     }
 
-    let status:
-      | "CANCELLED"
-      | "NO_SHOW";
+    let status: "CANCELLED" | "NO_SHOW";
 
-    let cancelledBy:
-      | "CUSTOMER"
-      | "ADMIN";
+    let cancelledBy: "CUSTOMER" | "ADMIN";
 
     switch (reason) {
       case "NO_SHOW":
@@ -205,12 +172,11 @@ export async function DELETE(
         break;
     }
 
-    const appointment =
-      await prisma.appointment.findUnique({
-        where: {
-          id,
-        },
-      });
+    const appointment = await prisma.appointment.findUnique({
+      where: {
+        id,
+      },
+    });
 
     if (!appointment) {
       return NextResponse.json(
@@ -227,26 +193,22 @@ export async function DELETE(
       status === "CANCELLED"
         ? await cancelAppointment(id)
         : await prisma.appointment.update({
-        where: {
-          id,
-        },
-        data: {
-          status,
-          cancelledBy,
-          cancelledAt: new Date(),
-          cancelReason: note
-            ? `${getReasonLabel(reason)} – ${note}`
-            : getReasonLabel(reason),
-        },
-      });
+            where: {
+              id,
+            },
+            data: {
+              status,
+              cancelledBy,
+              cancelledAt: new Date(),
+              cancelReason: note ? `${getReasonLabel(reason)} – ${note}` : getReasonLabel(reason),
+            },
+          });
 
     if (status === "CANCELLED") {
       await prisma.appointment.update({
         where: { id },
         data: {
-          cancelReason: note
-            ? `${getReasonLabel(reason)} - ${note}`
-            : getReasonLabel(reason),
+          cancelReason: note ? `${getReasonLabel(reason)} - ${note}` : getReasonLabel(reason),
         },
       });
     }
@@ -256,17 +218,11 @@ export async function DELETE(
       appointment: updatedAppointment,
     });
   } catch (error) {
-    console.error(
-      "Foglalás lemondása sikertelen:",
-      error
-    );
+    console.error("Foglalás lemondása sikertelen:", error);
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Hiba történt.",
+        error: error instanceof Error ? error.message : "Hiba történt.",
       },
       {
         status: 500,
@@ -275,9 +231,7 @@ export async function DELETE(
   }
 }
 
-function getReasonLabel(
-  reason: CancellationReason
-) {
+function getReasonLabel(reason: CancellationReason) {
   switch (reason) {
     case "CUSTOMER_CANCELLED":
       return "Vendég lemondta";

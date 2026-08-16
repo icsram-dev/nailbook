@@ -26,7 +26,11 @@ export default function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-stone-200/80 bg-[#fffdfa]/90 backdrop-blur">
       <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-6">
-        <Link href="/" className="font-serif text-2xl tracking-[0.12em] text-stone-800" onClick={() => setOpen(false)}>
+        <Link
+          href="/"
+          className="font-serif text-2xl tracking-[0.12em] text-stone-800"
+          onClick={() => setOpen(false)}
+        >
           NAILBOOK
         </Link>
 
@@ -48,8 +52,16 @@ export default function Navbar() {
           </Link>
         </nav>
 
-        <div className="hidden lg:block"><AuthMenu /></div>
-        <button type="button" className="grid size-10 place-items-center text-stone-700 lg:hidden" aria-expanded={open} aria-label="Menü" onClick={() => setOpen((value) => !value)}>
+        <div className="hidden lg:block">
+          <AuthMenu />
+        </div>
+        <button
+          type="button"
+          className="grid size-10 place-items-center text-stone-700 lg:hidden"
+          aria-expanded={open}
+          aria-label="Menü"
+          onClick={() => setOpen((value) => !value)}
+        >
           {open ? <X /> : <Menu />}
         </button>
       </div>
@@ -67,11 +79,17 @@ export default function Navbar() {
                 {link.label}
               </Link>
             ))}
-            <Link href="/booking" className={`mt-2 rounded-full bg-[#a97967] px-5 py-3 text-center text-white ${isBooking ? "ring-2 ring-[#dcc7bb] ring-offset-2" : ""}`} onClick={() => setOpen(false)}>
+            <Link
+              href="/booking"
+              className={`mt-2 rounded-full bg-[#a97967] px-5 py-3 text-center text-white ${isBooking ? "ring-2 ring-[#dcc7bb] ring-offset-2" : ""}`}
+              onClick={() => setOpen(false)}
+            >
               Időpontfoglalás
             </Link>
           </nav>
-          <div className="mt-5 border-t border-stone-200 pt-5"><AuthMenu /></div>
+          <div className="mt-5 border-t border-stone-200 pt-5">
+            <AuthMenu />
+          </div>
         </div>
       )}
     </header>

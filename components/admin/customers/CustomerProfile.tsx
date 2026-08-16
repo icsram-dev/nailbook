@@ -30,9 +30,7 @@ type Props = {
   customer: Customer;
 };
 
-export default function CustomerProfile({
-  customer,
-}: Props) {
+export default function CustomerProfile({ customer }: Props) {
   return (
     <div className="space-y-6">
       <div className="rounded-2xl border bg-white p-6 shadow-sm">
@@ -42,27 +40,18 @@ export default function CustomerProfile({
 
         <div className="mt-4 space-y-2 text-sm text-gray-600">
           <p>
-            <span className="font-medium text-gray-900">
-              Telefon:
-            </span>{" "}
-            {customer.phone ?? "-"}
+            <span className="font-medium text-gray-900">Telefon:</span> {customer.phone ?? "-"}
           </p>
 
           <p>
-            <span className="font-medium text-gray-900">
-              E-mail:
-            </span>{" "}
-            {customer.email ?? "-"}
+            <span className="font-medium text-gray-900">E-mail:</span> {customer.email ?? "-"}
           </p>
         </div>
       </div>
 
       <CustomerStats customer={customer} />
 
-      <AppointmentHistory
-        customerId={customer.id}
-        appointments={customer.appointments}
-      />
+      <AppointmentHistory customerId={customer.id} appointments={customer.appointments} />
     </div>
   );
 }

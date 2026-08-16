@@ -10,15 +10,9 @@ type ServiceTableProps = {
   onDelete: (id: string) => Promise<void>;
 };
 
-export function ServiceTable({
-  services,
-  onEdit,
-  onDelete,
-}: ServiceTableProps) {
+export function ServiceTable({ services, onEdit, onDelete }: ServiceTableProps) {
   if (services.length === 0) {
-    return (
-      <p className="mt-6 text-center text-gray-500">Még nincs szolgáltatás.</p>
-    );
+    return <p className="mt-6 text-center text-gray-500">Még nincs szolgáltatás.</p>;
   }
 
   return (
@@ -28,17 +22,13 @@ export function ServiceTable({
           <tr>
             <th className="px-4 py-3 text-left text-sm font-semibold">Név</th>
 
-            <th className="px-4 py-3 text-left text-sm font-semibold">
-              Időtartam
-            </th>
+            <th className="px-4 py-3 text-left text-sm font-semibold">Időtartam</th>
 
             <th className="px-4 py-3 text-left text-sm font-semibold">Ár</th>
 
             <th className="px-4 py-3 text-left text-sm font-semibold">Aktív</th>
 
-            <th className="px-4 py-3 text-right text-sm font-semibold">
-              Műveletek
-            </th>
+            <th className="px-4 py-3 text-right text-sm font-semibold">Műveletek</th>
           </tr>
         </thead>
 
@@ -49,17 +39,13 @@ export function ServiceTable({
                 <div className="font-medium">{service.name}</div>
 
                 {service.description && (
-                  <div className="text-sm text-gray-500">
-                    {service.description}
-                  </div>
+                  <div className="text-sm text-gray-500">{service.description}</div>
                 )}
               </td>
 
               <td className="px-4 py-3">{service.duration} perc</td>
 
-              <td className="px-4 py-3">
-                {service.price.toLocaleString("hu-HU")} Ft
-              </td>
+              <td className="px-4 py-3">{service.price.toLocaleString("hu-HU")} Ft</td>
 
               <td className="px-4 py-3">{service.active ? "✅" : "❌"}</td>
 

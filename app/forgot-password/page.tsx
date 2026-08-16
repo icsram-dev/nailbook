@@ -55,8 +55,7 @@ export default function ForgotPasswordPage() {
         </h1>
 
         <p className="mb-8 text-center leading-7 text-stone-600">
-          Add meg az e-mail címedet, és küldünk egy linket az új jelszó
-          beállításához.
+          Add meg az e-mail címedet, és küldünk egy linket az új jelszó beállításához.
         </p>
 
         {error && (
@@ -85,7 +84,11 @@ export default function ForgotPasswordPage() {
             />
           </div>
 
-          <Button type="submit" disabled={loading} className="h-11 w-full rounded-full bg-[#a97967] text-white hover:bg-[#8f6252]">
+          <Button
+            type="submit"
+            disabled={loading}
+            className="h-11 w-full rounded-full bg-[#a97967] text-white hover:bg-[#8f6252]"
+          >
             {loading ? "Küldés..." : "Jelszó-visszaállító e-mail küldése"}
           </Button>
         </form>

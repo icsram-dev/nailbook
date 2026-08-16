@@ -10,10 +10,7 @@ import {
 } from "@/lib/appointments/service";
 import { requireAdmin } from "@/lib/api/admin";
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -47,10 +44,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -73,10 +67,7 @@ export async function PUT(
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Hiba történt.",
+        error: error instanceof Error ? error.message : "Hiba történt.",
       },
       {
         status: 400,
@@ -113,12 +104,11 @@ export async function DELETE(
      * csak a státusza változik NO_SHOW-ra.
      */
     if (body.reason === "NO_SHOW") {
-      const appointment =
-        await prisma.appointment.findUnique({
-          where: {
-            id,
-          },
-        });
+      const appointment = await prisma.appointment.findUnique({
+        where: {
+          id,
+        },
+      });
 
       if (!appointment) {
         return NextResponse.json(
@@ -131,14 +121,10 @@ export async function DELETE(
         );
       }
 
-      if (
-        appointment.status === "CANCELLED" ||
-        appointment.status === "NO_SHOW"
-      ) {
+      if (appointment.status === "CANCELLED" || appointment.status === "NO_SHOW") {
         return NextResponse.json(
           {
-            error:
-              "Ez a foglalás már lezárt státuszban van.",
+            error: "Ez a foglalás már lezárt státuszban van.",
           },
           {
             status: 400,
@@ -146,17 +132,15 @@ export async function DELETE(
         );
       }
 
-      const updatedAppointment =
-        await prisma.appointment.update({
-          where: {
-            id,
-          },
-          data: {
-            status: "NO_SHOW",
-            internalNote:
-              body.note?.trim() || appointment.internalNote,
-          },
-        });
+      const updatedAppointment = await prisma.appointment.update({
+        where: {
+          id,
+        },
+        data: {
+          status: "NO_SHOW",
+          internalNote: body.note?.trim() || appointment.internalNote,
+        },
+      });
 
       return NextResponse.json({
         success: true,
@@ -202,10 +186,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Nem sikerült módosítani a foglalást.",
+        error: error instanceof Error ? error.message : "Nem sikerült módosítani a foglalást.",
       },
       {
         status: 500,

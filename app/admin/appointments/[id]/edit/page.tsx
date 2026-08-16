@@ -15,9 +15,7 @@ type Props = {
   }>;
 };
 
-export default async function EditAppointmentPage({
-  params,
-}: Props) {
+export default async function EditAppointmentPage({ params }: Props) {
   const { id } = await params;
 
   const appointment = await getAppointmentById(id);
@@ -31,10 +29,7 @@ export default async function EditAppointmentPage({
       where: {
         role: Role.CUSTOMER,
       },
-      orderBy: [
-        { lastName: "asc" },
-        { firstName: "asc" },
-      ],
+      orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
     }),
 
     prisma.service.findMany({
@@ -49,10 +44,7 @@ export default async function EditAppointmentPage({
 
   return (
     <PageContainer>
-      <PageHeader
-        title="Foglalás szerkesztése"
-        description="Módosítsd a foglalás adatait."
-      />
+      <PageHeader title="Foglalás szerkesztése" description="Módosítsd a foglalás adatait." />
 
       <EditAppointmentForm
         appointment={{

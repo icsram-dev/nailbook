@@ -32,11 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const allowedTypes = new Set([
-      "image/jpeg",
-      "image/png",
-      "image/webp",
-    ]);
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
 
     if (!allowedTypes.has(file.type)) {
       return NextResponse.json(

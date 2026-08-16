@@ -99,16 +99,19 @@ export async function POST(request: NextRequest) {
     }
 
     if (session.user.role !== "ADMIN" && !session.user.isEmailVerified) {
-      return NextResponse.json({ error: "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed." }, { status: 403 });
+      return NextResponse.json(
+        { error: "Az időpontfoglaláshoz előbb erősítsd meg az e-mail címed." },
+        { status: 403 }
+      );
     }
 
     const appointment = await createAppointment({
-  customerId,
-  serviceId: result.data.serviceId,
-  startTime: result.data.startTime,
-  customerNote: result.data.note,
-  status: result.data.status,
-});
+      customerId,
+      serviceId: result.data.serviceId,
+      startTime: result.data.startTime,
+      customerNote: result.data.note,
+      status: result.data.status,
+    });
 
     return NextResponse.json(appointment, {
       status: 201,
@@ -116,10 +119,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Ismeretlen hiba történt.",
+        error: error instanceof Error ? error.message : "Ismeretlen hiba történt.",
       },
       {
         status: 500,

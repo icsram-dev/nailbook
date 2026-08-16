@@ -36,13 +36,9 @@ export async function checkOpeningHours({
     return false;
   }
 
-  const [openHour, openMinute] = openingHour.opensAt
-    .split(":")
-    .map(Number);
+  const [openHour, openMinute] = openingHour.opensAt.split(":").map(Number);
 
-  const [closeHour, closeMinute] = openingHour.closesAt
-    .split(":")
-    .map(Number);
+  const [closeHour, closeMinute] = openingHour.closesAt.split(":").map(Number);
 
   const openingDate = new Date(startTime);
   openingDate.setHours(openHour, openMinute, 0, 0);
@@ -50,8 +46,5 @@ export async function checkOpeningHours({
   const closingDate = new Date(startTime);
   closingDate.setHours(closeHour, closeMinute, 0, 0);
 
-  return (
-    startTime >= openingDate &&
-    endTime <= closingDate
-  );
+  return startTime >= openingDate && endTime <= closingDate;
 }

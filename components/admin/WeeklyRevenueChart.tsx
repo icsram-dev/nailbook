@@ -19,9 +19,7 @@ type WeeklyRevenueChartProps = {
   }[];
 };
 
-export default function WeeklyRevenueChart({
-  data,
-}: WeeklyRevenueChartProps) {
+export default function WeeklyRevenueChart({ data }: WeeklyRevenueChartProps) {
   return (
     <Card>
       <h2 className="mb-6 text-lg font-semibold">Heti bevétel</h2>
@@ -33,19 +31,12 @@ export default function WeeklyRevenueChart({
 
             <XAxis dataKey="day" />
 
-            <YAxis
-              tickFormatter={(value) =>
-                `${value.toLocaleString("hu-HU")} Ft`
-              }
-            />
+            <YAxis tickFormatter={(value) => `${value.toLocaleString("hu-HU")} Ft`} />
 
             <Tooltip
-  formatter={(value) => [
-    `${Number(value).toLocaleString("hu-HU")} Ft`,
-    "Bevétel",
-  ]}
-  labelFormatter={(label) => `Nap: ${label}`}
-/>
+              formatter={(value) => [`${Number(value).toLocaleString("hu-HU")} Ft`, "Bevétel"]}
+              labelFormatter={(label) => `Nap: ${label}`}
+            />
 
             <Line
               type="monotone"

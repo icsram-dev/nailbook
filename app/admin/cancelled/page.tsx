@@ -9,30 +9,19 @@ export default async function CancelledAppointmentsPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Lemondások"
-        description="Az összes lemondott foglalás áttekintése."
-      />
+      <AdminPageHeader title="Lemondások" description="Az összes lemondott foglalás áttekintése." />
 
       <CancelledAppointmentsStats
         total={appointments.length}
         customerCancelled={
-          appointments.filter(
-            (appointment) =>
-              appointment.cancelledBy === "Vendég"
-          ).length
+          appointments.filter((appointment) => appointment.cancelledBy === "Vendég").length
         }
         adminCancelled={
-          appointments.filter(
-            (appointment) =>
-              appointment.cancelledBy === "Admin"
-          ).length
+          appointments.filter((appointment) => appointment.cancelledBy === "Admin").length
         }
       />
 
-      <CancelledAppointmentsTable
-        appointments={appointments}
-      />
+      <CancelledAppointmentsTable appointments={appointments} />
     </>
   );
 }

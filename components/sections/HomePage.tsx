@@ -34,7 +34,8 @@ export default function HomePage() {
                 Nem csak egy új szett. Egy új hangulat.
               </h2>
               <p className="mt-5 max-w-sm leading-7 text-stone-600">
-                A gondosan kiválasztott árnyalatok, finom formák és a rád figyelő idő teszi igazán különlegessé.
+                A gondosan kiválasztott árnyalatok, finom formák és a rád figyelő idő teszi igazán
+                különlegessé.
               </p>
             </div>
 
@@ -57,7 +58,9 @@ export default function HomePage() {
       <section className="overflow-hidden bg-[#3e302b] py-16 text-[#fffdfa] sm:py-22">
         <Container>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[.24em] text-[#d9b4a1]">Galéria</p>
+            <p className="text-xs font-semibold uppercase tracking-[.24em] text-[#d9b4a1]">
+              Galéria
+            </p>
             <h2 className="mt-3 font-serif text-3xl sm:text-4xl">Hangulatok, amik megmaradnak.</h2>
           </div>
 
@@ -88,11 +91,16 @@ export default function HomePage() {
             <div className="absolute -right-15 -top-20 size-60 rounded-full border border-white/20" />
             <div className="relative">
               <p className="eyebrow text-[#f8e9de]">A te időd</p>
-              <h2 className="mx-auto mt-3 max-w-2xl font-serif text-3xl sm:text-4xl">Készen állsz egy kis énidőre?</h2>
+              <h2 className="mx-auto mt-3 max-w-2xl font-serif text-3xl sm:text-4xl">
+                Készen állsz egy kis énidőre?
+              </h2>
               <p className="mx-auto mt-4 max-w-xl leading-7 text-white/80">
                 Foglalj időpontot néhány kattintással, és várd a következő gyönyörű részletet.
               </p>
-              <Link href="/booking" className="mt-7 inline-block rounded-full bg-[#fffdfa] px-7 py-3.5 text-sm font-medium text-[#8f6252]">
+              <Link
+                href="/booking"
+                className="mt-7 inline-block rounded-full bg-[#fffdfa] px-7 py-3.5 text-sm font-medium text-[#8f6252]"
+              >
                 Időpontot foglalok
               </Link>
             </div>

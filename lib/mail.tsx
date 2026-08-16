@@ -174,12 +174,7 @@ export async function sendPasswordResetEmail({
   customerName,
   resetUrl,
 }: SendPasswordResetEmailParams) {
-  const html = await render(
-    <PasswordResetEmail
-      customerName={customerName}
-      resetUrl={resetUrl}
-    />
-  );
+  const html = await render(<PasswordResetEmail customerName={customerName} resetUrl={resetUrl} />);
 
   return resend.emails.send({
     from: "NailBook <onboarding@resend.dev>",
@@ -234,18 +229,12 @@ export async function sendVerificationEmail({
   firstName,
   verifyUrl,
 }: SendVerificationEmailParams) {
-  const html = await render(
-    <VerifyEmail
-      firstName={firstName}
-      verifyUrl={verifyUrl}
-    />
-  );
+  const html = await render(<VerifyEmail firstName={firstName} verifyUrl={verifyUrl} />);
 
   return resend.emails.send({
     from: "NailBook <onboarding@resend.dev>",
     to,
-    subject:
-      "Üdvözlünk a NailBookban! Erősítsd meg az e-mail címed",
+    subject: "Üdvözlünk a NailBookban! Erősítsd meg az e-mail címed",
     html,
   });
 }

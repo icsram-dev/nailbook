@@ -15,17 +15,11 @@ export async function DELETE(
     const session = await auth();
 
     if (!session?.user) {
-      return NextResponse.json(
-        { error: "Bejelentkezés szükséges." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Bejelentkezés szükséges." }, { status: 401 });
     }
 
     if (session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Nincs jogosultságod a törléshez." },
-        { status: 403 }
-      );
+      return NextResponse.json({ error: "Nincs jogosultságod a törléshez." }, { status: 403 });
     }
 
     const { id: customerId } = await params;
@@ -34,14 +28,8 @@ export async function DELETE(
 
     const appointmentIds = body.appointmentIds;
 
-    if (
-      !Array.isArray(appointmentIds) ||
-      appointmentIds.length === 0
-    ) {
-      return NextResponse.json(
-        { error: "Nincs kijelölt foglalás." },
-        { status: 400 }
-      );
+    if (!Array.isArray(appointmentIds) || appointmentIds.length === 0) {
+      return NextResponse.json({ error: "Nincs kijelölt foglalás." }, { status: 400 });
     }
 
     // Ellenőrizzük, hogy a vendég létezik.
@@ -55,10 +43,7 @@ export async function DELETE(
     });
 
     if (!customer) {
-      return NextResponse.json(
-        { error: "A vendég nem található." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "A vendég nem található." }, { status: 404 });
     }
 
     // A kijelölt foglalások végleges törlése.
@@ -88,10 +73,7 @@ export async function DELETE(
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Nem sikerült törölni a foglalásokat.",
+        error: error instanceof Error ? error.message : "Nem sikerült törölni a foglalásokat.",
       },
       {
         status: 500,

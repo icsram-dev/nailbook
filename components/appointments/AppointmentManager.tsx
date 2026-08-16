@@ -21,43 +21,35 @@ type AppointmentManagerProps = {
   services: Service[];
 };
 
-export function AppointmentManager({
-  appointments,
-  customers,
-  services,
-}: AppointmentManagerProps) {
+export function AppointmentManager({ appointments, customers, services }: AppointmentManagerProps) {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
 
-  const [selectedAppointment, setSelectedAppointment] =
-    useState<AppointmentWithRelations | null>(null);
+  const [selectedAppointment, setSelectedAppointment] = useState<AppointmentWithRelations | null>(
+    null
+  );
 
   async function saveAppointment(data: AppointmentData) {
     const isEditing = selectedAppointment !== null;
 
     try {
       const response = await fetch(
-        isEditing
-          ? `/api/appointments/${selectedAppointment.id}`
-          : "/api/appointments",
+        isEditing ? `/api/appointments/${selectedAppointment.id}` : "/api/appointments",
         {
           method: isEditing ? "PATCH" : "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        },
+        }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
         alert(
-          result.message ??
-            `Nem sikerült ${
-              isEditing ? "frissíteni" : "létrehozni"
-            } a foglalást.`,
+          result.message ?? `Nem sikerült ${isEditing ? "frissíteni" : "létrehozni"} a foglalást.`
         );
         return;
       }

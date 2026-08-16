@@ -12,9 +12,7 @@ type Props = {
   }>;
 };
 
-export default async function AppointmentPage({
-  params,
-}: Props) {
+export default async function AppointmentPage({ params }: Props) {
   const { id } = await params;
 
   const appointment = await prisma.appointment.findUnique({
@@ -33,10 +31,7 @@ export default async function AppointmentPage({
 
   return (
     <>
-      <AdminPageHeader
-        title="Foglalás részletei"
-        description="Foglalás adatainak megtekintése."
-      />
+      <AdminPageHeader title="Foglalás részletei" description="Foglalás adatainak megtekintése." />
 
       <div className="mt-8 rounded-2xl border bg-white p-8 shadow-sm">
         <div className="grid gap-6 md:grid-cols-2">
@@ -45,59 +40,30 @@ export default async function AppointmentPage({
             value={`${appointment.customer.lastName} ${appointment.customer.firstName}`}
           />
 
-          <Info
-            title="Telefon"
-            value={appointment.customer.phone}
-          />
+          <Info title="Telefon" value={appointment.customer.phone} />
 
-          <Info
-            title="Email"
-            value={appointment.customer.email}
-          />
+          <Info title="Email" value={appointment.customer.email} />
 
-          <Info
-            title="Szolgáltatás"
-            value={appointment.service.name}
-          />
+          <Info title="Szolgáltatás" value={appointment.service.name} />
 
-          <Info
-            title="Ár"
-            value={`${appointment.price.toLocaleString("hu-HU")} Ft`}
-          />
+          <Info title="Ár" value={`${appointment.price.toLocaleString("hu-HU")} Ft`} />
 
           <Info
             title="Dátum"
-            value={format(
-              appointment.startTime,
-              "yyyy.MM.dd.",
-              {
-                locale: hu,
-              }
-            )}
+            value={format(appointment.startTime, "yyyy.MM.dd.", {
+              locale: hu,
+            })}
           />
 
-          <Info
-            title="Idő"
-            value={format(
-              appointment.startTime,
-              "HH:mm"
-            )}
-          />
+          <Info title="Idő" value={format(appointment.startTime, "HH:mm")} />
 
           <div>
-            <p className="mb-2 text-sm text-gray-500">
-              Státusz
-            </p>
+            <p className="mb-2 text-sm text-gray-500">Státusz</p>
 
             <div className="flex items-center gap-3">
-              <AppointmentStatusBadge
-                status={appointment.status}
-              />
+              <AppointmentStatusBadge status={appointment.status} />
 
-              <AppointmentStatusSelect
-                id={appointment.id}
-                status={appointment.status}
-              />
+              <AppointmentStatusSelect id={appointment.id} status={appointment.status} />
             </div>
           </div>
         </div>
@@ -111,19 +77,12 @@ type InfoProps = {
   value: string | null;
 };
 
-function Info({
-  title,
-  value,
-}: InfoProps) {
+function Info({ title, value }: InfoProps) {
   return (
     <div>
-      <p className="mb-1 text-sm text-gray-500">
-        {title}
-      </p>
+      <p className="mb-1 text-sm text-gray-500">{title}</p>
 
-      <p className="text-lg font-semibold">
-        {value ?? "-"}
-      </p>
+      <p className="text-lg font-semibold">{value ?? "-"}</p>
     </div>
   );
 }

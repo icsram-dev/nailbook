@@ -6,14 +6,10 @@ type SectionCardProps = {
   children: ReactNode;
 };
 
-export default function SectionCard({
-  children,
-}: SectionCardProps) {
+export default function SectionCard({ children }: SectionCardProps) {
   return (
     <Card>
-      <CardContent className="p-6">
-        {children}
-      </CardContent>
+      <CardContent className="p-6">{children}</CardContent>
     </Card>
   );
 }

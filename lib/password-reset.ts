@@ -13,9 +13,7 @@ export async function createPasswordResetToken(userId: string) {
 
   const token = crypto.randomBytes(32).toString("hex");
 
-  const expiresAt = new Date(
-    Date.now() + RESET_TOKEN_EXPIRATION_HOURS * 60 * 60 * 1000
-  );
+  const expiresAt = new Date(Date.now() + RESET_TOKEN_EXPIRATION_HOURS * 60 * 60 * 1000);
 
   return prisma.passwordResetToken.create({
     data: {

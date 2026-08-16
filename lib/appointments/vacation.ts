@@ -7,10 +7,7 @@ interface CheckVacationParams {
   endTime: Date;
 }
 
-export async function checkVacation({
-  startTime,
-  endTime,
-}: CheckVacationParams): Promise<boolean> {
+export async function checkVacation({ startTime, endTime }: CheckVacationParams): Promise<boolean> {
   const vacation = await prisma.vacation.findFirst({
     where: {
       startDate: {

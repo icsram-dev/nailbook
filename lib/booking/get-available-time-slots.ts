@@ -45,12 +45,7 @@ export async function getAvailableTimeSlots({
     },
   });
 
-  if (
-    !openingHour ||
-    !openingHour.isOpen ||
-    !openingHour.opensAt ||
-    !openingHour.closesAt
-  ) {
+  if (!openingHour || !openingHour.isOpen || !openingHour.opensAt || !openingHour.closesAt) {
     return [];
   }
 
@@ -60,42 +55,38 @@ export async function getAvailableTimeSlots({
   const dayEnd = new Date(date);
   dayEnd.setHours(23, 59, 59, 999);
 
-  const [appointments, vacations] =
-    await prisma.$transaction([
-      prisma.appointment.findMany({
-        where: {
-          status: {
-  notIn: [
-    "CANCELLED",
-    "NO_SHOW",
-  ],
-},
-          startTime: {
-            gte: dayStart,
-            lte: dayEnd,
-          },
+  const [appointments, vacations] = await prisma.$transaction([
+    prisma.appointment.findMany({
+      where: {
+        status: {
+          notIn: ["CANCELLED", "NO_SHOW"],
         },
-        select: {
-          startTime: true,
-          endTime: true,
+        startTime: {
+          gte: dayStart,
+          lte: dayEnd,
         },
-      }),
+      },
+      select: {
+        startTime: true,
+        endTime: true,
+      },
+    }),
 
-      prisma.vacation.findMany({
-        where: {
-          startDate: {
-            lte: dayEnd,
-          },
-          endDate: {
-            gte: dayStart,
-          },
+    prisma.vacation.findMany({
+      where: {
+        startDate: {
+          lte: dayEnd,
         },
-        select: {
-          startDate: true,
-          endDate: true,
+        endDate: {
+          gte: dayStart,
         },
-      }),
-    ]);
+      },
+      select: {
+        startDate: true,
+        endDate: true,
+      },
+    }),
+  ]);
 
   const slots = generateTimeSlots({
     date,

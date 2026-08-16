@@ -3,9 +3,17 @@ import { Heart, Sparkles } from "lucide-react";
 import Container from "@/components/ui/Container";
 
 const values = [
-  [Sparkles, "Minőségi figyelem", "Az elképzelésedhez, életstílusodhoz és körmeid állapotához igazított szolgáltatás."],
+  [
+    Sparkles,
+    "Minőségi figyelem",
+    "Az elképzelésedhez, életstílusodhoz és körmeid állapotához igazított szolgáltatás.",
+  ],
   [Heart, "Nyugodt élmény", "Letisztult, barátságos környezet, ahol a részletekre is jut idő."],
-  [Sparkles, "Időtálló stílus", "Finom, nőies és igényes körmök a hétköznapokra és a különleges alkalmakra."],
+  [
+    Sparkles,
+    "Időtálló stílus",
+    "Finom, nőies és igényes körmök a hétköznapokra és a különleges alkalmakra.",
+  ],
 ] as const;
 
 export default function AboutPage() {
@@ -20,13 +28,16 @@ export default function AboutPage() {
                 A szépség a gondosan megélt részletekben van.
               </h1>
               <p className="mt-5 max-w-xl text-base leading-7 text-stone-600 sm:text-lg">
-                Hiszek abban, hogy egy körmös alkalom több, mint egy szolgáltatás: egy kis énidő, ahol csak rád figyelünk.
+                Hiszek abban, hogy egy körmös alkalom több, mint egy szolgáltatás: egy kis énidő,
+                ahol csak rád figyelünk.
               </p>
             </div>
 
             <div className="mx-auto aspect-[5/6] w-full max-w-md rounded-[2.25rem] border border-white/70 bg-[radial-gradient(circle_at_25%_20%,#fffdf9,transparent_28%),linear-gradient(135deg,#d9c3b7,#f8f2eb)] p-6 shadow-[0_30px_70px_-45px_rgba(74,49,38,.7)]">
               <div className="flex h-full items-end rounded-[1.7rem] border border-white/50 bg-white/25 p-6">
-                <p className="font-serif text-2xl italic text-white/90">Itt lesz a saját portréd.</p>
+                <p className="font-serif text-2xl italic text-white/90">
+                  Itt lesz a saját portréd.
+                </p>
               </div>
             </div>
           </div>

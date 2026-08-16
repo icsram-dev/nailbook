@@ -15,7 +15,9 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
           <div className="mx-auto grid size-14 place-items-center rounded-full bg-[#f3e8e1] text-[#8f6252]">
             {verified ? <CircleCheck className="size-7" /> : <CircleX className="size-7" />}
           </div>
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[.22em] text-[#a97967]">Fiókbiztonság</p>
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[.22em] text-[#a97967]">
+            Fiókbiztonság
+          </p>
           <h1 className="mt-3 font-serif text-3xl text-stone-800 sm:text-4xl">
             {verified ? "E-mail cím megerősítve" : "Érvénytelen link"}
           </h1>
@@ -24,7 +26,10 @@ export default async function VerifyEmailPage({ searchParams }: Props) {
               ? "Köszönjük! Az e-mail címedet sikeresen megerősítettük, a fiókod használatra kész."
               : "A megerősítő link érvénytelen, lejárt vagy már felhasználtad."}
           </p>
-          <Link href={verified ? "/login" : "/register"} className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#a97967] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#8f6252]">
+          <Link
+            href={verified ? "/login" : "/register"}
+            className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#a97967] px-6 py-3 text-sm font-medium text-white transition hover:bg-[#8f6252]"
+          >
             {verified ? <MailCheck className="size-4" /> : null}
             {verified ? "Bejelentkezés" : "Regisztráció"}
           </Link>

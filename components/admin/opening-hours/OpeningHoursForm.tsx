@@ -21,9 +21,7 @@ type OpeningHoursFormProps = {
   openingHours: OpeningHour[];
 };
 
-export function OpeningHoursForm({
-  openingHours,
-}: OpeningHoursFormProps) {
+export function OpeningHoursForm({ openingHours }: OpeningHoursFormProps) {
   const [days, setDays] = useState<OpeningHour[]>(openingHours);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -69,13 +67,8 @@ export function OpeningHoursForm({
 
         <tbody>
           {days.map((day) => (
-            <tr
-              key={day.id}
-              className="border-b last:border-none"
-            >
-              <td className="px-6 py-4 font-medium">
-                {WEEKDAYS[day.day]}
-              </td>
+            <tr key={day.id} className="border-b last:border-none">
+              <td className="px-6 py-4 font-medium">{WEEKDAYS[day.day]}</td>
 
               <td className="px-6 py-4 text-center">
                 <input

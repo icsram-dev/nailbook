@@ -8,17 +8,10 @@ type Props = {
   placeholder?: string;
 };
 
-export default function SearchInput({
-  value,
-  onChange,
-  placeholder = "Keresés...",
-}: Props) {
+export default function SearchInput({ value, onChange, placeholder = "Keresés..." }: Props) {
   return (
     <div className="relative mb-6 max-w-md">
-      <Search
-        size={18}
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-      />
+      <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
 
       <input
         type="text"

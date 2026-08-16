@@ -32,10 +32,7 @@ export async function getCancelledAppointments() {
 
     cancelledAt: appointment.cancelledAt,
 
-    cancelledBy:
-      appointment.cancelledBy === CancelledBy.ADMIN
-        ? "Admin"
-        : "Vendég",
+    cancelledBy: appointment.cancelledBy === CancelledBy.ADMIN ? "Admin" : "Vendég",
 
     cancelReason: appointment.cancelReason,
   }));

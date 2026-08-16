@@ -22,29 +22,20 @@ type ServiceManagerProps = {
   services: Service[];
 };
 
-export function ServiceManager({
-  services,
-}: ServiceManagerProps) {
+export function ServiceManager({ services }: ServiceManagerProps) {
   const [open, setOpen] = useState(false);
 
-  const [selectedService, setSelectedService] =
-    useState<Service | null>(null);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
-  const [isPending, startTransition] =
-    useTransition();
+  const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
 
-  async function saveService(
-    data: ServiceData,
-  ) {
+  async function saveService(data: ServiceData) {
     startTransition(async () => {
       try {
         if (selectedService) {
-          await updateServiceAction(
-            selectedService.id,
-            data
-          );
+          await updateServiceAction(selectedService.id, data);
         } else {
           await createServiceAction(data);
         }
@@ -53,17 +44,13 @@ export function ServiceManager({
         router.refresh();
       } catch (error) {
         console.error(error);
-        alert(
-          "Hiba történt a mentés során."
-        );
+        alert("Hiba történt a mentés során.");
       }
     });
   }
 
   async function deleteService(id: string) {
-    const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szolgáltatást?"
-    );
+    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt a szolgáltatást?");
 
     if (!confirmed) {
       return;
@@ -71,8 +58,7 @@ export function ServiceManager({
 
     startTransition(async () => {
       try {
-        const result =
-          await deleteServiceAction(id);
+        const result = await deleteServiceAction(id);
 
         if (!result.success) {
           alert(result.message);
@@ -105,23 +91,14 @@ export function ServiceManager({
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-semibold">
-          Szolgáltatások
-        </h2>
+        <h2 className="text-2xl font-semibold">Szolgáltatások</h2>
 
-        <Button
-          onClick={createService}
-          disabled={isPending}
-        >
+        <Button onClick={createService} disabled={isPending}>
           + Új szolgáltatás
         </Button>
       </div>
 
-      <ServiceTable
-        services={services}
-        onEdit={editService}
-        onDelete={deleteService}
-      />
+      <ServiceTable services={services} onEdit={editService} onDelete={deleteService} />
 
       <ServiceModal
         open={open}

@@ -9,10 +9,7 @@ type Props = {
   status: AppointmentStatus;
 };
 
-export default function AppointmentStatusSelect({
-  id,
-  status,
-}: Props) {
+export default function AppointmentStatusSelect({ id, status }: Props) {
   const [isPending, startTransition] = useTransition();
 
   return (
@@ -21,10 +18,7 @@ export default function AppointmentStatusSelect({
       defaultValue={status}
       onChange={(e) =>
         startTransition(async () => {
-          await updateAppointmentStatus(
-            id,
-            e.target.value as AppointmentStatus
-          );
+          await updateAppointmentStatus(id, e.target.value as AppointmentStatus);
         })
       }
       className="rounded-xl border px-3 py-2"

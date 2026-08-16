@@ -5,11 +5,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ImageUpload from "@/components/ui/ImageUpload";
 
-import {
-  serviceSchema,
-  type ServiceInput,
-  type ServiceData,
-} from "@/lib/validations/service";
+import { serviceSchema, type ServiceInput, type ServiceData } from "@/lib/validations/service";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -20,21 +16,18 @@ type ServiceFormProps = {
   defaultValues?: ServiceInput;
 };
 
-export function ServiceForm({
-  onSubmit,
-  defaultValues,
-}: ServiceFormProps) {
+export function ServiceForm({ onSubmit, defaultValues }: ServiceFormProps) {
   const {
-  register,
-  handleSubmit,
-  reset,
-  setValue,
-  control,
-  formState: { errors, isSubmitting },
-} = useForm<ServiceInput, unknown, ServiceData>({
-  resolver: zodResolver(serviceSchema),
-  defaultValues,
-});
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    control,
+    formState: { errors, isSubmitting },
+  } = useForm<ServiceInput, unknown, ServiceData>({
+    resolver: zodResolver(serviceSchema),
+    defaultValues,
+  });
 
   useEffect(() => {
     reset(
@@ -52,123 +45,69 @@ export function ServiceForm({
   const image = useWatch({ control, name: "image" });
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Szolgáltatás neve
-        </label>
+        <label className="mb-1 block text-sm font-medium">Szolgáltatás neve</label>
 
         <Input {...register("name")} />
 
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.name.message}
-          </p>
-        )}
+        {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Leírás
-        </label>
+        <label className="mb-1 block text-sm font-medium">Leírás</label>
 
-        <Textarea
-          rows={3}
-          {...register("description")}
-        />
+        <Textarea rows={3} {...register("description")} />
 
         {errors.description && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.description.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
         )}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Kép URL
-        </label>
+        <label className="mb-1 block text-sm font-medium">Kép URL</label>
 
         <div>
-  <label className="mb-1 block text-sm font-medium">
-    Kép
-  </label>
+          <label className="mb-1 block text-sm font-medium">Kép</label>
 
-  <ImageUpload
-    value={image}
-    onChange={(url) =>
-      setValue("image", url, {
-        shouldValidate: true,
-      })
-    }
-  />
+          <ImageUpload
+            value={image}
+            onChange={(url) =>
+              setValue("image", url, {
+                shouldValidate: true,
+              })
+            }
+          />
 
-  <input
-    type="hidden"
-    {...register("image")}
-  />
+          <input type="hidden" {...register("image")} />
 
-  {errors.image && (
-    <p className="mt-1 text-sm text-red-600">
-      {errors.image.message}
-    </p>
-  )}
-</div>
+          {errors.image && <p className="mt-1 text-sm text-red-600">{errors.image.message}</p>}
+        </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Időtartam (perc)
-        </label>
+        <label className="mb-1 block text-sm font-medium">Időtartam (perc)</label>
 
-        <Input
-          type="number"
-          {...register("duration")}
-        />
+        <Input type="number" {...register("duration")} />
 
-        {errors.duration && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.duration.message}
-          </p>
-        )}
+        {errors.duration && <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>}
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium">
-          Ár (Ft)
-        </label>
+        <label className="mb-1 block text-sm font-medium">Ár (Ft)</label>
 
-        <Input
-          type="number"
-          {...register("price")}
-        />
+        <Input type="number" {...register("price")} />
 
-        {errors.price && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.price.message}
-          </p>
-        )}
+        {errors.price && <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>}
       </div>
 
       <div className="flex items-center gap-2">
-        <input
-          id="active"
-          type="checkbox"
-          {...register("active")}
-        />
+        <input id="active" type="checkbox" {...register("active")} />
 
-        <label htmlFor="active">
-          Aktív szolgáltatás
-        </label>
+        <label htmlFor="active">Aktív szolgáltatás</label>
       </div>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Mentés..." : "Mentés"}
       </Button>
     </form>

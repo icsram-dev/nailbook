@@ -7,10 +7,7 @@ import { Vacation } from "@prisma/client";
 
 import type { VacationData } from "@/lib/validations/vacation";
 
-import {
-  createVacationAction,
-  deleteVacationAction,
-} from "@/app/admin/vacations/actions";
+import { createVacationAction, deleteVacationAction } from "@/app/admin/vacations/actions";
 
 import { Button } from "@/components/ui/Button";
 
@@ -21,9 +18,7 @@ type VacationManagerProps = {
   vacations: Vacation[];
 };
 
-export function VacationManager({
-  vacations,
-}: VacationManagerProps) {
+export function VacationManager({ vacations }: VacationManagerProps) {
   const [open, setOpen] = useState(false);
 
   const [isPending, startTransition] = useTransition();
@@ -45,9 +40,7 @@ export function VacationManager({
   }
 
   async function deleteVacation(id: string) {
-    const confirmed = window.confirm(
-      "Biztosan törölni szeretnéd ezt a szabadságot?",
-    );
+    const confirmed = window.confirm("Biztosan törölni szeretnéd ezt a szabadságot?");
 
     if (!confirmed) {
       return;
@@ -77,29 +70,16 @@ export function VacationManager({
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">
-          Szabadságok
-        </h1>
+        <h1 className="text-2xl font-bold">Szabadságok</h1>
 
-        <Button
-          onClick={() => setOpen(true)}
-          disabled={isPending}
-        >
+        <Button onClick={() => setOpen(true)} disabled={isPending}>
           + Új szabadság
         </Button>
       </div>
 
-      <VacationTable
-        vacations={vacations}
-        onDelete={deleteVacation}
-      />
+      <VacationTable vacations={vacations} onDelete={deleteVacation} />
 
-      <VacationModal
-        open={open}
-        onClose={closeModal}
-        vacation={null}
-        onSubmit={saveVacation}
-      />
+      <VacationModal open={open} onClose={closeModal} vacation={null} onSubmit={saveVacation} />
     </>
   );
 }

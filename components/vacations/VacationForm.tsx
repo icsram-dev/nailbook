@@ -4,11 +4,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import {
-  vacationSchema,
-  type VacationInput,
-  type VacationData,
-} from "@/lib/validations/vacation";
+import { vacationSchema, type VacationInput, type VacationData } from "@/lib/validations/vacation";
 
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -44,9 +40,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
         <Input type="date" {...register("startDate")} />
 
         {errors.startDate && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.startDate.message}
-          </p>
+          <p className="mt-1 text-sm text-red-600">{errors.startDate.message}</p>
         )}
       </div>
 
@@ -55,9 +49,7 @@ export function VacationForm({ onSubmit, defaultValues }: VacationFormProps) {
 
         <Input type="date" {...register("endDate")} />
 
-        {errors.endDate && (
-          <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>
-        )}
+        {errors.endDate && <p className="mt-1 text-sm text-red-600">{errors.endDate.message}</p>}
       </div>
 
       <div>

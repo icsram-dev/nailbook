@@ -2,14 +2,7 @@ import DashboardCard from "@/components/admin/DashboardCard";
 import PendingAppointments from "@/components/admin/PendingAppointments";
 import { getDashboardData } from "@/lib/dashboard";
 
-import {
-  CalendarDays,
-  Wallet,
-  Banknote,
-  Clock3,
-  CircleX,
-  UserX,
-} from "lucide-react";
+import { CalendarDays, Wallet, Banknote, Clock3, CircleX, UserX } from "lucide-react";
 
 export default async function AdminPage() {
   const dashboard = await getDashboardData();
@@ -43,18 +36,14 @@ export default async function AdminPage() {
 
         <DashboardCard
           title="Heti bevétel"
-          value={`${dashboard.weeklyRevenue.toLocaleString(
-            "hu-HU"
-          )} Ft`}
+          value={`${dashboard.weeklyRevenue.toLocaleString("hu-HU")} Ft`}
           icon={<Wallet size={22} />}
           color="bg-[#e4f0ea] text-[#5b826b]"
         />
 
         <DashboardCard
           title="Havi bevétel"
-          value={`${dashboard.monthlyRevenue.toLocaleString(
-            "hu-HU"
-          )} Ft`}
+          value={`${dashboard.monthlyRevenue.toLocaleString("hu-HU")} Ft`}
           icon={<Banknote size={22} />}
           color="bg-[#f7efdc] text-[#96713b]"
         />
@@ -77,9 +66,7 @@ export default async function AdminPage() {
       </div>
 
       <div className="mt-8">
-        <PendingAppointments
-          appointments={dashboard.pendingList}
-        />
+        <PendingAppointments appointments={dashboard.pendingList} />
       </div>
     </>
   );

@@ -30,10 +30,7 @@ export async function createService(data: ServiceData) {
   });
 }
 
-export async function updateService(
-  id: string,
-  data: ServiceData,
-) {
+export async function updateService(id: string, data: ServiceData) {
   return prisma.service.update({
     where: {
       id,

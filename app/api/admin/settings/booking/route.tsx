@@ -8,10 +8,7 @@ export async function PATCH(request: NextRequest) {
     const session = await auth();
 
     if (!session?.user || session.user.role !== "ADMIN") {
-      return NextResponse.json(
-        { error: "Nincs jogosultság." },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Nincs jogosultság." }, { status: 401 });
     }
 
     const body = await request.json();
@@ -20,16 +17,10 @@ export async function PATCH(request: NextRequest) {
       typeof body.autoConfirmBookings !== "boolean" ||
       typeof body.cancellationHours !== "number"
     ) {
-      return NextResponse.json(
-        { error: "Érvénytelen adatok." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Érvénytelen adatok." }, { status: 400 });
     }
 
-    const settings = await updateBookingSettings(
-      body.autoConfirmBookings,
-      body.cancellationHours
-    );
+    const settings = await updateBookingSettings(body.autoConfirmBookings, body.cancellationHours);
 
     return NextResponse.json(settings);
   } catch (error) {

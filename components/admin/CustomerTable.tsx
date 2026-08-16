@@ -10,9 +10,7 @@ type Props = {
   customers: CustomerTableItem[];
 };
 
-export default function CustomerTable({
-  customers,
-}: Props) {
+export default function CustomerTable({ customers }: Props) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
@@ -26,8 +24,7 @@ export default function CustomerTable({
     }
 
     return customers.filter((customer) => {
-      const fullName =
-        `${customer.lastName} ${customer.firstName}`.toLowerCase();
+      const fullName = `${customer.lastName} ${customer.firstName}`.toLowerCase();
 
       return (
         fullName.includes(query) ||
@@ -62,35 +59,22 @@ export default function CustomerTable({
               <tr className="text-left text-sm text-gray-500">
                 <th className="px-6 py-4">Név</th>
 
-                <th className="px-6 py-4">
-                  Telefon
-                </th>
+                <th className="px-6 py-4">Telefon</th>
 
-                <th className="px-6 py-4">
-                  E-mail
-                </th>
+                <th className="px-6 py-4">E-mail</th>
 
-                <th className="px-6 py-4 text-center">
-                  Foglalások
-                </th>
+                <th className="px-6 py-4 text-center">Foglalások</th>
 
-                <th className="px-6 py-4 text-right">
-                  Összes költés
-                </th>
+                <th className="px-6 py-4 text-right">Összes költés</th>
 
-                <th className="px-6 py-4">
-                  Következő időpont
-                </th>
+                <th className="px-6 py-4">Következő időpont</th>
               </tr>
             </thead>
 
             <tbody>
               {filteredCustomers.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-10 text-center text-gray-500"
-                  >
+                  <td colSpan={6} className="px-6 py-10 text-center text-gray-500">
                     Nincs a keresésnek megfelelő vendég.
                   </td>
                 </tr>
@@ -98,42 +82,26 @@ export default function CustomerTable({
                 filteredCustomers.map((customer) => (
                   <tr
                     key={customer.id}
-                    onClick={() =>
-                      router.push(
-                        `/admin/customers/${customer.id}`
-                      )
-                    }
+                    onClick={() => router.push(`/admin/customers/${customer.id}`)}
                     className="cursor-pointer border-b transition hover:bg-gray-50 last:border-0"
                   >
                     <td className="px-6 py-4 font-medium">
-                      {customer.lastName}{" "}
-                      {customer.firstName}
+                      {customer.lastName} {customer.firstName}
                     </td>
 
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {customer.phone}
-                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">{customer.phone}</td>
 
-                    <td className="whitespace-nowrap px-6 py-4">
-                      {customer.email}
-                    </td>
+                    <td className="whitespace-nowrap px-6 py-4">{customer.email}</td>
 
-                    <td className="px-6 py-4 text-center">
-                      {customer.appointmentCount}
-                    </td>
+                    <td className="px-6 py-4 text-center">{customer.appointmentCount}</td>
 
                     <td className="whitespace-nowrap px-6 py-4 text-right">
-                      {customer.totalSpent.toLocaleString(
-                        "hu-HU"
-                      )}{" "}
-                      Ft
+                      {customer.totalSpent.toLocaleString("hu-HU")} Ft
                     </td>
 
                     <td className="whitespace-nowrap px-6 py-4">
                       {customer.nextAppointment
-                        ? customer.nextAppointment.toLocaleDateString(
-                            "hu-HU"
-                          )
+                        ? customer.nextAppointment.toLocaleDateString("hu-HU")
                         : "-"}
                     </td>
                   </tr>

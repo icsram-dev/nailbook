@@ -1,8 +1,4 @@
-import {
-  addMinutes,
-  format,
-  set,
-} from "date-fns";
+import { addMinutes, format, set } from "date-fns";
 
 /**
  * Egy dátumhoz hozzáad egy HH:mm időpontot.
@@ -12,13 +8,8 @@ import {
  * =>
  * 2026-08-10 08:30
  */
-export function combineDateAndTime(
-  date: Date,
-  time: string
-) {
-  const [hours, minutes] = time
-    .split(":")
-    .map(Number);
+export function combineDateAndTime(date: Date, time: string) {
+  const [hours, minutes] = time.split(":").map(Number);
 
   return set(date, {
     hours,
@@ -41,9 +32,7 @@ export function formatTime(date: Date) {
  * 08:30 => 510
  */
 export function timeToMinutes(time: string) {
-  const [hours, minutes] = time
-    .split(":")
-    .map(Number);
+  const [hours, minutes] = time.split(":").map(Number);
 
   return hours * 60 + minutes;
 }
@@ -57,9 +46,7 @@ export function minutesToTime(minutes: number) {
   const hours = Math.floor(minutes / 60);
   const mins = minutes % 60;
 
-  return `${String(hours).padStart(2, "0")}:${String(
-    mins
-  ).padStart(2, "0")}`;
+  return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
 }
 
 /**
@@ -69,21 +56,13 @@ export function minutesToTime(minutes: number) {
  * =>
  * 09:30
  */
-export function addMinutesToTime(
-  time: string,
-  minutes: number
-) {
-  return minutesToTime(
-    timeToMinutes(time) + minutes
-  );
+export function addMinutesToTime(time: string, minutes: number) {
+  return minutesToTime(timeToMinutes(time) + minutes);
 }
 
 /**
  * Date + percek
  */
-export function addMinutesToDate(
-  date: Date,
-  minutes: number
-) {
+export function addMinutesToDate(date: Date, minutes: number) {
   return addMinutes(date, minutes);
 }

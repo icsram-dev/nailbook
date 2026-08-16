@@ -7,16 +7,9 @@ type Options = {
   date?: Date;
 };
 
-export function useAvailableTimeSlots({
-  serviceId,
-  date,
-}: Options) {
+export function useAvailableTimeSlots({ serviceId, date }: Options) {
   return useQuery<TimeSlot[]>({
-    queryKey: [
-      "available-slots",
-      serviceId,
-      date?.toISOString(),
-    ],
+    queryKey: ["available-slots", serviceId, date?.toISOString()],
 
     enabled: !!serviceId && !!date,
 
@@ -26,14 +19,10 @@ export function useAvailableTimeSlots({
         date: date!.toISOString(),
       });
 
-      const response = await fetch(
-        `/api/booking/slots?${params}`
-      );
+      const response = await fetch(`/api/booking/slots?${params}`);
 
       if (!response.ok) {
-        throw new Error(
-          "Nem sikerült betölteni az időpontokat."
-        );
+        throw new Error("Nem sikerült betölteni az időpontokat.");
       }
 
       return response.json();

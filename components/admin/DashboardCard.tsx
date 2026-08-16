@@ -23,9 +23,7 @@ export default function DashboardCard({
     <Card
       className={clsx(
         "min-h-30 border border-stone-200 bg-[#fffdfa] p-4 shadow-sm transition-all duration-300",
-        href
-          ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#c39a89] hover:shadow-md"
-          : ""
+        href ? "cursor-pointer hover:-translate-y-0.5 hover:border-[#c39a89] hover:shadow-md" : ""
       )}
     >
       <div className="flex items-center justify-between gap-4">
@@ -34,16 +32,11 @@ export default function DashboardCard({
             {title}
           </p>
 
-          <h2 className="mt-2 text-3xl text-stone-800">
-            {value}
-          </h2>
+          <h2 className="mt-2 text-3xl text-stone-800">{value}</h2>
         </div>
 
         <div
-          className={clsx(
-            "flex size-11 shrink-0 items-center justify-center rounded-xl",
-            color
-          )}
+          className={clsx("flex size-11 shrink-0 items-center justify-center rounded-xl", color)}
         >
           {icon}
         </div>

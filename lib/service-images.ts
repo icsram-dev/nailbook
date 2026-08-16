@@ -8,9 +8,9 @@ const fallbackServiceImages = [
 export function getServiceImage(id: string, image?: string | null) {
   if (image) return image;
 
-  const index = id
-    .split("")
-    .reduce((total, character) => total + character.charCodeAt(0), 0) % fallbackServiceImages.length;
+  const index =
+    id.split("").reduce((total, character) => total + character.charCodeAt(0), 0) %
+    fallbackServiceImages.length;
 
   return fallbackServiceImages[index];
 }

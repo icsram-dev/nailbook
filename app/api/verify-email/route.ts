@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET(request: NextRequest) {
-  const token =
-    request.nextUrl.searchParams.get("token");
+  const token = request.nextUrl.searchParams.get("token");
 
   if (!token) {
     return NextResponse.json(
@@ -47,14 +46,12 @@ export async function GET(request: NextRequest) {
     where: {
       id: user.id,
     },
-      data: {
-        isEmailVerified: true,
-        verifyToken: null,
-        verifyTokenExpiresAt: null,
+    data: {
+      isEmailVerified: true,
+      verifyToken: null,
+      verifyTokenExpiresAt: null,
     },
   });
 
-  return NextResponse.redirect(
-    `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?success=true`
-  );
+  return NextResponse.redirect(`${process.env.NEXT_PUBLIC_APP_URL}/verify-email?success=true`);
 }

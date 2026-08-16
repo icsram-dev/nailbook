@@ -7,10 +7,7 @@ export default async function CustomersPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Vendégek"
-        description="A regisztrált vendégek áttekintése."
-      />
+      <AdminPageHeader title="Vendégek" description="A regisztrált vendégek áttekintése." />
 
       <CustomerTable customers={customers} />
     </>

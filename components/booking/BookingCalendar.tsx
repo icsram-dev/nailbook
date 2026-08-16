@@ -15,8 +15,7 @@ type Vacation = {
 };
 
 export default function BookingCalendar() {
-  const { watch, setValue } =
-    useFormContext<BookingFormValues>();
+  const { watch, setValue } = useFormContext<BookingFormValues>();
 
   const serviceId = watch("serviceId");
   const selectedDate = watch("date");
@@ -56,50 +55,46 @@ export default function BookingCalendar() {
   }
 
   return (
-      <div className="space-y-5">
+    <div className="space-y-5">
       <div>
-        <h2 className="font-serif text-2xl text-stone-800">
-          2. Válassz napot
-        </h2>
+        <h2 className="font-serif text-2xl text-stone-800">2. Válassz napot</h2>
 
-        <p className="text-sm text-muted-foreground">
-          Csak a foglalható napok választhatók ki.
-        </p>
+        <p className="text-sm text-muted-foreground">Csak a foglalható napok választhatók ki.</p>
       </div>
 
       <div className="overflow-x-auto">
-      <Calendar
-        locale={hu}
-        mode="single"
-        selected={selectedDate}
-        disabled={(date) =>
-          !serviceId ||
-          !isBookableDate(date, {
-            isAdmin: false,
-          }) ||
-          isVacation(date)
-        }
-        modifiers={{
-          vacation: (date) => isVacation(date),
-        }}
-        onSelect={(date) => {
-          if (!date) return;
+        <Calendar
+          locale={hu}
+          mode="single"
+          selected={selectedDate}
+          disabled={(date) =>
+            !serviceId ||
+            !isBookableDate(date, {
+              isAdmin: false,
+            }) ||
+            isVacation(date)
+          }
+          modifiers={{
+            vacation: (date) => isVacation(date),
+          }}
+          onSelect={(date) => {
+            if (!date) return;
 
-          setValue("date", date, {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: true,
-          });
+            setValue("date", date, {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
 
-          // Új dátum választásakor töröljük a korábban kiválasztott időpontot
-          setValue("slot", "", {
-            shouldDirty: true,
-            shouldTouch: true,
-            shouldValidate: true,
-          });
-        }}
-        className="mx-auto w-fit rounded-2xl border border-stone-200 bg-[#fffdfa] p-2 sm:p-3"
-      />
+            // Új dátum választásakor töröljük a korábban kiválasztott időpontot
+            setValue("slot", "", {
+              shouldDirty: true,
+              shouldTouch: true,
+              shouldValidate: true,
+            });
+          }}
+          className="mx-auto w-fit rounded-2xl border border-stone-200 bg-[#fffdfa] p-2 sm:p-3"
+        />
       </div>
     </div>
   );

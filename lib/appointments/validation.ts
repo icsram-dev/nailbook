@@ -2,10 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { checkAppointmentOverlap } from "./overlap";
 import { checkOpeningHours } from "./opening-hours";
 import { checkVacation } from "./vacation";
-import type {
-  AppointmentValidationInput,
-  ValidationResult,
-} from "./types";
+import type { AppointmentValidationInput, ValidationResult } from "./types";
 
 export async function validateAppointment({
   serviceId,
@@ -40,8 +37,7 @@ export async function validateAppointment({
   ) {
     return {
       ok: false,
-      message:
-        "A kiválasztott időpont kívül esik a nyitvatartási időn.",
+      message: "A kiválasztott időpont kívül esik a nyitvatartási időn.",
     };
   }
 
@@ -53,8 +49,7 @@ export async function validateAppointment({
   ) {
     return {
       ok: false,
-      message:
-        "Erre az időpontra szabadság van beállítva.",
+      message: "Erre az időpontra szabadság van beállítva.",
     };
   }
 
@@ -67,8 +62,7 @@ export async function validateAppointment({
   ) {
     return {
       ok: false,
-      message:
-        "Ebben az időpontban már van foglalás.",
+      message: "Ebben az időpontban már van foglalás.",
     };
   }
 

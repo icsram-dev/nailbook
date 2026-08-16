@@ -21,10 +21,7 @@ export async function checkAppointmentOverlap({
       }),
 
       status: {
-        notIn: [
-          AppointmentStatus.CANCELLED,
-          AppointmentStatus.NO_SHOW,
-        ],
+        notIn: [AppointmentStatus.CANCELLED, AppointmentStatus.NO_SHOW],
       },
 
       startTime: {

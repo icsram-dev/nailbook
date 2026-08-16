@@ -32,17 +32,14 @@ export function CustomerManager({ customers }: CustomerManagerProps) {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
-        },
+        }
       );
 
       const result = await response.json();
 
       if (!response.ok) {
         alert(
-          result.message ??
-            `Nem sikerült ${
-              isEditing ? "frissíteni" : "létrehozni"
-            } a vendéget.`,
+          result.message ?? `Nem sikerült ${isEditing ? "frissíteni" : "létrehozni"} a vendéget.`
         );
         return;
       }
@@ -100,11 +97,7 @@ export function CustomerManager({ customers }: CustomerManagerProps) {
         <Button onClick={createCustomer}>+ Új vendég</Button>
       </div>
 
-      <CustomerTable
-        customers={customers}
-        onEdit={editCustomer}
-        onDelete={deleteCustomer}
-      />
+      <CustomerTable customers={customers} onEdit={editCustomer} onDelete={deleteCustomer} />
 
       <CustomerModal
         open={open}

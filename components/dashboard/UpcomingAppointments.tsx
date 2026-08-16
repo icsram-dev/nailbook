@@ -30,10 +30,7 @@ export async function UpcomingAppointments() {
         gte: new Date(),
       },
       status: {
-        in: [
-          AppointmentStatus.PENDING,
-          AppointmentStatus.CONFIRMED,
-        ],
+        in: [AppointmentStatus.PENDING, AppointmentStatus.CONFIRMED],
       },
     },
     include: {
@@ -49,13 +46,9 @@ export async function UpcomingAppointments() {
   return (
     <Card>
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-xl font-semibold">
-          Következő időpontok
-        </h2>
+        <h2 className="text-xl font-semibold">Következő időpontok</h2>
 
-        <span className="text-sm text-gray-500">
-          {appointments.length} foglalás
-        </span>
+        <span className="text-sm text-gray-500">{appointments.length} foglalás</span>
       </div>
 
       {appointments.length === 0 ? (
@@ -71,20 +64,15 @@ export async function UpcomingAppointments() {
             >
               <div className="flex items-center gap-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100 font-bold text-pink-600">
-                  {appointment.customer.lastName
-                    .charAt(0)
-                    .toUpperCase()}
+                  {appointment.customer.lastName.charAt(0).toUpperCase()}
                 </div>
 
                 <div>
                   <h3 className="font-semibold">
-                    {appointment.customer.lastName}{" "}
-                    {appointment.customer.firstName}
+                    {appointment.customer.lastName} {appointment.customer.firstName}
                   </h3>
 
-                  <p className="text-sm text-gray-500">
-                    {appointment.service.name}
-                  </p>
+                  <p className="text-sm text-gray-500">{appointment.service.name}</p>
 
                   <p className="mt-1 text-sm font-medium">
                     {appointment.price.toLocaleString("hu-HU")} Ft
@@ -93,18 +81,13 @@ export async function UpcomingAppointments() {
               </div>
 
               <div className="text-right">
-                <p className="font-semibold">
-                  {appointment.startTime.toLocaleDateString("hu-HU")}
-                </p>
+                <p className="font-semibold">{appointment.startTime.toLocaleDateString("hu-HU")}</p>
 
                 <p className="text-sm text-gray-500">
-                  {appointment.startTime.toLocaleTimeString(
-                    "hu-HU",
-                    {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    }
-                  )}
+                  {appointment.startTime.toLocaleTimeString("hu-HU", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </p>
 
                 <div className="mt-2">

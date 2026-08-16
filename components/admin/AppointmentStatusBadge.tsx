@@ -37,17 +37,12 @@ const statusMap = {
   },
 };
 
-export default function AppointmentStatusBadge({
-  status,
-}: Props) {
+export default function AppointmentStatusBadge({ status }: Props) {
   const item = statusMap[status];
 
   return (
     <span
-      className={clsx(
-        "inline-flex rounded-full px-3 py-1 text-xs font-semibold",
-        item.className
-      )}
+      className={clsx("inline-flex rounded-full px-3 py-1 text-xs font-semibold", item.className)}
     >
       {item.label}
     </span>

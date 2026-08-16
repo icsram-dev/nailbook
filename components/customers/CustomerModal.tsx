@@ -3,10 +3,7 @@
 import { User } from "@prisma/client";
 import { Modal } from "@/components/ui/Modal";
 
-import type {
-  CustomerData,
-  CustomerInput,
-} from "@/lib/validations/customer";
+import type { CustomerData, CustomerInput } from "@/lib/validations/customer";
 
 import { CustomerForm } from "./CustomerForm";
 
@@ -17,12 +14,7 @@ type CustomerModalProps = {
   onSubmit: (data: CustomerData) => Promise<void>;
 };
 
-export function CustomerModal({
-  open,
-  onClose,
-  customer,
-  onSubmit,
-}: CustomerModalProps) {
+export function CustomerModal({ open, onClose, customer, onSubmit }: CustomerModalProps) {
   const defaultValues: CustomerInput | undefined = customer
     ? {
         firstName: customer.firstName,
@@ -33,19 +25,8 @@ export function CustomerModal({
     : undefined;
 
   return (
-    <Modal
-      open={open}
-      title={
-        customer
-          ? "Vendég szerkesztése"
-          : "Új vendég"
-      }
-      onClose={onClose}
-    >
-      <CustomerForm
-        defaultValues={defaultValues}
-        onSubmit={onSubmit}
-      />
+    <Modal open={open} title={customer ? "Vendég szerkesztése" : "Új vendég"} onClose={onClose}>
+      <CustomerForm defaultValues={defaultValues} onSubmit={onSubmit} />
     </Modal>
   );
 }

@@ -20,9 +20,7 @@ type UpdateOpeningHourInput = {
   closesAt: string | null;
 };
 
-export async function updateOpeningHours(
-  openingHours: UpdateOpeningHourInput[]
-) {
+export async function updateOpeningHours(openingHours: UpdateOpeningHourInput[]) {
   await prisma.$transaction(
     openingHours.map((openingHour) =>
       prisma.openingHour.update({
@@ -31,12 +29,8 @@ export async function updateOpeningHours(
         },
         data: {
           isOpen: openingHour.isOpen,
-          opensAt: openingHour.isOpen
-            ? openingHour.opensAt
-            : null,
-          closesAt: openingHour.isOpen
-            ? openingHour.closesAt
-            : null,
+          opensAt: openingHour.isOpen ? openingHour.opensAt : null,
+          closesAt: openingHour.isOpen ? openingHour.closesAt : null,
         },
       })
     )

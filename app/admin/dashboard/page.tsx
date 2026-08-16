@@ -8,12 +8,7 @@ import { getDashboardData } from "@/lib/dashboard";
 import { format } from "date-fns";
 import { hu } from "date-fns/locale";
 
-import {
-  CalendarDays,
-  DollarSign,
-  Sparkles,
-  Users,
-} from "lucide-react";
+import { CalendarDays, DollarSign, Sparkles, Users } from "lucide-react";
 
 export default async function DashboardPage() {
   const dashboard = await getDashboardData();
@@ -21,13 +16,9 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <p className="text-lg font-medium text-pink-600">
-          Üdvözöllek!
-        </p>
+        <p className="text-lg font-medium text-pink-600">Üdvözöllek!</p>
 
-        <h1 className="mt-1 text-3xl font-bold tracking-tight">
-          Dashboard
-        </h1>
+        <h1 className="mt-1 text-3xl font-bold tracking-tight">Dashboard</h1>
 
         <p className="mt-2 text-gray-500">
           {format(new Date(), "yyyy. MMMM d., EEEE", {
@@ -49,11 +40,7 @@ export default async function DashboardPage() {
           icon={<DollarSign />}
         />
 
-        <DashboardCard
-          title="Vendégek"
-          value={dashboard.pendingAppointments}
-          icon={<Users />}
-        />
+        <DashboardCard title="Vendégek" value={dashboard.pendingAppointments} icon={<Users />} />
 
         <DashboardCard
           title="Szolgáltatások"
@@ -65,9 +52,7 @@ export default async function DashboardPage() {
       <div className="grid gap-6 xl:grid-cols-2">
         <UpcomingAppointments />
 
-        <RevenueChart
-          data={[]}
-        />
+        <RevenueChart data={[]} />
       </div>
     </div>
   );

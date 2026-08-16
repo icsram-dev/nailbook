@@ -7,18 +7,9 @@ export const serviceSchema = z.object({
     .min(2, "A szolgáltatás neve legalább 2 karakter legyen.")
     .max(100, "A szolgáltatás neve legfeljebb 100 karakter lehet."),
 
-  description: z
-    .string()
-    .trim()
-    .max(500, "A leírás legfeljebb 500 karakter lehet.")
-    .optional(),
+  description: z.string().trim().max(500, "A leírás legfeljebb 500 karakter lehet.").optional(),
 
-  image: z
-    .string()
-    .trim()
-    .url("Érvényes URL-t adj meg.")
-    .optional()
-    .or(z.literal("")),
+  image: z.string().trim().url("Érvényes URL-t adj meg.").optional().or(z.literal("")),
 
   duration: z.coerce
     .number()
@@ -26,10 +17,7 @@ export const serviceSchema = z.object({
     .min(5, "Minimum 5 perc.")
     .max(480, "Maximum 480 perc."),
 
-  price: z.coerce
-    .number()
-    .int("Egész számot adj meg.")
-    .min(0, "Az ár nem lehet negatív."),
+  price: z.coerce.number().int("Egész számot adj meg.").min(0, "Az ár nem lehet negatív."),
 
   active: z.boolean(),
 });

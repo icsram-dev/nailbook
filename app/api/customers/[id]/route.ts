@@ -11,10 +11,7 @@ type RouteContext = {
   }>;
 };
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function PATCH(request: NextRequest, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -42,10 +39,7 @@ export async function PATCH(
 
     return NextResponse.json(customer);
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
       return NextResponse.json(
         {
           message: "A vendég nem található.",
@@ -69,10 +63,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: RouteContext
-) {
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
     const unauthorized = await requireAdmin();
     if (unauthorized) return unauthorized;
@@ -88,10 +79,7 @@ export async function DELETE(
       status: 204,
     });
   } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
       return NextResponse.json(
         {
           message: "A vendég nem található.",

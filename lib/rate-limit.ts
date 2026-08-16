@@ -14,11 +14,7 @@ type RateLimitOptions = {
 function getClientAddress(request: Request) {
   const forwarded = request.headers.get("x-forwarded-for");
 
-  return (
-    forwarded?.split(",")[0]?.trim() ||
-    request.headers.get("x-real-ip") ||
-    "unknown"
-  );
+  return forwarded?.split(",")[0]?.trim() || request.headers.get("x-real-ip") || "unknown";
 }
 
 export async function isRateLimitAllowed({

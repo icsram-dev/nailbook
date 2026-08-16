@@ -11,17 +11,13 @@ export async function GET() {
       where: {
         role: "CUSTOMER",
       },
-      orderBy: [
-        { lastName: "asc" },
-        { firstName: "asc" },
-      ],
+      orderBy: [{ lastName: "asc" }, { firstName: "asc" }],
       select: {
         id: true,
         firstName: true,
         lastName: true,
       },
     }),
-    
 
     prisma.service.findMany({
       where: {
@@ -55,10 +51,7 @@ export async function POST(request: Request) {
     const { customerId, serviceId, startTime } = body;
 
     if (!customerId || !serviceId || !startTime) {
-      return NextResponse.json(
-        { error: "Hiányzó adatok." },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Hiányzó adatok." }, { status: 400 });
     }
 
     const service = await prisma.service.findUnique({
@@ -68,10 +61,7 @@ export async function POST(request: Request) {
     });
 
     if (!service) {
-      return NextResponse.json(
-        { error: "A szolgáltatás nem található." },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "A szolgáltatás nem található." }, { status: 404 });
     }
 
     const start = new Date(startTime);

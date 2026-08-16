@@ -18,22 +18,16 @@ type Props = {
   customers: Customer[];
 };
 
-export default function CustomerTable({
-  customers,
-}: Props) {
+export default function CustomerTable({ customers }: Props) {
   const [search, setSearch] = useState("");
 
   const filteredCustomers = useMemo(() => {
     const value = search.toLowerCase();
 
     return customers.filter((customer) => {
-      const fullName =
-        `${customer.lastName} ${customer.firstName}`.toLowerCase();
+      const fullName = `${customer.lastName} ${customer.firstName}`.toLowerCase();
 
-      return (
-        fullName.includes(value) ||
-        customer.email.toLowerCase().includes(value)
-      );
+      return fullName.includes(value) || customer.email.toLowerCase().includes(value);
     });
   }, [customers, search]);
 
@@ -61,40 +55,26 @@ export default function CustomerTable({
 
           <tbody>
             {filteredCustomers.map((customer) => (
-              <tr
-                key={customer.id}
-                className="border-t transition hover:bg-gray-50"
-              >
+              <tr key={customer.id} className="border-t transition hover:bg-gray-50">
                 <td className="px-6 py-4 font-medium">
                   {customer.lastName} {customer.firstName}
                 </td>
 
-                <td className="px-6 py-4">
-                  {customer.email}
-                </td>
+                <td className="px-6 py-4">{customer.email}</td>
+
+                <td className="px-6 py-4">{customer.phone}</td>
+
+                <td className="px-6 py-4">{customer._count.appointments}</td>
 
                 <td className="px-6 py-4">
-                  {customer.phone}
-                </td>
-
-                <td className="px-6 py-4">
-                  {customer._count.appointments}
-                </td>
-
-                <td className="px-6 py-4">
-                  {new Date(
-                    customer.createdAt
-                  ).toLocaleDateString("hu-HU")}
+                  {new Date(customer.createdAt).toLocaleDateString("hu-HU")}
                 </td>
               </tr>
             ))}
 
             {filteredCustomers.length === 0 && (
               <tr>
-                <td
-                  colSpan={5}
-                  className="px-6 py-8 text-center text-gray-500"
-                >
+                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
                   Nincs találat.
                 </td>
               </tr>
